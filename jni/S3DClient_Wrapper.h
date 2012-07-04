@@ -106,6 +106,8 @@ extern "C" void             S3DClient_SetAudioDisabled                          
 extern "C" void             S3DClient_SetOption                                     ( unsigned long _iOption, unsigned long  _iValue ) ;
 extern "C" void             S3DClient_SetGameOption                                 ( unsigned long _iOption, float  _fValue ) ;
 extern "C" void             S3DClient_SetFullscreen                                 ( bool _bFullscreen ) ;
+extern "C" void             S3DClient_SetCachePath                                  ( const char * _pCachePath ) ;
+extern "C" void             S3DClient_SetSavesPath                                  ( const char * _pSavesPath ) ;
 extern "C" void             S3DClient_OnGraphicContextLost                          ( ) ;
                                                                                      
 extern "C" void             S3DClient_CallHUDAction                                 ( const char * _pCommand, unsigned short _iArgumentCount, const char ** _pArguments ) ;
@@ -197,6 +199,7 @@ extern "C" void             S3DClient_Android_SetCameraDeviceCaptureStopCallback
 extern "C" void             S3DClient_Android_SetCameraDeviceCapturedImage          ( int _iDeviceIndex, const void *_pImageData, int _iImageWidth, int _iImageHeight, int _iImageStride, int _iImageFormat ) ;
 extern "C" void             S3DClient_Android_SetCameraDeviceCount                  ( int _iDeviceCount ) ;
 extern "C" void             S3DClient_Android_SetCameraDeviceName                   ( int _iDeviceIndex, const char *_pName ) ;
+extern "C" void             S3DClient_Android_AddFileAccessibleFromAPK              ( const char *_pFileName, int _iFileDescriptor, int _iOffset, int _iLength ) ;
 
 //------- Wii ---------//
 
@@ -212,6 +215,33 @@ extern "C" void             S3DClient_NaCl_OnMouseWheel                         
 extern "C" void             S3DClient_NaCl_OnKeyboardKeyPressed                     ( int _iKeyCode, const char *_pUTF8 ) ;
 extern "C" void             S3DClient_NaCl_OnKeyboardKeyReleased                    ( int _iKeyCode, const char *_pUTF8 ) ;
 extern "C" void             S3DClient_NaCl_SetFocus                                 ( bool _bFocus ) ;
+
+//------- Flash --------//
+
+extern "C" void             S3DClient_Flash_OnMouseMoved                            ( float _x, float _y ) ;
+extern "C" void             S3DClient_Flash_OnMouseButtonPressed                    ( int _iButton ) ;
+extern "C" void             S3DClient_Flash_OnMouseButtonReleased                   ( int _iButton ) ;
+extern "C" void             S3DClient_Flash_OnMouseWheel                            ( float _fDeltaX, float _fDeltaY ) ;
+extern "C" void             S3DClient_Flash_OnKeyboardKeyPressed                    ( int _iKeyCode, const char *_pUTF8 ) ;
+extern "C" void             S3DClient_Flash_OnKeyboardKeyReleased                   ( int _iKeyCode, const char *_pUTF8 ) ;
+extern "C" void             S3DClient_Flash_SetFocus                                ( bool _bFocus ) ;
+
+//-------- XNA ---------//
+
+extern "C" void             S3DClient_XNA_SetViewportRotation                       ( int _iAngle ) ;
+extern "C" bool             S3DClient_XNA_IsMultiTouchEnabled                       ( ) ;
+extern "C" void             S3DClient_XNA_OnMouseMoved                              ( float _x, float _y ) ;
+extern "C" void             S3DClient_XNA_OnMouseButtonPressed                      ( int _iButton ) ;
+extern "C" void             S3DClient_XNA_OnMouseButtonReleased                     ( int _iButton ) ;
+extern "C" void             S3DClient_XNA_OnKeyboardKeyPressed                      ( int _iKeyCode, const char *_pUTF8 ) ;
+extern "C" void             S3DClient_XNA_OnKeyboardKeyReleased                     ( int _iKeyCode, const char *_pUTF8 ) ;
+extern "C" void             S3DClient_XNA_OnMouseWheel                              ( float _fDeltaX, float _fDeltaY ) ;
+extern "C" void             S3DClient_XNA_OnDeviceMoved                             ( float _x, float _y, float _z ) ;
+extern "C" void             S3DClient_XNA_OnTouchesChanged                          ( int _iS0, int _iTC0, float _fX0, float _fY0, 
+                                                                                      int _iS1, int _iTC1, float _fX1, float _fY1,
+                                                                                      int _iS2, int _iTC2, float _fX2, float _fY2, 
+                                                                                      int _iS3, int _iTC3, float _fX3, float _fY3, 
+                                                                                      int _iS4, int _iTC4, float _fX4, float _fY4 ) ;
 
 //-----------------------------------------------------------------------------
 #endif // __S3DClient_Wrapper_h__

@@ -46,7 +46,7 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
 					<arg value="--login"/>
 					<arg value="-i"/>
 					<arg value="-c"/>
-					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
+					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; cp --preserve obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp --preserve obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp --preserve obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
 				</exec>
 		<antcall target="-compile"/>
 		<antcall target="debug"/>
@@ -63,7 +63,7 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
 					<arg value="--login"/>
 					<arg value="-i"/>
 					<arg value="-c"/>
-					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
+					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; cp --preserve obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp --preserve obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp --preserve obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
 				</exec>
 		<antcall target="-compile"/>
 		<antcall target="release"/>

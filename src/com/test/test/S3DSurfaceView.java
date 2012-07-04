@@ -2,6 +2,7 @@
 package com.test.test;
 //----------------------------------------------------------------------                
 import java.io.IOException;
+import java.io.FileDescriptor;
 import java.util.Locale;
 import java.util.Enumeration;
 import java.lang.reflect.Method;
@@ -16,6 +17,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.opengles.GL10;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.app.Application;
 import android.app.Activity;
 import android.os.Bundle;
@@ -62,34 +64,12 @@ class S3DSurfaceView extends GLSurfaceView implements SensorEventListener, Locat
 {
     //------------------------------------------------------------------
     // Constants.
-    //
-    private static final int kDeviceModelUnknown            =  0 ;
-    private static final int kDeviceModelMotorolaDroid      =  1 ; // Same than Motorola Milestone
-    private static final int kDeviceModelGoogleNexusOne     =  2 ;
-    private static final int kDeviceModelSamsungCorby       =  3 ;
-    private static final int kDeviceModelSamsungGalaxySpica =  4 ;
-    private static final int kDeviceModelSamsungGalaxyS     =  5 ;
-	private static final int kDeviceModelSamsungGalaxyTab	=  6 ;
-    private static final int kDeviceModelSamsungGalaxy      =  7 ;
-    private static final int kDeviceModelSamsungWave        =  8 ;
-    private static final int kDeviceModelSamsungBorby       =  9 ;
-    private static final int kDeviceModelSamsungJet         = 10 ;
-    private static final int kDeviceModelNVidiaTegra250     = 11 ;
-    private static final int kDeviceModelHTCHero            = 12 ;
-    private static final int kDeviceModelHTCBravo           = 13 ; // Same than HTC Desire
-    private static final int kDeviceModelHTCMagic           = 14 ; // Same board than HTC Dream
-    private static final int kDeviceModelHTCAria            = 15 ;
-    private static final int kDeviceModelHTCTatoo           = 16 ;
-    private static final int kDeviceModelHTCLegend          = 17 ;
-    private static final int kDeviceModelHTCDroidIncredible = 18 ;
-    private static final int kDeviceModelHTCDroidEris       = 19 ;
-    private static final int kDeviceModelHTCEvo4G           = 20 ;
     
     
     //------------------------------------------------------------------
     // Constructor.
     //
-    public S3DSurfaceView ( Context context, String cacheDirPath, String homeDirPath, String packDirPath, boolean wantGLES2, boolean forceDefaultOrientation )
+    public S3DSurfaceView ( Context context, String cacheDirPath, String homeDirPath, String packDirPath, FileDescriptor packFileDescriptor, long packFileOffset, long packFileLength, boolean wantGLES2, boolean forceDefaultOrientation )
     {
         super ( context ) ;
         
@@ -105,12 +85,8 @@ class S3DSurfaceView extends GLSurfaceView implements SensorEventListener, Locat
         
         // Create the renderer
         //
-        oRenderer       = new S3DRenderer ( context, sCacheDirPath, sHomeDirPath, sPackDirPath, forceDefaultOrientation ) ;
+        oRenderer       = new S3DRenderer ( context, sCacheDirPath, sHomeDirPath, sPackDirPath, packFileDescriptor, packFileOffset, packFileLength, forceDefaultOrientation ) ;
         
-        // Detect device model
-        //
-        detectDeviceModel ( ) ;
-
 		// Detect display orientation
 		//
 		detectDisplayOrientation ( context ) ;
@@ -124,33 +100,6 @@ class S3DSurfaceView extends GLSurfaceView implements SensorEventListener, Locat
         setRenderer     ( oRenderer ) ;
     }
     
-    //------------------------------------------------------------------
-    // Device model detection.
-    //        
-    private void detectDeviceModel ( )
-    {
-        if      ( Build.BOARD.contains ( "GT-I5500"    ) ) iDeviceModel = kDeviceModelSamsungCorby       ;
-        else if ( Build.BOARD.contains ( "GT-I5700"    ) ) iDeviceModel = kDeviceModelSamsungGalaxySpica ;
-        else if ( Build.BOARD.contains ( "GT-I7500"    ) ) iDeviceModel = kDeviceModelSamsungGalaxy      ;
-        else if ( Build.BOARD.contains ( "GT-S8000"    ) ) iDeviceModel = kDeviceModelSamsungJet         ;
-        else if ( Build.BOARD.contains ( "GT-S8500"    ) ) iDeviceModel = kDeviceModelSamsungWave        ;
-        else if ( Build.BOARD.contains ( "GT-I9000"    ) ) iDeviceModel = kDeviceModelSamsungGalaxyS     ;
-		else if ( Build.BOARD.contains ( "GT-P1000"	   ) ) iDeviceModel = kDeviceModelSamsungGalaxyTab   ;
-        else if ( Build.BOARD.contains ( "sholes"      ) ) iDeviceModel = kDeviceModelMotorolaDroid      ;
-        else if ( Build.BOARD.contains ( "mahimahi"    ) ) iDeviceModel = kDeviceModelGoogleNexusOne     ;
-        else if ( Build.BOARD.contains ( "harmony"     ) ) iDeviceModel = kDeviceModelNVidiaTegra250     ;
-        else if ( Build.BOARD.contains ( "heroc"       ) ) iDeviceModel = kDeviceModelHTCHero            ;
-        else if ( Build.BOARD.contains ( "bravo"       ) ) iDeviceModel = kDeviceModelHTCBravo           ;
-        else if ( Build.BOARD.contains ( "sapphire"    ) ) iDeviceModel = kDeviceModelHTCMagic           ;
-        else if ( Build.BOARD.contains ( "liberty"     ) ) iDeviceModel = kDeviceModelHTCAria            ;
-        else if ( Build.BOARD.contains ( "bahamas"     ) ) iDeviceModel = kDeviceModelHTCTatoo           ;
-        else if ( Build.BOARD.contains ( "legend"      ) ) iDeviceModel = kDeviceModelHTCLegend          ;
-        else if ( Build.BOARD.contains ( "inc"         ) ) iDeviceModel = kDeviceModelHTCDroidIncredible ;
-        else if ( Build.BOARD.contains ( "desirec"     ) ) iDeviceModel = kDeviceModelHTCDroidEris       ;
-        else if ( Build.BOARD.contains ( "supersonic"  ) ) iDeviceModel = kDeviceModelHTCEvo4G           ;
-        else                                               iDeviceModel = kDeviceModelUnknown            ;
-    }
-
     //------------------------------------------------------------------
     // Display orientation detection (code taken from nVidia paper)
     //        
@@ -185,6 +134,14 @@ class S3DSurfaceView extends GLSurfaceView implements SensorEventListener, Locat
 			iDisplayOrient = display.getOrientation ( ) ;
 		}
 	}	
+
+    //------------------------------------------------------------------
+    // Initialization control.
+    //        
+    public void allowInit ( )
+    {
+        queueEvent ( new Runnable ( ) { public void run ( ) { if ( oRenderer != null ) oRenderer.onAllowInit ( ) ; } } ) ;
+    }        
     
     //------------------------------------------------------------------
     // Resume handling.
@@ -338,62 +295,65 @@ class S3DSurfaceView extends GLSurfaceView implements SensorEventListener, Locat
          
     //------------------------------------------------------------------
     // Touch input event.
-    //        
+    //
+    class TouchEventRunnable implements Runnable
+    {
+        int cnt, act;
+        float[] x;
+        float[] y;
+    
+         public TouchEventRunnable ( final MotionEvent oEvent )
+         {
+             act = oEvent.getAction         ( ) ;
+             cnt = oEvent.getPointerCount   ( ) ;
+            
+             x = new float[cnt];
+             y = new float[cnt];
+            
+             for ( int i = 0 ; i < cnt ; i++ )
+             {
+                 try
+                 {
+                     x[i] = oEvent.getX ( i ) ;
+                     y[i] = oEvent.getY ( i ) ;
+                 }
+                 catch ( Exception e )
+                 {
+                     //Log.d ( "S3DSurfaceView", "Catch exception: " + e.toString() );
+                     //Log.d ( "S3DSurfaceView", "\t\t X and Y Invalid for pointer " + i );
+                     x[i] = 0 ;
+                     y[i] = 0 ;
+                 }
+            }
+        }
+
+        public void run ( )
+        {
+            if ( oRenderer != null )
+            {
+                switch ( cnt )
+                {
+                case  0 : oRenderer.onTouchEvent ( act, cnt, 0,   0,    0,  0,   0,    0,  0,   0,    0,  0,   0,    0,  0,   0,    0  ) ; break ;
+                case  1 : oRenderer.onTouchEvent ( act, cnt, 1, x[0], y[0], 0,   0,    0,  0,   0,    0,  0,   0,    0,  0,   0,    0  ) ; break ;
+                case  2 : oRenderer.onTouchEvent ( act, cnt, 1, x[0], y[0], 1, x[1], y[1], 0,   0,    0,  0,   0,    0,  0,   0,    0  ) ; break ;
+                case  3 : oRenderer.onTouchEvent ( act, cnt, 1, x[0], y[0], 1, x[1], y[1], 1, x[2], y[2], 0,   0,    0,  0,   0,    0  ) ; break ;
+                case  4 : oRenderer.onTouchEvent ( act, cnt, 1, x[0], y[0], 1, x[1], y[1], 1, x[2], y[2], 1, x[3], y[3], 0,   0,    0  ) ; break ;
+                default : oRenderer.onTouchEvent ( act, cnt, 1, x[0], y[0], 1, x[1], y[1], 1, x[2], y[2], 1, x[3], y[3], 1, x[4], y[4] ) ; break ;
+                }            
+            }
+        }
+    } ;
+        
     public boolean onTouchEvent ( final MotionEvent event )
     {
+		// Note that event.getPressure ( ... ) does not work on all devices, so assume full pressure...
+		// Note that some devices send onTouchEvent continously (eg. HTC ones), and others not (eg. Samsung ones)
+		//
         super.onTouchEvent ( event ) ;
         
         queueEvent
         (
-            new Runnable ( )
-            {
-                public void run ( )
-                {
-                    if ( oRenderer != null ) 
-                    {
-						// Note that event.getPressure ( ... ) does not work on all devices, so assume full pressure... Android is great...
-						// Note that some devices send onTouchEvent continously (eg. HTC ones), and others not (eg. Samsung ones)
-						//
-                        int      act = event.getAction       ( ) ;
-                        int      cnt = event.getPointerCount ( ) ;
-                        switch ( cnt )
-                        {
-                        case 0  : oRenderer.onTouchEvent ( act, cnt, 0,              0,                0  ,
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0   ) ; break ;
-                        case 1  : oRenderer.onTouchEvent ( act, cnt, 1, event.getX ( 0 ), event.getY ( 0 ),
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0   ) ; break ;
-                        case 2  : oRenderer.onTouchEvent ( act, cnt, 1, event.getX ( 0 ), event.getY ( 0 ),
-                                                                     1, event.getX ( 1 ), event.getY ( 1 ),
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0   ) ; break ;
-                        case 3  : oRenderer.onTouchEvent ( act, cnt, 1, event.getX ( 0 ), event.getY ( 0 ),
-                                                                     1, event.getX ( 1 ), event.getY ( 1 ),
-                                                                     1, event.getX ( 2 ), event.getY ( 2 ),
-                                                                     0,              0,                0  ,
-                                                                     0,              0,                0   ) ; break ;
-                        case 4  : oRenderer.onTouchEvent ( act, cnt, 1, event.getX ( 0 ), event.getY ( 0 ),
-                                                                     1, event.getX ( 1 ), event.getY ( 1 ),
-                                                                     1, event.getX ( 2 ), event.getY ( 2 ),
-                                                                     1, event.getX ( 3 ), event.getY ( 3 ),
-                                                                     0,              0,                0   ) ; break ;
-                        default : oRenderer.onTouchEvent ( act, cnt, 1, event.getX ( 0 ), event.getY ( 0 ),
-                                                                     1, event.getX ( 1 ), event.getY ( 1 ),
-                                                                     1, event.getX ( 2 ), event.getY ( 2 ),
-                                                                     1, event.getX ( 3 ), event.getY ( 3 ),
-                                                                     1, event.getX ( 4 ), event.getY ( 4 ) ) ; break ;
-                        }
-
-						//Log.d ( "#########", "onTouchEvent: " + String.format ( "%d %d", act, cnt ) ) ;
-                    }
-                }
-            }
+            new TouchEventRunnable ( event )
         ) ;
         return true ;
     }
@@ -493,28 +453,6 @@ class S3DSurfaceView extends GLSurfaceView implements SensorEventListener, Locat
              */
             setEGLConfigChooser ( new S3DConfigChooserGLES2 ( iPreferedRedSize, iPreferedGreenSize, iPreferedBlueSize, iPreferedAlphaSize, iPreferedDepthSize, iPreferedStencilSize ) ) ;
         }
-        /*
-        else if ( iDeviceModel == kDeviceModelHTCHero           || 
-                  iDeviceModel == kDeviceModelSamsungCorby      ||
-                  iDeviceModel == kDeviceModelSamsungGalaxy     || 
-                  iDeviceModel == kDeviceModelSamsungGalaxySpica )
-        {
-            setEGLConfigChooser ( new GLSurfaceView.EGLConfigChooser ( ) 
-                                {
-                        			public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) 
-                        			{
-                        				// Ensure that we get a 16bit framebuffer. Otherwise, we'll fall
-                        				// back to Pixelflinger on some device (read: Samsung I7500)
-                        				int[] attributes = new int[] { EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE };
-                        				EGLConfig[] configs = new EGLConfig[1];
-                        				int[] result = new int[1];
-                        				egl.eglChooseConfig(display, attributes, configs, 1, result);
-                        				return configs[0];
-                        			}
-		                        } 
-		                        ) ;
-        }
-        */
         else
         {
             /* By default, GLSurfaceView() creates a RGB_565 opaque surface.
@@ -547,7 +485,6 @@ class S3DSurfaceView extends GLSurfaceView implements SensorEventListener, Locat
     private String          sCacheDirPath   ;
     private String          sHomeDirPath    ;
     private String          sPackDirPath    ;
-    private int             iDeviceModel    = kDeviceModelUnknown ;
 	private int             iDisplayOrient  = 0 ;
 }
 
@@ -558,7 +495,7 @@ class S3DRenderer implements GLSurfaceView.Renderer
     //------------------------------------------------------------------
     // Constructor.
     //
-    public S3DRenderer ( Context context, String sCacheDirPath, String sHomeDirPath, String sPackDirPath, boolean bForceDefaultOrientation )
+    public S3DRenderer ( Context context, String sCacheDirPath, String sHomeDirPath, String sPackDirPath, FileDescriptor oPackFileDescriptor, long iPackFileOffset, long iPackFileLength, boolean bForceDefaultOrientation )
     {
         //engineSetDeviceName             (  ) ; 
         engineSetCameraDeviceCount      ( 1 ) ; 
@@ -566,9 +503,13 @@ class S3DRenderer implements GLSurfaceView.Renderer
         engineSetDeviceModel            ( Build.MODEL ) ; 
         engineSetSystemVersion          ( Build.VERSION.RELEASE ) ; 
         engineSetSystemLanguage         ( Locale.getDefault ( ).getLanguage ( ) ) ; 
-        engineSetDirectories            ( sCacheDirPath, sHomeDirPath, sPackDirPath ) ;
+        engineSetDirectories            ( sCacheDirPath, sHomeDirPath, sPackDirPath ) ;        
         engineForceDefaultOrientation   ( bForceDefaultOrientation ) ;
-
+        
+        if ( oPackFileDescriptor != null )
+        {
+            engineSetPackFileDescriptor ( oPackFileDescriptor, iPackFileOffset, iPackFileLength ) ;
+        }
 		if ( ( context.checkCallingOrSelfPermission ( android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) &&
 		     ( context.checkCallingOrSelfPermission ( android.Manifest.permission.ACCESS_FINE_LOCATION   ) == PackageManager.PERMISSION_GRANTED ) )
 		{
@@ -591,12 +532,21 @@ class S3DRenderer implements GLSurfaceView.Renderer
     }
 
     //------------------------------------------------------------------
+    // Initialization handling
+    //
+    public void onAllowInit ( )
+    {
+		bAllowInit  = true ;
+    }
+
+    //------------------------------------------------------------------
     // Pause handling
     //
     public void onPause ( )
     {
-		enginePause ( true ) ;
-		bPaused		= true   ;
+		enginePause     ( true ) ;
+		bPaused		    = true   ;
+		bSplashVisible  = true   ; // For resume
     }
 
     //------------------------------------------------------------------
@@ -607,7 +557,7 @@ class S3DRenderer implements GLSurfaceView.Renderer
 		enginePause ( false ) ;
 		bPaused		= false   ;
     }
-
+    
     //------------------------------------------------------------------
     // Engine shutdown.
     //
@@ -639,10 +589,6 @@ class S3DRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated ( GL10 gl, EGLConfig config )
     {
 		engineOnSurfaceCreated ( ) ;
-
-		// Hide splash sceen when 3D surface has been successfully created
-		//
-		Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_HIDE_SPLASH ).sendToTarget ( ) ;        
     }
 
     //------------------------------------------------------------------
@@ -658,43 +604,73 @@ class S3DRenderer implements GLSurfaceView.Renderer
     //
     public void onDrawFrame ( GL10 gl )
     {
-        if ( ! bPaused )
+        if ( bAllowInit && ! bInitialized )
         {
-            if ( engineRunOneFrame ( ) )
+            engineShutdown    ( ) ;
+            engineInitialize  ( ) ;
+            bInitialized   = true ;            
+        }
+        if ( bInitialized && ! bPaused )
+        {
+            // Run one engine frame
+            //
+			boolean bWantSwap = true ;
+			do
 			{
-				// Overlay movie handling
-				//
-				String   sOverlayMovieToPlay  = engineGetOverlayMovie ( ) ;
-				if   ( ! sOverlayMovieToPlay.equals ( sOverlayMovie ) )
+            	if ( engineRunOneFrame ( ) )
 				{
-					sOverlayMovie = sOverlayMovieToPlay ;
-					if ( sOverlayMovie.length ( ) > 0 ) Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_PLAY_OVERLAY_MOVIE, sOverlayMovie ).sendToTarget ( ) ;
-					else                                Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_STOP_OVERLAY_MOVIE                ).sendToTarget ( ) ;
-				}
+					// Overlay movie handling
+					//
+					String   sOverlayMovieToPlay  = engineGetOverlayMovie ( ) ;
+					if   ( ! sOverlayMovieToPlay.equals ( sOverlayMovie ) )
+					{
+						sOverlayMovie = sOverlayMovieToPlay ;
+						if ( sOverlayMovie.length ( ) > 0 ) Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_PLAY_OVERLAY_MOVIE, sOverlayMovie ).sendToTarget ( ) ;
+						else                                Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_STOP_OVERLAY_MOVIE                ).sendToTarget ( ) ;
+					}
 
-				// Camera device handling
-				//
-				boolean bCameraDeviceState  = engineGetCameraDeviceState ( ) ;
-				if    ( bCameraDeviceState != bCameraDevice )
-				{
-					bCameraDevice = bCameraDeviceState ;
-					Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_ENABLE_CAMERA_DEVICE, bCameraDevice ? 1 : 0, 0 ).sendToTarget ( ) ;
-				}
+					// Camera device handling
+					//
+					boolean bCameraDeviceState  = engineGetCameraDeviceState ( ) ;
+					if    ( bCameraDeviceState != bCameraDevice )
+					{
+						bCameraDevice = bCameraDeviceState ;
+						Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_ENABLE_CAMERA_DEVICE, bCameraDevice ? 1 : 0, 0 ).sendToTarget ( ) ;
+					}
 				
-				// Vibrator handling
-				//
-				//boolean bVibratorState  = engineGetVibratorState ( ) ;
-				//if    ( bVibratorState != bVibrate )
-				//{
-				//	bVibrate = bVibratorState ;
-				//	Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_ENABLE_VIBRATOR, bVibrate ? 1 : 0, 0 ).sendToTarget ( ) ;
-				//}
+					// Swap buffers handling (only useful when doing some benchmarking, not actually needed in a retail app)
+					//
+					bWantSwap = engineGetWantSwapBuffers ( ) ;
+					
+					if ( ! bWantSwap )
+					{
+						gl.glFinish ( ) ;
+					}
+				
+					// Vibrator handling
+					//
+					//boolean bVibratorState  = engineGetVibratorState ( ) ;
+					//if    ( bVibratorState != bVibrate )
+					//{
+					//	bVibrate = bVibratorState ;
+					//	Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_ENABLE_VIBRATOR, bVibrate ? 1 : 0, 0 ).sendToTarget ( ) ;
+					//}
+				}
+				else
+	            {
+					bWantSwap = true ;
+	                ((Activity) oContext).finish ( ) ;
+	            }
 			}
-			else
+			while ( ! bWantSwap ) ;
+			
+            // Hide splash sceen once engine has been initialized and that one frame has passed
+		    //
+            if ( bSplashVisible )
             {
-                ((Activity) oContext).finish ( ) ;
-            }
-            //Log.d ( "S3DRenderer", "### onDrawFrame" ) ;
+                Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_HIDE_SPLASH ).sendToTarget ( ) ;
+                bSplashVisible = false ;
+            }			
         }
     }
 
@@ -717,27 +693,30 @@ class S3DRenderer implements GLSurfaceView.Renderer
     {
         if ( ! bPaused )
         {
+            int     iActionMasked   = ( action & 0x000000ff ) ;
             boolean bNoMoreContacts = ( cnt == 0 ) ;
         
             if ( cnt == 1 )
             {
-                switch ( action )
+                switch ( iActionMasked )
                 {
-                    case MotionEvent.ACTION_MOVE   : engineOnMouseMove       ( x0, y0 ) ; break ;
-                    case MotionEvent.ACTION_DOWN   : engineOnMouseButtonDown ( x0, y0 ) ; break ;
-                    case MotionEvent.ACTION_UP     :
-                    case MotionEvent.ACTION_CANCEL : engineOnMouseButtonUp   ( x0, y0 ) ; bNoMoreContacts = true ; break ;
+                    case MotionEvent.ACTION_MOVE        : engineOnMouseMove       ( x0, y0 ) ; break ;
+                    case MotionEvent.ACTION_DOWN        : engineOnMouseButtonDown ( x0, y0 ) ; break ;
+                    case MotionEvent.ACTION_UP          :
+                    case MotionEvent.ACTION_CANCEL      : 
+                    case MotionEvent.ACTION_POINTER_UP  : engineOnMouseButtonUp   ( x0, y0 ) ; bNoMoreContacts = true ; break ;
                 }
             }
-			else
+			else if ( iActionMasked == MotionEvent.ACTION_POINTER_UP )
 			{
-				// TODO: Android 2.2+ version
-				//
-                switch ( action )
+                int      iActionPointer = ( action & 0x0000ff00 ) >> 8 ;
+                switch ( iActionPointer )
                 {
-                    case MotionEvent.ACTION_POINTER_1_UP : p0 = 0.0f ; break ;
-                    case MotionEvent.ACTION_POINTER_2_UP : p1 = 0.0f ; break ;
-                    case MotionEvent.ACTION_POINTER_3_UP : p2 = 0.0f ; break ;
+                    case 0 : p0 = 0.0f ; break ;
+                    case 1 : p1 = 0.0f ; break ;
+                    case 2 : p2 = 0.0f ; break ;
+                    case 3 : p3 = 0.0f ; break ;
+                    case 4 : p4 = 0.0f ; break ;
                 }				
 			}
         
@@ -881,15 +860,19 @@ class S3DRenderer implements GLSurfaceView.Renderer
     //------------------------------------------------------------------
     // Member variables.
     //
+    private boolean bAllowInit      = false ; // To for engine to start ONCE the splash view is on top
+    private boolean bSplashVisible  = true  ;
+    private boolean bInitialized    = false ;
     private boolean bPaused  		= false ;
     private Context oContext 		;
-	private String  sOverlayMovie 	= "" ;
+	private String  sOverlayMovie 	= ""    ;
 	private boolean bCameraDevice   = false ;
 	//private boolean bVibrate		= false ;
 
     //------------------------------------------------------------------
     // Engine native functions interface.
     //
+    public native void      engineSetPackFileDescriptor         ( FileDescriptor fileDescriptor, long offset, long length ) ;
     public native void      engineSetDirectories            	( String sCacheDirPath, String sHomeDirPath, String sPackDirPath ) ;
     public native void      engineSetLocationSupport        	( boolean b ) ;
     public native void      engineSetHeadingSupport         	( boolean b ) ;
@@ -922,6 +905,7 @@ class S3DRenderer implements GLSurfaceView.Renderer
 
     public native String 	engineGetOverlayMovie				( ) ;
     public native boolean 	engineGetCameraDeviceState		    ( ) ;
+    public native boolean 	engineGetWantSwapBuffers		    ( ) ;
 	//public native boolean	engineGetVibratorState				( ) ;
 }
 

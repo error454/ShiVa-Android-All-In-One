@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.util.List;
 import java.util.Locale;
 import java.lang.reflect.Method;
@@ -24,6 +25,7 @@ import android.os.Vibrator;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLES11;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.MotionEvent;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -45,6 +47,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ActivityInfo;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.BroadcastReceiver;
 import android.util.Log;
 import android.location.Location;
 import android.location.LocationManager;
@@ -113,11 +117,12 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
 	public static final int MSG_START_ENGINE 		    = 0 ;
 	public static final int MSG_RESUME_ENGINE 		    = 1 ;
-	public static final int MSG_HIDE_SPLASH 		    = 2 ;
-	public static final int MSG_PLAY_OVERLAY_MOVIE 	    = 3 ;
-	public static final int MSG_STOP_OVERLAY_MOVIE 	    = 4 ;
-	public static final int MSG_ENABLE_CAMERA_DEVICE    = 5 ;
-	public static final int MSG_ENABLE_VIBRATOR 	    = 6 ;
+	public static final int MSG_PAUSE_ENGINE 		    = 2 ;
+	public static final int MSG_HIDE_SPLASH 		    = 3 ;
+	public static final int MSG_PLAY_OVERLAY_MOVIE 	    = 4 ;
+	public static final int MSG_STOP_OVERLAY_MOVIE 	    = 5 ;
+	public static final int MSG_ENABLE_CAMERA_DEVICE    = 6 ;
+	public static final int MSG_ENABLE_VIBRATOR 	    = 7 ;
     //------------------------------------------------------------------
 	// @@END_ACTIVITY_MESSAGES_LIST@@
     //------------------------------------------------------------------
@@ -165,11 +170,10 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         setFullscreen   ( ) ;
         setNoTitle      ( ) ;
 
-		// Create the main view group and show startup screen
+		// Create the main view group and inflate startup screen (but do not add it right now, to avoid a "black flash")
 		//
 		oSplashView 		= View.inflate ( this, R.layout.main, null ) ;
 		oViewGroup 			= new RelativeLayout ( this ) ;
-		oViewGroup.addView 	( oSplashView ) ;
         setContentView  	( oViewGroup ) ;
 
     	//--------------------------------------------------------------
@@ -178,7 +182,11 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 		
         // Asynchronously initialize engine and other stuff 
         //
-        createAsync ( ) ;        
+        createAsync ( ) ;     
+
+		// Register lock-screen intent handler
+		//
+		registerLockScreenHandlers ( ) ;
     }
 
     //------------------------------------------------------------------
@@ -220,22 +228,33 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 
         // Create the 3D view
         //
-        o3DView             = new S3DSurfaceView ( (Context)this, mCacheDirPath, mHomeDirPath, mPackDirPath, Globals.bUseGLES2, Globals.bForceDefaultOrientation ) ;
+        o3DView             = new S3DSurfaceView ( (Context)this, mCacheDirPath, mHomeDirPath, mPackDirPath, mPackFileDescriptor, mPackFileOffset, mPackFileLength, Globals.bUseGLES2, Globals.bForceDefaultOrientation ) ;
 
-        // Enable wake lock
-        //
-        onEnableWakeLock ( true ) ;
+        if ( o3DView != null )
+        {
+			//o3DView.setZOrderOnTop ( true ) ; // Uncomment to make transparent background to work
+			oViewGroup.addView    ( o3DView ) ;
 
-		// Inform the system we want the volume buttons to control the multimedia stream
-		//
-		setVolumeControlStream ( AudioManager.STREAM_MUSIC ) ;
+            // Add the splash view on top of the 3D view
+            //
+            oViewGroup.removeView ( oSplashView ) ;
+    	    oViewGroup.addView    ( oSplashView ) ;
+			
+            // Enable wake lock
+            //
+            onEnableWakeLock ( true ) ;
 
-        // Send a delayed event to actually start engine and show the 3D View
-        //
-        Message msg     = new Message ( )  ;
-        msg.what        = MSG_START_ENGINE ;
-        msg.obj         = this ;
-        oUIHandler  	.sendMessageDelayed ( msg, 1000 ) ;
+    		// Inform the system we want the volume buttons to control the multimedia stream
+    		//
+    		setVolumeControlStream ( AudioManager.STREAM_MUSIC ) ;
+
+            // Send a delayed event to actually start engine and show the 3D View
+            //
+            Message msg     = new Message ( )  ;
+            msg.what        = MSG_START_ENGINE ;
+            msg.obj         = this ;
+    		oUIHandler  	.sendMessage ( msg ) ;
+		}
     }
 
     //------------------------------------------------------------------
@@ -247,7 +266,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         if      ( sLocale.contentEquals ( "fr" ) ) showError   ( "L'espace de stockage disponible est insuffisant pour lancer cette application. Veuillez en liberer et relancer l'application." ) ; // OK
         else if ( sLocale.contentEquals ( "it" ) ) showError   ( "Spazio libero in memoria insufficiente per lanciare l'applicazione. Liberare pi\371 spazio e ripetere l'operazione." ) ; // OK
         else if ( sLocale.contentEquals ( "es" ) ) showError   ( "Esta aplicaci\363n no puede comenzar debido al espacio de almacenamiento libre escaso. Libere por favor para arriba un cierto espacio y vuelva a efectuar la aplicaci\363n." ) ;
-        else if ( sLocale.contentEquals ( "de" ) ) showError   ( "Diese Anwendung kann wegen des unzul\344nglichen freien Speicherplatzes nicht beginnen. Geben Sie bitte oben etwas Platz frei und lassen Sie die Anwendung wieder laufen." ) ;
+        else if ( sLocale.contentEquals ( "de" ) ) showError   ( "Diese Anwendung kann auf Grund von unzureichend freiem Speicherplatz nicht starten. Geben Sie bitte etwas Speicherplatz frei und starten Sie die Anwendung erneut." ) ;
         else                                       showError   ( "This application cannot start due to insufficient free storage space. Please free up some space and rerun the application." ) ; // OK
     }
     
@@ -266,7 +285,9 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 {
                     if ( o3DView != null )
                     {
-            			oViewGroup.addView ( o3DView ) ;
+                        // At this point, we can actually initialize the engine
+                        //
+                        o3DView.allowInit ( ) ;
 
                         // Enable motion sensors
                         //
@@ -281,8 +302,19 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 
             case MSG_RESUME_ENGINE :
                 {
-                    if ( o3DView != null )
+                    // Handle the case when the user locks/unlocks screen rapidly 
+                    // Not clean, but no choice as events are not sent in the right order, ie. onResume is sent *before* onScreenLocked... just great.
+                    //
+                    if ( bScreenLocked )
                     {
+                        bWantToResume = true ;
+                    }
+                    else if ( o3DView != null )
+                    {
+                        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+                        Log.d ( Globals.sApplicationName, "Resume activity " + Globals.sApplicationName ) ;
+                        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+
                         // Resume view
                         //
                         o3DView.onResume ( ) ;
@@ -298,18 +330,49 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                     }
                 }
                 break ;
+
+            case MSG_PAUSE_ENGINE :
+                {
+			        if ( o3DView != null )
+			        {
+                        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+                        Log.d ( Globals.sApplicationName, "Pause activity " + Globals.sApplicationName ) ;
+                        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+			            
+				        // Disable sensors, camera capture, location updates, wake lock...
+				        //
+				        bCameraDeviceWasEnabledBeforePause          = bCameraDeviceEnabled         ;
+				        bAccelerometerUpdatesWereEnabledBeforePause = bAccelerometerUpdatesEnabled ;
+				        bHeadingUpdatesWereEnabledBeforePause       = bHeadingUpdatesEnabled       ;
+				        bLocationUpdatesWereEnabledBeforePause      = bLocationUpdatesEnabled      ;
+				        bWakeLockWasEnabledBeforePause              = bWakeLockEnabled             ;
+				        //TODO: sOverlayMoviePlayingBeforePause             = sOverlayMoviePlaying         ;
+        
+						onCloseCameraDevice          ( ) ;
+				        onEnableAccelerometerUpdates ( false ) ;
+				        onEnableHeadingUpdates       ( false ) ;
+				        onEnableLocationUpdates      ( false ) ;
+				        onEnableWakeLock             ( false ) ;
+				        onStopOverlayMovie           ( ) ;
+				
+						// Pause view
+						//
+			            o3DView.onPause ( ) ;
+			        }
+				}
+				break ;
                 
             case MSG_HIDE_SPLASH :
                 {
 					if ( o3DView != null )
                 	{
+                        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+                        Log.d ( Globals.sApplicationName, "Hide splash view" ) ;
+                        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+                	    
                         // Remove splash view
                         //
 						oViewGroup.removeView ( oSplashView ) ;
-					
-						// Release some memory
-						//
-						oSplashView = null ;
 					
 						// Force focus to 3D view
 						//
@@ -372,65 +435,64 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
         super.onRestart ( ) ;
     }
-        
+                
     //------------------------------------------------------------------
     @Override
     protected void onResume ( )
     {
-        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
-        Log.d ( Globals.sApplicationName, "Resume activity " + Globals.sApplicationName ) ;
-        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
         super.onResume ( ) ;
-        
-        // Show the slpash screen
+
+        // If screen is locked, just wait for unlock
         //
-        if ( oViewGroup != null && oSplashView == null )
+        if ( bScreenLocked )
         {
-            oSplashView = View.inflate ( this, R.layout.main, null ) ;
-                
-            if ( oSplashView != null )
-            {
-        	    oViewGroup.addView 	( oSplashView ) ;
-    	    }
+            bWantToResume = true ;
         }
-        
+        else
+        {
+            onResumeActually ( ) ;
+		}
+    }
+    
+    protected void onResumeActually ( )
+    {
+        // Clear flag
+        //
+        bWantToResume   = false ;
+
+        // Add splash view if needed
+        //
+        if ( ( o3DView != null ) && ( oSplashView != null ) && ( oSplashView.getParent ( ) != oViewGroup ) )
+        {
+    	    oViewGroup.addView ( oSplashView ) ;
+	    }
+            
         // Send a delayed event to actually resume engine and show the 3D View
         //
         Message msg     = new Message ( )  ;
         msg.what        = MSG_RESUME_ENGINE ;
         msg.obj         = this ;
-        oUIHandler  	.sendMessageDelayed ( msg, 500 ) ;        
+        //oUIHandler  	.sendMessageDelayed ( msg, 500 ) ;
+		oUIHandler  	.sendMessage ( msg ) ;		        
     }
     
     //------------------------------------------------------------------
     @Override
     protected void onPause ( ) 
     {
-        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
-        Log.d ( Globals.sApplicationName, "Pause activity " + Globals.sApplicationName ) ;
-        Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
         super.onPause ( ) ;
 
-        // Disable sensors, camera capture, location updates, wake lock...
+        // Security
         //
-        bCameraDeviceWasEnabledBeforePause          = bCameraDeviceEnabled         ;
-        bAccelerometerUpdatesWereEnabledBeforePause = bAccelerometerUpdatesEnabled ;
-        bHeadingUpdatesWereEnabledBeforePause       = bHeadingUpdatesEnabled       ;
-        bLocationUpdatesWereEnabledBeforePause      = bLocationUpdatesEnabled      ;
-        bWakeLockWasEnabledBeforePause              = bWakeLockEnabled             ;
-        //TODO: sOverlayMoviePlayingBeforePause             = sOverlayMoviePlaying         ;
-        
-		onCloseCameraDevice          ( ) ;
-        onEnableAccelerometerUpdates ( false ) ;
-        onEnableHeadingUpdates       ( false ) ;
-        onEnableLocationUpdates      ( false ) ;
-        onEnableWakeLock             ( false ) ;
-        onStopOverlayMovie           ( ) ;
+        bWantToResume   = false ;
 
-        if ( o3DView != null )
-        {
-            o3DView.onPause ( ) ;
-        }
+        // Send a delayed event to actually pause engine and hide the 3D View
+        //
+        Message msg     = new Message ( )  ;
+        msg.what        = MSG_PAUSE_ENGINE ;
+        msg.obj         = this ;
+        //oUIHandler  	.sendMessageDelayed ( msg, 500 ) ;
+		oUIHandler  	.sendMessage ( msg ) ;		
     }
     
     //------------------------------------------------------------------
@@ -453,7 +515,13 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     	//--------------------------------------------------------------
 		// @@ON_ACTIVITY_DESTROYED@@
     	//--------------------------------------------------------------
+		
+		// Unregister lock-screen intent handler
+		//
+		unregisterLockScreenHandlers ( ) ;
 
+        // Destroy 3D view
+        //
         if ( o3DView != null )
         {
         	o3DView.onTerminate ( ) ;
@@ -500,6 +568,67 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     {
     
     }
+
+    //------------------------------------------------------------------
+    // Screen lock.
+    //
+    //------------------------------------------------------------------
+    protected void registerLockScreenHandlers ( )
+    {
+		IntentFilter oIntentFilter = new IntentFilter ( ) ;
+        oIntentFilter.addAction ( Intent.ACTION_USER_PRESENT ) ;
+        oIntentFilter.addAction ( Intent.ACTION_SCREEN_OFF ) ;
+        oIntentReceiver = new BroadcastReceiver ( ) 
+        {
+            @Override
+            public void onReceive ( Context context, Intent intent ) 
+            {
+                final String action = intent.getAction ( ) ;
+                
+                if ( action.contentEquals ( Intent.ACTION_USER_PRESENT ) )
+                {
+                    ((boxParticleLighting)context).onScreenUnlocked ( ) ;
+                }
+                else if ( action.contentEquals ( Intent.ACTION_SCREEN_OFF ) )
+                {
+                    ((boxParticleLighting)context).onScreenLocked ( ) ;
+                }
+            }
+        } ;
+        registerReceiver ( oIntentReceiver, oIntentFilter ) ;                
+    }    
+    
+    protected void unregisterLockScreenHandlers ( )
+    {
+		if ( oIntentReceiver != null )
+		{
+		    unregisterReceiver  ( oIntentReceiver ) ;
+		    oIntentReceiver     = null ;
+	    }
+    }	        
+    
+	public void onScreenLocked ( )
+	{
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+        //Log.d ( Globals.sApplicationName, "Screen locked" ) ;
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+        bScreenLocked = true ;
+	}
+	
+	public void onScreenUnlocked ( )
+	{
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+        //Log.d ( Globals.sApplicationName, "Screen unlocked" ) ;
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;	    
+        bScreenLocked = false ;
+        
+        // Screen has been unlocked, do we need to resume?
+        //
+        if ( bWantToResume )
+        {
+            onResumeActually ( ) ;
+        }
+	}
     
     //------------------------------------------------------------------
     // OpenURL callback.
@@ -1073,6 +1202,8 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // Utility function to extract and dump a STK file from the APK.
     //
+    protected static final int EXTRACT_ASSET_BUFFER_SIZE = 524288 ; // 512kb
+
     protected boolean extractAssetFromAPK ( String sAssetName, String sOutputDirPath, String sOutputName )
     { 
         if ( ! createWritableDirectory ( sOutputDirPath, true ) )
@@ -1089,10 +1220,10 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
             if ( oIn != null )
             {
                 FileOutputStream oOut = new FileOutputStream ( sOutputDirPath + "/" + sOutputName ) ;
-                byte aBuffer [ ] = new byte [ 524288 ] ; // 512kb 
+                byte aBuffer [ ] = new byte [ EXTRACT_ASSET_BUFFER_SIZE ] ; 
                 while ( oIn.available ( ) > 0 )
                 {
-                    int iLen = ( oIn.available ( ) > 524288 ) ? 524288 : (int)oIn.available ( ) ;
+                    int iLen = ( oIn.available ( ) > EXTRACT_ASSET_BUFFER_SIZE ) ? EXTRACT_ASSET_BUFFER_SIZE : (int)oIn.available ( ) ;
                     oIn .read  ( aBuffer, 0, iLen ) ;
                     oOut.write ( aBuffer, 0, iLen ) ;
                 }
@@ -1102,33 +1233,6 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 Log.d ( Globals.sApplicationName, "Extracted asset " + sOutputName + " to folder" + sOutputDirPath ) ;
                 return true ;               
             }
-            /* THIS CODE ONLY WORKS FOR UNCOMPRESSED ASSETS
-            else
-            {
-                AssetFileDescriptor oFD = getAssets ( ).openFd ( sAssetName ) ;
-                if ( oFD != null )
-                {
-                    long iFDOffset  = oFD.getStartOffset ( ) ;
-                    long iFDLength  = oFD.getLength      ( ) ;
-                    FileInputStream  oIn  = new FileInputStream  ( oFD.getFileDescriptor ( ) ) ;
-                    FileOutputStream oOut = new FileOutputStream ( sOutputDirPath + "/" + sOutputName ) ;
-                    oIn .skip  ( iFDOffset ) ;
-                    byte aBuffer [ ] = new byte [ 1024 ] ;
-                    for ( long i = 0 ; i < iFDLength ; i += 1024 )
-                    {
-                        int iLen = ( iFDLength > i + 1024 ) ? 1024 : (int)iFDLength - (int)i ;
-                        oIn .read  ( aBuffer, 0, iLen ) ;
-                        oOut.write ( aBuffer, 0, iLen ) ;
-                    }
-                    oIn .close ( ) ;
-                    oOut.close ( ) ;
-                    oFD .close ( ) ;
-
-                    Log.d ( Globals.sApplicationName, "Extracted asset " + sOutputName + " to folder" + sOutputDirPath ) ;
-                    return true ;               
-                }
-            }
-            */
         }
         catch ( IOException e ) { e.printStackTrace ( ) ; }
 		Log.d ( Globals.sApplicationName, "Could not extract asset " + sOutputName + " to folder" + sOutputDirPath ) ;
@@ -1140,13 +1244,56 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //    
     private boolean extractMainPack ( )
     {
-        // First try on the SD card
+        // 20120614: try to get a file descriptor inside the APK directly, in order to avoid the copy
+        //
+        try
+        {
+            mPackFileAFD = getAssets ( ).openFd ( "S3DMain.smf" ) ; // Using the SMF extension instead of STK so it forces AAPT to not compress the file (Android < 2.2 only)
+            
+            if ( mPackFileAFD != null )
+            {
+                mPackFileDescriptor = mPackFileAFD.getFileDescriptor ( ) ;
+                mPackFileOffset     = mPackFileAFD.getStartOffset    ( ) ;
+                mPackFileLength     = mPackFileAFD.getLength         ( ) ;
+
+                if ( ( mPackFileDescriptor != null ) && ( mPackFileLength != AssetFileDescriptor.UNKNOWN_LENGTH ) )
+                {
+                    Log.d ( Globals.sApplicationName, "Successfully opened file descriptor for main pack" ) ;
+
+                    // Ok, we still need to fill the mPackDirPath variable, for other files.
+                    // Try SD card first:
+                    //
+                    mPackDirPath = "/sdcard/Android/data/" + Globals.sPackageName ;
+
+                    if ( ! createWritableDirectory ( mPackDirPath, true ) )
+                    {
+            			Log.d ( Globals.sApplicationName, "Could not create folder " + mPackDirPath ) ;
+            			
+                        // If something went wrong try on the phone internal filesystem 
+                        //
+                        mPackDirPath = getCacheDir ( ).getAbsolutePath ( ) ;
+                    
+                        if ( ! createWritableDirectory ( mPackDirPath, true ) )
+                        {
+                			Log.d ( Globals.sApplicationName, "Could not create folder " + mPackDirPath ) ;
+
+                			return false ; // No choice...
+                        }                                			
+                    }
+                    
+                    return true ;
+                }
+            }
+        }
+        catch ( IOException e ) { e.printStackTrace ( ) ; }
+    
+        // Then try to extract on the SD card
         //
         mPackDirPath = "/sdcard/Android/data/" + Globals.sPackageName ;
                 
         // Extract STK files from the APK and dump them to the packs directory
         //
-        if ( extractAssetFromAPK ( "S3DMain.smf", mPackDirPath, "S3DMain.stk"    ) ) // Using the SMF extension instead of STK so it forces AAPT to not compress the file (Android < 2.2 only)
+        if ( extractAssetFromAPK ( "S3DMain.smf", mPackDirPath, "S3DMain.stk" ) ) // Using the SMF extension instead of STK so it forces AAPT to not compress the file (Android < 2.2 only)
         {
             return true ;
         }
@@ -1339,8 +1486,9 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // Power manager & wake lock object.
     //
-    private static PowerManager           oPowerManager ;
-    private static PowerManager.WakeLock  oWakeLock     ;
+    private static PowerManager             oPowerManager   ;
+    private static PowerManager.WakeLock    oWakeLock       ;
+    private static BroadcastReceiver        oIntentReceiver ;
           
     //------------------------------------------------------------------
     // Singleton object.
@@ -1350,10 +1498,14 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // Various files access infos.
     //
-    private String  mCacheDirPath   ;
-    private String  mHomeDirPath    ;
-    private String  mPackDirPath    ;
-    private String  mAPKFilePath    ;       
+    private String              mCacheDirPath       ;
+    private String              mHomeDirPath        ;
+    private String              mAPKFilePath        ;
+    private String              mPackDirPath        ;
+    private AssetFileDescriptor mPackFileAFD        ;
+    private FileDescriptor      mPackFileDescriptor ;   
+    private long                mPackFileOffset     ;
+    private long                mPackFileLength     ;
 
     //------------------------------------------------------------------
     // State variables
@@ -1363,6 +1515,8 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     private static boolean bHeadingUpdatesEnabled                      = false ;
     private static boolean bLocationUpdatesEnabled                     = false ;
     private static boolean bWakeLockEnabled                            = false ;
+    private static boolean bScreenLocked                               = false ;
+    private static boolean bWantToResume                               = false ;
     //TODO: private static String  sOverlayMoviePlaying                        ;
                            
 	private static boolean bCameraDeviceWasEnabledBeforePause          = false ;

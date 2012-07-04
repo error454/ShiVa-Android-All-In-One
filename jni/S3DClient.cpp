@@ -6,9 +6,13 @@
 //----------------------------------------------------------------------        
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
 #include <GLES/gl.h>
 //----------------------------------------------------------------------        
 #include "S3DClient_Wrapper.h"
+#include "S3DX/S3DXAIVariable.h"
+#include "S3DX/S3DXAIFunction.h"
 //----------------------------------------------------------------------
 // @@END_JNI_INCLUDES@@
 //----------------------------------------------------------------------        
@@ -23,6 +27,9 @@ extern "C"
     static char         aCacheDirPath   [512]           = "" ; 
     static char         aHomeDirPath    [512]           = "" ; 
     static char         aPackDirPath    [512]           = "" ; 
+    static int          iPackFD                         = -1 ;
+    static int          iPackOffset                     = -1 ;
+    static int          iPackLength                     = -1 ;
 	static char         aOverlayMovie   [512]	        = "" ; 
     static char         aDeviceName      [64]           = "" ; 
     static char         aDeviceModel     [64]           = "" ; 
@@ -42,6 +49,7 @@ extern "C"
 	static bool         bForceAudioBackendOpenAL        = false  ;
 	static bool         bForceAudioBackendAndroid       = true ;	
 	static bool         bWantCameraDeviceCapture        = false ;
+	static bool         bWantSwapBuffers        		= true  ;
 	//static bool     bVibrate					= false ;	
     //----------------------------------------------------------------------       
 	// @@END_JNI_GLOBALS@@
@@ -56,6 +64,33 @@ extern "C"
 		}
 		return NULL ;
 	}
+
+    //----------------------------------------------------------------------       
+	// @@BEGIN_JNI_CLIENT_FUNCTIONS@@
+    //----------------------------------------------------------------------       
+	
+	static int ClientFunctionCallback_onEngineEvent ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+	{
+		// This is a sample, in our case we are expecting 2 arguments: a number, and a boolean
+		//
+		if ( ( _iInCount == 2 ) && _pIn[0].IsNumber ( ) && ( int(_pIn[0].GetNumberValue ( )) == 1 ) && _pIn[1].IsBoolean ( ) )
+		{
+			bWantSwapBuffers = _pIn[1].GetBooleanValue ( ) ;
+		}
+		return 0 ;
+	}
+
+	//-----------------------------------------------------------------------------
+
+	static const int		iClientFunctionsCount = 1 ; // Modify this number when adding new functions just below
+	static S3DX::AIFunction aClientFunctions  [ ] =
+	{
+	    { "onEngineEvent", ClientFunctionCallback_onEngineEvent, "...", "...", "...", 0 }
+	} ;
+
+    //----------------------------------------------------------------------       
+	// @@END_JNI_CLIENT_FUNCTIONS@@
+    //----------------------------------------------------------------------       
 	
     //----------------------------------------------------------------------       
 	// @@BEGIN_JNI_CALLBACKS@@
@@ -447,6 +482,27 @@ extern "C"
         if ( pPackStr  ) _pEnv->ReleaseStringUTFChars ( sPackDirPath,  pPackStr  ) ;
     }
     //----------------------------------------------------------------------        
+    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetPackFileDescriptor ( JNIEnv *_pEnv, jobject obj, jobject fileDescriptor, jlong offset, jlong length )
+    {
+        LOGI( "### engineSetPackFileDescriptor" ) ;
+        if ( fileDescriptor )
+        {
+            jclass fdClass = _pEnv->FindClass ( "java/io/FileDescriptor" ) ;
+            if   ( fdClass )
+            {
+                jclass   fdClassRef               = (jclass)_pEnv->NewGlobalRef ( fdClass ) ;
+                jfieldID fdClassDescriptorFieldID =         _pEnv->GetFieldID   ( fdClass, "descriptor", "I" ) ;
+                if     ( fdClassDescriptorFieldID )
+                {
+                    jint fd     = _pEnv->GetIntField ( fileDescriptor, fdClassDescriptorFieldID ) ;
+                    iPackFD     = dup ( fd ) ;
+                    iPackOffset = offset ;
+                    iPackLength = length ;
+                }
+            }
+        }    
+    } 
+    //----------------------------------------------------------------------        
     JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetLocationSupport ( JNIEnv *_pEnv, jobject obj, jboolean bSupport )
     {
         bSupportLocation = bSupport ;
@@ -525,7 +581,7 @@ extern "C"
     JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineForceDefaultOrientation ( JNIEnv *_pEnv, jobject obj, jboolean b )
     {
         bForceNoViewportRotation = b ; // TODO: set an engine's option instead
-    }
+    }    
     //----------------------------------------------------------------------        
     JNIEXPORT jboolean JNICALL Java_com_test_test_S3DRenderer_engineInitialize ( JNIEnv *_pEnv, jobject obj )
     {
@@ -563,7 +619,9 @@ extern "C"
         // Initialize engine
         //
         //char aLoadPackPath [512] ; sprintf ( aLoadPackPath, "file://%s/S3DStartup.stk", aPackDirPath ) ; 
-        char aMainPackPath [512] ; sprintf ( aMainPackPath, "file://%s/S3DMain.stk",    aPackDirPath ) ;
+        char aMainPackPath          [512] ; sprintf ( aMainPackPath,  "file://%s/S3DMain.stk", aPackDirPath ) ;
+        char aMainPackPathNoPrefix  [512] ; sprintf ( aMainPackPathNoPrefix, "%s/S3DMain.stk", aPackDirPath ) ;
+        
         S3DClient_Init                                          ( aHomeDirPath ) ;
 		//S3DClient_SetGameOption									( 30, 2 ) ; // S-3D 
         S3DClient_SetGraphicContainer                           ( NULL , 0, 0, iSurfaceWidth, iSurfaceHeight ) ;
@@ -616,9 +674,26 @@ extern "C"
             S3DClient_Android_SetCameraDeviceCaptureStartCallback   ( S3DCameraDeviceCaptureStartCallback, NULL ) ; 
             S3DClient_Android_SetCameraDeviceCaptureStopCallback    ( S3DCameraDeviceCaptureStopCallback,  NULL ) ; 
         }
+        if ( iPackFD != -1 )
+        {
+            S3DClient_Android_AddFileAccessibleFromAPK          ( aMainPackPathNoPrefix, iPackFD, iPackOffset, iPackLength ) ; 
+        }
         S3DClient_LoadPack                                      ( NULL, aMainPackPath,              NULL ) ;
-        
+
     	//----------------------------------------------------------------------        
+		// @@BEGIN_JNI_REGISTER_CLIENT_FUNCTIONS@@
+		//----------------------------------------------------------------------        
+        
+		for ( int iClientFunction = 0 ; iClientFunction < iClientFunctionsCount ; iClientFunction++ )
+		{
+			S3DClient_RegisterFunction ( aClientFunctions[ iClientFunction ].pName, aClientFunctions ) ;
+		}
+
+    	//----------------------------------------------------------------------        
+		// @@END_JNI_REGISTER_CLIENT_FUNCTIONS@@
+		//----------------------------------------------------------------------        
+
+		//----------------------------------------------------------------------        
 		// @@BEGIN_JNI_INSTALL_EVENT_HOOKS@@
 		//----------------------------------------------------------------------        
 		
@@ -626,8 +701,8 @@ extern "C"
 		// @@END_JNI_INSTALL_EVENT_HOOKS@@
 		//----------------------------------------------------------------------        
 		
-		S3DClient_RunOneFrame                                   ( ) ; // Call it one time to clear the stopped flag
-        S3DClient_iPhone_OnTouchesChanged                       ( 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f ) ; // Force no touches (should not be needed...)
+		S3DClient_RunOneFrame               ( ) ; // Call it one time to clear the stopped flag
+        S3DClient_iPhone_OnTouchesChanged   ( 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f, 0, 0, 0.0f, 0.0f ) ; // Force no touches (should not be needed...)
         return true ;
     }
     //----------------------------------------------------------------------        
@@ -661,11 +736,6 @@ extern "C"
 		{
 			S3DClient_OnGraphicContextLost ( ) ;
 		}
-		else
-		{
-        	Java_com_test_test_S3DRenderer_engineShutdown    ( _pEnv, obj ) ;
-        	Java_com_test_test_S3DRenderer_engineInitialize  ( _pEnv, obj ) ;
-		}
 	}
     //----------------------------------------------------------------------        
     JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnSurfaceChanged ( JNIEnv *_pEnv, jobject obj, jint w, jint h )        
@@ -673,8 +743,12 @@ extern "C"
         LOGI( "### engineOnSurfaceChanged" ) ;
         iSurfaceWidth  = w ;        
         iSurfaceHeight = h ;        
-        S3DClient_SetGraphicContainer ( NULL, 0, 0, w, h ) ;        
-        S3DClient_SetInputContainer   ( NULL, 0, 0, w, h ) ;        
+
+		if ( pJavaVM )
+		{
+            S3DClient_SetGraphicContainer ( NULL, 0, 0, w, h ) ;        
+            S3DClient_SetInputContainer   ( NULL, 0, 0, w, h ) ;        
+        }
     }
     //----------------------------------------------------------------------        
     JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnMouseMove ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y )        
@@ -759,7 +833,7 @@ extern "C"
 		return _pEnv->NewStringUTF ( aOverlayMovie ) ;
 	}
     //----------------------------------------------------------------------   
-	jboolean Java_com_test_test_S3DRenderer_engineGetCameraDeviceState ( JNIEnv *_pEnv, jobject obj )
+	jboolean JNICALL Java_com_test_test_S3DRenderer_engineGetCameraDeviceState ( JNIEnv *_pEnv, jobject obj )
 	{
 		return bWantCameraDeviceCapture ;
 	}
@@ -768,5 +842,10 @@ extern "C"
 	//{
 	//	return bVibrate ;
 	//}
+    //----------------------------------------------------------------------   
+	JNIEXPORT jboolean JNICALL Java_com_test_test_S3DRenderer_engineGetWantSwapBuffers ( JNIEnv *_pEnv, jobject obj )
+	{
+		return bWantSwapBuffers ;
+	}
 	//----------------------------------------------------------------------        	
 } 
