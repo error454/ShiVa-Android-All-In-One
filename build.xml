@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="boxParticleLighting" default="Build debug apk">
+<project name="ShiVa Android All In One" default="Build debug apk">
 	<path id="basedir.path">
 	    <pathelement path="${basedir}" />
 	</path>
@@ -46,9 +46,9 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
 					<arg value="--login"/>
 					<arg value="-i"/>
 					<arg value="-c"/>
-					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; cp --preserve obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp --preserve obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp --preserve obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
+					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build -j4 &amp;&amp; cp --preserve obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp --preserve obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp --preserve obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
 				</exec>
-		<antcall target="-compile"/>
+		<antcall target="compile"/>
 		<antcall target="debug"/>
 	</target>
 	<target name="Build release apk">
@@ -63,12 +63,11 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
 					<arg value="--login"/>
 					<arg value="-i"/>
 					<arg value="-c"/>
-					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; cp --preserve obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp --preserve obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp --preserve obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
+					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build -j4 &amp;&amp; cp --preserve obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp --preserve obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp --preserve obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp --preserve obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
 				</exec>
-		<antcall target="-compile"/>
+		<antcall target="compile"/>
 		<antcall target="release"/>
 	</target>
-
 
 <!-- The local.properties file is created and updated by the 'android'
      tool.
@@ -100,6 +99,9 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
          This file is an integral part of the build system for your
          application and should be checked into Version Control Systems. -->
     <property file="default.properties" />
+    
+    <property file="project.properties" />
+        
 
 
     <!-- Required pre-setup import -->
