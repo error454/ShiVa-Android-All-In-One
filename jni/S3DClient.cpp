@@ -84,7 +84,6 @@ extern "C"
     static int ClientFunctionCallback_onDropBoxLogin ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
         LOGI("onDropBoxLogin");
-        int started = 0;
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
@@ -96,18 +95,18 @@ extern "C"
             else
             {
                 //Find the DropBoxLogin method
-                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogin", "()I");
+                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogin", "()V");
 
                 if (pJNIMethodID == NULL)
                     LOGI("jmethodID was null!?!?");
                 else
                 {
-                    started = pJNIEnv->CallStaticIntMethod(pJNIActivityClass, pJNIMethodID, NULL);
+                    pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
                 }
             }
         }
 
-        return started;
+        return 0;
     }
 
     static int ClientFunctionCallback_onDropBoxLogout ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )

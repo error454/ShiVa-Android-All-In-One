@@ -7,7 +7,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -67,7 +66,6 @@ public class DropBox {
                 storeKeys(activity, tokens.key, tokens.secret);
                 mLoggedIn = true;
             } catch (IllegalStateException e) {
-                Toast.makeText(activity, "Couldn't authenticate with Dropbox:" + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 Log.i(TAG, "Error authenticating", e);
                 mLoggedIn = false;
             }
@@ -90,17 +88,15 @@ public class DropBox {
         }
     }
     
-    public static int logIn(Activity activity){
-        mApi.getSession().startAuthentication(activity);
-        
-        if(mApi.getSession().isLinked()){
-            mLoggedIn = true;
-            return 1;
-        }
-        else{
-            mLoggedIn = false;
-            Toast.makeText(activity, "Unable to login to dropbox", Toast.LENGTH_LONG).show();
-            return 0;
+    /**
+     * This is an async call to login to dropbox, it will start the dropbox activity
+     * @param activity The activity
+     */
+    public static void logIn(Activity activity){
+        try{
+            mApi.getSession().startAuthentication(activity.getApplicationContext());
+        } catch (RuntimeException e){
+            Log.e(TAG, "There is another application installed with the same Dropbox key");
         }
     }
     
@@ -127,7 +123,6 @@ public class DropBox {
     private static void checkAppKeySetup(Activity activity) {
         // Check to make sure that we have a valid app key
         if (mKey.startsWith("CHANGE") || mSecret.startsWith("CHANGE")) {
-            Toast.makeText(activity, "You must apply for an app key and secret from developers.dropbox.com, and add them to ProjectSettings.java", Toast.LENGTH_LONG).show();
             activity.finish();
         }
 
@@ -138,10 +133,10 @@ public class DropBox {
         testIntent.setData(Uri.parse(uri));
         PackageManager pm = activity.getPackageManager();
         if (0 == pm.queryIntentActivities(testIntent, 0).size()) {
-            Toast.makeText(activity, "URL scheme in your app's " +
+            Log.e(TAG, "URL scheme in your app's " +
                     "manifest is not set up correctly. You should have a " +
                     "com.dropbox.client2.android.AuthActivity with the " +
-                    "scheme: " + scheme, Toast.LENGTH_LONG).show();
+                    "scheme: " + scheme);
             activity.finish();
         }
     }

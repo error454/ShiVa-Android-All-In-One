@@ -75,6 +75,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -1551,11 +1552,10 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // @@BEGIN_JNI_CALLBACK_METHODS@@   
     //------------------------------------------------------------------
-    public static int DropBoxLogin(){
+    public static void DropBoxLogin(){
         Log.i("boxParticleLighting", "in java login!");
         if(ProjectSettings.UseDropboxAPI)
-            return DropBox.logIn(oThis);
-        return 0;
+            DropBox.logIn(oThis);
     }
     
     public static void DropBoxLogout(){
