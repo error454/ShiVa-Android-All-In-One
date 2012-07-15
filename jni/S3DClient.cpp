@@ -745,7 +745,7 @@ extern "C"
 
         for ( int iClientFunction = 0 ; iClientFunction < iClientFunctionsCount ; iClientFunction++ )
         {
-            S3DClient_RegisterFunction ( aClientFunctions[ iClientFunction ].pName, aClientFunctions ) ;
+            S3DClient_RegisterFunction ( aClientFunctions[ iClientFunction ].pName, &aClientFunctions[ iClientFunction] ) ;
         }
 
         //----------------------------------------------------------------------
