@@ -113,6 +113,13 @@ class Globals
 public class boxParticleLighting extends Activity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener
 {
     //------------------------------------------------------------------
+    // @@BEGIN_ADDONS@@
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    // @@END_ADDONS@@
+    //------------------------------------------------------------------
+    
+    //------------------------------------------------------------------
 	// @@BEGIN_ACTIVITY_MESSAGES_LIST@@
     //------------------------------------------------------------------
 	public static final int MSG_START_ENGINE 		    = 0 ;
@@ -187,6 +194,12 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 		// Register lock-screen intent handler
 		//
 		registerLockScreenHandlers ( ) ;
+		
+		if(ProjectSettings.UseDropboxAPI)
+		{
+		    DropBox.Init(ProjectSettings.DROPBOX_KEY, ProjectSettings.DROPBOX_SECRET);
+		    DropBox.onCreate(this);
+		}
     }
 
     //------------------------------------------------------------------
@@ -442,6 +455,11 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     {
         super.onResume ( ) ;
 
+        if(ProjectSettings.UseDropboxAPI)
+        {
+            DropBox.onResume(this);
+        }
+        
         // If screen is locked, just wait for unlock
         //
         if ( bScreenLocked )
@@ -1530,6 +1548,26 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 	// @@END_ACTIVITY_VARIABLES@@	
     //------------------------------------------------------------------
 
+    //------------------------------------------------------------------
+    // @@BEGIN_JNI_CALLBACK_METHODS@@   
+    //------------------------------------------------------------------
+    public static int DropBoxLogin(){
+        Log.i("boxParticleLighting", "in java login!");
+        if(ProjectSettings.UseDropboxAPI)
+            return DropBox.logIn(oThis);
+        return 0;
+    }
+    
+    public static void DropBoxLogout(){
+        Log.i("boxParticleLighting", "in java logout!");
+        if(ProjectSettings.UseDropboxAPI)
+            DropBox.logOut(oThis);
+    }
+    //------------------------------------------------------------------
+    // @@END_JNI_CALLBACK_METHODS@@   
+    //------------------------------------------------------------------
+    
+    
     //------------------------------------------------------------------
     // Engine native library loading.
     //
