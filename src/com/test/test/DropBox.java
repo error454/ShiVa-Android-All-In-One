@@ -1,16 +1,28 @@
 package com.test.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.android.AuthActivity;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.exception.DropboxFileSizeException;
+import com.dropbox.client2.exception.DropboxIOException;
+import com.dropbox.client2.exception.DropboxParseException;
+import com.dropbox.client2.exception.DropboxPartialFileException;
+import com.dropbox.client2.exception.DropboxServerException;
+import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.TokenPair;
@@ -39,12 +51,12 @@ public class DropBox {
      * Call this in onCreate of your main activity if you are using dropbox
      * @param activity
      */
-    public static void onCreate(Activity activity){
+    public static void onCreate(Context context){
         // We create a new AuthSession so that we can use the Dropbox API.
-        AndroidAuthSession session = buildSession(activity);
+        AndroidAuthSession session = buildSession(context);
         mApi = new DropboxAPI<AndroidAuthSession>(session);
 
-        checkAppKeySetup(activity);
+        checkAppKeySetup(context);
     }
     
     /**
@@ -76,13 +88,13 @@ public class DropBox {
      * Logs out of dropbox
      * @param activity The activity
      */
-    public static void logOut(Activity activity){
+    public static void logOut(Context context){
         if (mLoggedIn) {
             // Remove credentials from the session
             mApi.getSession().unlink();
 
             // Clear our stored keys
-            clearKeys(activity);
+            clearKeys(context);
             
             mLoggedIn = false;
         }
@@ -92,11 +104,77 @@ public class DropBox {
      * This is an async call to login to dropbox, it will start the dropbox activity
      * @param activity The activity
      */
-    public static void logIn(Activity activity){
+    public static void logIn(Context context){
         try{
-            mApi.getSession().startAuthentication(activity.getApplicationContext());
+            mApi.getSession().startAuthentication(context.getApplicationContext());
         } catch (RuntimeException e){
             Log.e(TAG, "There is another application installed with the same Dropbox key");
+        }
+    }
+    
+    /**
+     * Copies the specified file to local cache and returns the path where it can be accessed
+     * @param file The filename to get, this will be referenced locally from the dropbox app directory
+     * @return The path and filename or null
+     */
+    public static String getFile(String file){
+        
+        return null;
+    }
+    
+    /**
+     * Used to send the result of the file upload to ShiVa
+     */
+    public native static void putFileOverwriteResult(String filename, long bytes);
+    
+    /**
+     * Writes a string to the specified file.  This is meant for fairly low content writes.
+     * @param file The filename to write to, this file will be referenced locally from the dropbox app
+     * directory
+     * @param contents The content to write to the file
+     */
+    public static void putFileOverwrite(String filename, String content){
+        
+        try {
+            
+            InputStream is = new ByteArrayInputStream(content.getBytes());
+            Entry entry = mApi.putFileOverwrite(filename, is, content.length(), null);
+            putFileOverwriteResult(entry.fileName(), entry.bytes);
+    
+        } catch (DropboxUnlinkedException e) {
+            // This session wasn't authenticated properly or user unlinked
+            Log.e(TAG, "This app wasn't authenticated properly");
+        } catch (DropboxFileSizeException e) {
+            // File size too big to upload via the API
+            Log.e(TAG, "This file is too big to upload");
+        } catch (DropboxPartialFileException e) {
+            // We canceled the operation
+            Log.e(TAG, "Upload canceled");
+        } catch (DropboxServerException e) {
+            // Server-side exception.  
+            if (e.error == DropboxServerException._401_UNAUTHORIZED) {
+                Log.e(TAG, "Unauthorized dropbox user");
+                // Unauthorized, so we should unlink them.  You may want to
+                // automatically log the user out in this case.
+            } else if (e.error == DropboxServerException._403_FORBIDDEN) {
+                // Not allowed to access this
+            } else if (e.error == DropboxServerException._404_NOT_FOUND) {
+                // path not found (or if it was the thumbnail, can't be
+                // thumbnailed)
+            } else if (e.error == DropboxServerException._507_INSUFFICIENT_STORAGE) {
+                // user is over quota
+            } else {
+                // Something else
+            }
+        } catch (DropboxIOException e) {
+            // Happens all the time, probably want to retry automatically.
+            Log.e(TAG, "Network error.  Try again.");
+        } catch (DropboxParseException e) {
+            // Probably due to Dropbox server restarting, should retry
+            Log.e(TAG, "Dropbox error.  Try again.");
+        } catch (DropboxException e) {
+            // Unknown error
+            Log.e(TAG, "Unknown error.  Try again.");
         }
     }
     
@@ -105,11 +183,11 @@ public class DropBox {
      * slightly to use class members.
      */
     
-    private static AndroidAuthSession buildSession(Activity activity) {
+    private static AndroidAuthSession buildSession(Context context) {
         AppKeyPair appKeyPair = new AppKeyPair(mKey, mSecret);
         AndroidAuthSession session;
 
-        String[] stored = getKeys(activity);
+        String[] stored = getKeys(context);
         if (stored != null) {
             AccessTokenPair accessToken = new AccessTokenPair(stored[0], stored[1]);
             session = new AndroidAuthSession(appKeyPair, ACCESS_TYPE, accessToken);
@@ -120,10 +198,10 @@ public class DropBox {
         return session;
     }
     
-    private static void checkAppKeySetup(Activity activity) {
+    private static void checkAppKeySetup(Context context) {
         // Check to make sure that we have a valid app key
         if (mKey.startsWith("CHANGE") || mSecret.startsWith("CHANGE")) {
-            activity.finish();
+            Log.e(TAG, "You forgot to set your dropbox key + secret");
         }
 
         // Check if the app has set up its manifest properly.
@@ -131,13 +209,12 @@ public class DropBox {
         String scheme = "db-" + mKey;
         String uri = scheme + "://" + AuthActivity.AUTH_VERSION + "/test";
         testIntent.setData(Uri.parse(uri));
-        PackageManager pm = activity.getPackageManager();
+        PackageManager pm = context.getPackageManager();
         if (0 == pm.queryIntentActivities(testIntent, 0).size()) {
             Log.e(TAG, "URL scheme in your app's " +
                     "manifest is not set up correctly. You should have a " +
                     "com.dropbox.client2.android.AuthActivity with the " +
                     "scheme: " + scheme);
-            activity.finish();
         }
     }
     
@@ -148,8 +225,8 @@ public class DropBox {
      *
      * @return Array of [access_key, access_secret], or null if none stored
      */
-    private static String[] getKeys(Activity activity) {
-        SharedPreferences prefs = activity.getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
+    private static String[] getKeys(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
         String key = prefs.getString(ACCESS_KEY_NAME, null);
         String secret = prefs.getString(ACCESS_SECRET_NAME, null);
         if (key != null && secret != null) {
@@ -176,8 +253,8 @@ public class DropBox {
         edit.commit();
     }
     
-    private static void clearKeys(Activity activity) {
-        SharedPreferences prefs = activity.getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
+    private static void clearKeys(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
         Editor edit = prefs.edit();
         edit.clear();
         edit.commit();

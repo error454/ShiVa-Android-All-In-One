@@ -71,7 +71,6 @@ extern "C"
 
     static int ClientFunctionCallback_onEngineEvent ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
-        LOGI("onEngineEvent");
         // This is a sample, in our case we are expecting 2 arguments: a number, and a boolean
         //
         if ( ( _iInCount == 2 ) && _pIn[0].IsNumber ( ) && ( int(_pIn[0].GetNumberValue ( )) == 1 ) && _pIn[1].IsBoolean ( ) )
@@ -83,11 +82,9 @@ extern "C"
 
     static int ClientFunctionCallback_onDropBoxLogin ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
-        LOGI("onDropBoxLogin");
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
-            //Find the DropBox class
             jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
 
             if (pJNIActivityClass == NULL)
@@ -111,11 +108,9 @@ extern "C"
 
     static int ClientFunctionCallback_onDropBoxLogout ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
-        LOGI("onDropBoxLogout");
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
-            //Find the DropBox class
             jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
 
             if (pJNIActivityClass == NULL)
@@ -136,14 +131,54 @@ extern "C"
         return 0 ;
     }
 
+    //Call the dropbox putFileOverwrite function
+    static int ClientFunctionCallback_onDropBoxPutFileOverwrite ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    {
+        JNIEnv *pJNIEnv = GetJNIEnv();
+        if (pJNIEnv)
+        {
+            // This is a sample, in our case we are expecting 2 arguments: a number, and a boolean
+            //
+            if ( ( _iInCount == 2 ) && _pIn[0].IsString ( ) && _pIn[1].IsString ( ) )
+            {
+                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+
+                if (pJNIActivityClass == NULL)
+                    LOGI("jclass was null!?!");
+                else
+                {
+                    //Find the DropBoxLogin method
+                    jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxPutFileOverwrite", "(Ljava/lang/String;Ljava/lang/String;)V");
+
+                    if (pJNIMethodID == NULL)
+                        LOGI("jmethodID was null!?!?");
+                    else
+                    {
+                        jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+                        jstring content = pJNIEnv->NewStringUTF(_pIn[1].GetStringValue());
+
+                        pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename, content);
+
+                        pJNIEnv->DeleteLocalRef(filename);
+                        pJNIEnv->DeleteLocalRef(content);
+                    }
+                }
+            }
+
+        }
+
+        return 0;
+    }
+
     //-----------------------------------------------------------------------------
 
-    static const int        iClientFunctionsCount = 3 ; // Modify this number when adding new functions just below
+    static const int        iClientFunctionsCount = 4 ; // Modify this number when adding new functions just below
     static S3DX::AIFunction aClientFunctions  [ ] =
     {
         { "onEngineEvent", ClientFunctionCallback_onEngineEvent, "...", "...", "...", 0 },
         { "onDropBoxLogin", ClientFunctionCallback_onDropBoxLogin, "...", "...", "...", 0 },
-        { "onDropBoxLogout", ClientFunctionCallback_onDropBoxLogout, "...", "...", "...", 0 }
+        { "onDropBoxLogout", ClientFunctionCallback_onDropBoxLogout, "...", "...", "...", 0 },
+        { "onDropBoxPutFileOverwrite", ClientFunctionCallback_onDropBoxPutFileOverwrite, "...", "...", "...", 0 }
     } ;
 
     //----------------------------------------------------------------------
@@ -525,6 +560,25 @@ extern "C"
     }
     //----------------------------------------------------------------------
     // @@END_JNI_CALLBACKS@@
+    //----------------------------------------------------------------------
+
+    //----------------------------------------------------------------------
+    // @@BEGIN_AAIO_CALLBACKS@@
+    //----------------------------------------------------------------------
+    JNIEXPORT void JNICALL Java_com_test_test_DropBox_putFileOverwriteResult ( JNIEnv *_pEnv, jobject obj, jstring filename, jlong bytes )
+    {
+        const char *nativeString = _pEnv->GetStringUTFChars(filename, NULL);
+
+        S3DX::AIVariable args[2];
+        args[0].SetStringValue( nativeString );
+        args[1].SetNumberValue( bytes );
+        S3DClient_SendEventToCurrentUser( "DropBoxAI", "onPutFileOverwriteResult", 2, (const void*)args);
+
+        _pEnv->ReleaseStringUTFChars(filename, nativeString);
+    }
+
+    //----------------------------------------------------------------------
+    // @@END_AAIO_CALLBACKS@@
     //----------------------------------------------------------------------
     JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetDirectories ( JNIEnv *_pEnv, jobject obj, jstring sCacheDirPath, jstring sHomeDirPath, jstring sPackDirPath )
     {

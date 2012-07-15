@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
 import android.app.Application;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -1553,15 +1554,28 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     // @@BEGIN_JNI_CALLBACK_METHODS@@   
     //------------------------------------------------------------------
     public static void DropBoxLogin(){
-        Log.i("boxParticleLighting", "in java login!");
         if(ProjectSettings.UseDropboxAPI)
-            DropBox.logIn(oThis);
+            DropBox.logIn(oThis.getApplicationContext());
     }
     
     public static void DropBoxLogout(){
-        Log.i("boxParticleLighting", "in java logout!");
         if(ProjectSettings.UseDropboxAPI)
-            DropBox.logOut(oThis);
+            DropBox.logOut(oThis.getApplicationContext());
+    }
+    
+    public static void DropBoxPutFileOverwrite(final String file, final String contents){
+        if(ProjectSettings.UseDropboxAPI){
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    DropBox.putFileOverwrite(file, contents);
+                }
+            };
+            
+            //This involves network so we need to run on a seperate thread
+            Thread t = new Thread(r);
+            t.run();
+        }
     }
     //------------------------------------------------------------------
     // @@END_JNI_CALLBACK_METHODS@@   
