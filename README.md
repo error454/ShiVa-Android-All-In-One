@@ -4,7 +4,7 @@ An Android project for the ShiVa game engine that aims on integrating various An
 
 Dropbox
 -------
-The dropbox API implementation provides 3 system calls to ShiVa:
+The dropbox API implementation provides 4 system calls to ShiVa:
 
 **onDropBoxLogin( )**
 
@@ -17,6 +17,10 @@ The dropbox API implementation provides 3 system calls to ShiVa:
 **onDropBoxPutFileOverwrite( file, content )**
 
     system.callClientFunction ( "onDropBoxPutFileOverwrite", "folder/myfile.txt", "Overwrite the file contents with this!" )
+    
+**onDropBoxGetFile( file )**
+
+    system.callClientFunction ( "onDropBoxGetFile" )
         
 The implementation also expects you to have a userAI named DropBoxAI to allow for callbacks:
 

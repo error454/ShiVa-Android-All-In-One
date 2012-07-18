@@ -1599,6 +1599,23 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
             t.run();
         }
     }
+    
+    public static void DropBoxGetFile(final String file){
+        if(ProjectSettings.UseDropboxAPI){
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    DropBox.getFile(file);
+                }
+            };
+            
+            //This involves network so we need to run on a seperate thread
+            Thread t = new Thread(r);
+            t.run();
+        }
+    }
+    
+    
     //------------------------------------------------------------------
     // @@END_JNI_CALLBACK_METHODS@@   
     //------------------------------------------------------------------

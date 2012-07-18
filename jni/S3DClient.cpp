@@ -170,15 +170,53 @@ extern "C"
         return 0;
     }
 
+        //Call the dropbox putFileOverwrite function
+        static int ClientFunctionCallback_onDropBoxGetFile ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+        {
+            JNIEnv *pJNIEnv = GetJNIEnv();
+            if (pJNIEnv)
+            {
+                // This is a sample, in our case we are expecting 2 arguments: a number, and a boolean
+                //
+                if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
+                {
+                    jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+
+                    if (pJNIActivityClass == NULL)
+                        LOGI("jclass was null!?!");
+                    else
+                    {
+                        //Find the DropBoxLogin method
+                        jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxGetFile", "(Ljava/lang/String;)V");
+
+                        if (pJNIMethodID == NULL)
+                            LOGI("jmethodID was null!?!?");
+                        else
+                        {
+                            jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+
+                            pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename);
+
+                            pJNIEnv->DeleteLocalRef(filename);
+                        }
+                    }
+                }
+
+            }
+
+            return 0;
+        }
+
     //-----------------------------------------------------------------------------
 
-    static const int        iClientFunctionsCount = 4 ; // Modify this number when adding new functions just below
+    static const int        iClientFunctionsCount = 5 ; // Modify this number when adding new functions just below
     static S3DX::AIFunction aClientFunctions  [ ] =
     {
         { "onEngineEvent", ClientFunctionCallback_onEngineEvent, "...", "...", "...", 0 },
         { "onDropBoxLogin", ClientFunctionCallback_onDropBoxLogin, "...", "...", "...", 0 },
         { "onDropBoxLogout", ClientFunctionCallback_onDropBoxLogout, "...", "...", "...", 0 },
-        { "onDropBoxPutFileOverwrite", ClientFunctionCallback_onDropBoxPutFileOverwrite, "...", "...", "...", 0 }
+        { "onDropBoxPutFileOverwrite", ClientFunctionCallback_onDropBoxPutFileOverwrite, "...", "...", "...", 0 },
+        { "onDropBoxGetFile", ClientFunctionCallback_onDropBoxGetFile, "...", "...", "...", 0 }
     } ;
 
     //----------------------------------------------------------------------
