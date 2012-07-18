@@ -1,19 +1,30 @@
 package com.test.test;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.DropboxFileInfo;
 import com.dropbox.client2.DropboxAPI.Entry;
+import com.dropbox.client2.DropboxAPI.ThumbFormat;
+import com.dropbox.client2.DropboxAPI.ThumbSize;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.android.AuthActivity;
 import com.dropbox.client2.exception.DropboxException;
@@ -36,15 +47,18 @@ public class DropBox {
     private static boolean mLoggedIn;
     private static String mKey;
     private static String mSecret;
+    private static Handler mUIHandler;
+    private static String mCachePath;
     
     final static private AccessType ACCESS_TYPE = AccessType.APP_FOLDER;
     final static private String ACCOUNT_PREFS_NAME = "prefs";
     final static private String ACCESS_KEY_NAME = "ACCESS_KEY";
     final static private String ACCESS_SECRET_NAME = "ACCESS_SECRET";
     
-    public static void Init(String key, String secret){
+    public static void Init(Handler uiHandler, String key, String secret){
         mKey = key;
         mSecret = secret;
+        mUIHandler = uiHandler;
     }
     
     /**
@@ -57,6 +71,7 @@ public class DropBox {
         mApi = new DropboxAPI<AndroidAuthSession>(session);
 
         checkAppKeySetup(context);
+        mCachePath = context.getCacheDir().getAbsolutePath();
     }
     
     /**
@@ -114,18 +129,46 @@ public class DropBox {
     
     /**
      * Copies the specified file to local cache and returns the path where it can be accessed
-     * @param file The filename to get, this will be referenced locally from the dropbox app directory
-     * @return The path and filename or null
+     * @param input The filename to get, this will be referenced locally from the dropbox app directory
      */
-    public static String getFile(String file){
+    public static void getFile(String input){
         
-        return null;
+        FileOutputStream outputStream = null;
+        try {
+            File file = new File(input);
+            outputStream = new FileOutputStream(file);
+            
+            //Construct cachepath where the dropbox file should go
+            String cachePath = mCachePath + File.pathSeparator + file.getName();
+            
+            //Try to get the file and write it to the cache folder
+            DropboxFileInfo info = mApi.getFile(cachePath, null, outputStream, null);
+            getFileResult(cachePath);
+        } catch (DropboxException e) {
+            Log.e(TAG, "getFile() failed with random exception");
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "getFile() File not found.");
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {}
+            }
+        }
     }
     
     /**
      * Used to send the result of the file upload to ShiVa
+     * @param filename The name of the file written
+     * @param bytes The number of bytes written or -1 for an error
      */
     public native static void putFileOverwriteResult(String filename, long bytes);
+    
+    /**
+     * Used to send the result of a file get to ShiVa
+     * @param filename The full path to the requested file
+     */
+    public native static void getFileResult(String filename);
     
     /**
      * Writes a string to the specified file.  This is meant for fairly low content writes.
@@ -135,47 +178,57 @@ public class DropBox {
      */
     public static void putFileOverwrite(String filename, String content){
         
-        try {
-            
-            InputStream is = new ByteArrayInputStream(content.getBytes());
-            Entry entry = mApi.putFileOverwrite(filename, is, content.length(), null);
-            putFileOverwriteResult(entry.fileName(), entry.bytes);
-    
-        } catch (DropboxUnlinkedException e) {
-            // This session wasn't authenticated properly or user unlinked
-            Log.e(TAG, "This app wasn't authenticated properly");
-        } catch (DropboxFileSizeException e) {
-            // File size too big to upload via the API
-            Log.e(TAG, "This file is too big to upload");
-        } catch (DropboxPartialFileException e) {
-            // We canceled the operation
-            Log.e(TAG, "Upload canceled");
-        } catch (DropboxServerException e) {
-            // Server-side exception.  
-            if (e.error == DropboxServerException._401_UNAUTHORIZED) {
-                Log.e(TAG, "Unauthorized dropbox user");
-                // Unauthorized, so we should unlink them.  You may want to
-                // automatically log the user out in this case.
-            } else if (e.error == DropboxServerException._403_FORBIDDEN) {
-                // Not allowed to access this
-            } else if (e.error == DropboxServerException._404_NOT_FOUND) {
-                // path not found (or if it was the thumbnail, can't be
-                // thumbnailed)
-            } else if (e.error == DropboxServerException._507_INSUFFICIENT_STORAGE) {
-                // user is over quota
-            } else {
-                // Something else
+        boolean retry;
+        int retries = 3;
+        
+        //Try to write the file as long as the error code is recoverable and we haven't
+        //exceeded our number of retries.
+        do{
+            retry = false;
+            retries--;
+            try {
+                InputStream is = new ByteArrayInputStream(content.getBytes());
+                Entry entry = mApi.putFileOverwrite(filename, is, content.length(), null);
+                putFileOverwriteResult(entry.fileName(), entry.bytes);
+                return;
+            } catch (DropboxUnlinkedException e) {
+                // This session wasn't authenticated properly or user unlinked
+                Log.e(TAG, "This app wasn't authenticated properly");
+            } catch (DropboxFileSizeException e) {
+                // File size too big to upload via the API
+                Log.e(TAG, "This file is too big to upload");
+            } catch (DropboxPartialFileException e) {
+                // We canceled the operation
+                Log.e(TAG, "Upload canceled");
+            } catch (DropboxServerException e) {
+                // Server-side exception.  
+                if (e.error == DropboxServerException._401_UNAUTHORIZED) {
+                    Log.e(TAG, "Unauthorized dropbox user");
+                    
+                    //Log user out
+                    mUIHandler.sendEmptyMessage(boxParticleLighting.MSG_LOGOUT);
+                } else if (e.error == DropboxServerException._403_FORBIDDEN) {
+                    Log.e(TAG, "Dropbox returned 403");
+                    // Not allowed to access this
+                } else if (e.error == DropboxServerException._404_NOT_FOUND) {
+                    Log.e(TAG, "Dropbox returned 404");
+                } else if (e.error == DropboxServerException._507_INSUFFICIENT_STORAGE) {
+                    Log.e(TAG, "Dropbox returned insufficient storage");
+                } 
+            } catch (DropboxIOException e) {
+                Log.e(TAG, "Network error.  Try again.");
+                retry = true;
+            } catch (DropboxParseException e) {
+                Log.e(TAG, "Dropbox error.  Try again.");
+                retry = true;
+            } catch (DropboxException e) {
+                Log.e(TAG, "Unknown error.  Try again.");
+                retry = true;
             }
-        } catch (DropboxIOException e) {
-            // Happens all the time, probably want to retry automatically.
-            Log.e(TAG, "Network error.  Try again.");
-        } catch (DropboxParseException e) {
-            // Probably due to Dropbox server restarting, should retry
-            Log.e(TAG, "Dropbox error.  Try again.");
-        } catch (DropboxException e) {
-            // Unknown error
-            Log.e(TAG, "Unknown error.  Try again.");
-        }
+        } while(retry && retries > 0);
+        
+        //If we failed to write the file, return -1 bytes written
+        putFileOverwriteResult(filename, -1);
     }
     
     /**

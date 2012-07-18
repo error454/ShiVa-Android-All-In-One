@@ -117,6 +117,10 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // @@BEGIN_ADDONS@@
     //------------------------------------------------------------------
+    private Handler mHandler;
+    public static final int MSG_LOGIN = 1;
+    public static final int MSG_LOGOUT = 2;
+    
     //------------------------------------------------------------------
     // @@END_ADDONS@@
     //------------------------------------------------------------------
@@ -197,9 +201,27 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 		//
 		registerLockScreenHandlers ( ) ;
 		
+		mHandler = new Handler()
+		{
+		    @Override
+		    public void handleMessage(Message msg) 
+		    {
+		        switch(msg.what)
+		        {
+    		        case MSG_LOGIN:
+    		            DropBoxLogin();
+    		            break;
+    		        case MSG_LOGOUT:
+    		            DropBoxLogout();
+    		            break;
+		        }
+		        super.handleMessage(msg);
+		    }
+		};
+		
 		if(ProjectSettings.UseDropboxAPI)
 		{
-		    DropBox.Init(ProjectSettings.DROPBOX_KEY, ProjectSettings.DROPBOX_SECRET);
+		    DropBox.Init(mHandler, ProjectSettings.DROPBOX_KEY, ProjectSettings.DROPBOX_SECRET);
 		    DropBox.onCreate(this);
 		}
     }

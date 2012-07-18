@@ -577,6 +577,17 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(filename, nativeString);
     }
 
+    JNIEXPORT void JNICALL Java_com_test_test_DropBox_getFileResult ( JNIEnv *_pEnv, jobject obj, jstring filename )
+    {
+        const char *nativeString = _pEnv->GetStringUTFChars(filename, NULL);
+
+        S3DX::AIVariable args[1];
+        args[0].SetStringValue( nativeString );
+        S3DClient_SendEventToCurrentUser( "DropBoxAI", "onGetFileResult", 1, (const void*)args);
+
+        _pEnv->ReleaseStringUTFChars(filename, nativeString);
+    }
+
     //----------------------------------------------------------------------
     // @@END_AAIO_CALLBACKS@@
     //----------------------------------------------------------------------
