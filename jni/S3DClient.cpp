@@ -86,23 +86,9 @@ extern "C"
         if (pJNIEnv)
         {
             jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
-
-            if (pJNIActivityClass == NULL)
-                LOGI("jclass was null!?!");
-            else
-            {
-                //Find the DropBoxLogin method
-                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogin", "()V");
-
-                if (pJNIMethodID == NULL)
-                    LOGI("jmethodID was null!?!?");
-                else
-                {
-                    pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
-                }
-            }
+            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogin", "()V");
+            pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
-
         return 0;
     }
 
@@ -112,21 +98,8 @@ extern "C"
         if (pJNIEnv)
         {
             jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
-
-            if (pJNIActivityClass == NULL)
-                LOGI("jclass was null!?!");
-            else
-            {
-                //Find the DropBoxLogin method
-                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogout", "()V");
-
-                if (pJNIMethodID == NULL)
-                    LOGI("jmethodID was null!?!?");
-                else
-                {
-                    pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
-                }
-            }
+            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogout", "()V");
+            pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
         return 0 ;
     }
@@ -137,32 +110,17 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
-            // This is a sample, in our case we are expecting 2 arguments: a number, and a boolean
-            //
             if ( ( _iInCount == 2 ) && _pIn[0].IsString ( ) && _pIn[1].IsString ( ) )
             {
+                jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+                jstring content = pJNIEnv->NewStringUTF(_pIn[1].GetStringValue());
+
                 jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxPutFileOverwrite", "(Ljava/lang/String;Ljava/lang/String;)V");
+                pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename, content);
 
-                if (pJNIActivityClass == NULL)
-                    LOGI("jclass was null!?!");
-                else
-                {
-                    //Find the DropBoxLogin method
-                    jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxPutFileOverwrite", "(Ljava/lang/String;Ljava/lang/String;)V");
-
-                    if (pJNIMethodID == NULL)
-                        LOGI("jmethodID was null!?!?");
-                    else
-                    {
-                        jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-                        jstring content = pJNIEnv->NewStringUTF(_pIn[1].GetStringValue());
-
-                        pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename, content);
-
-                        pJNIEnv->DeleteLocalRef(filename);
-                        pJNIEnv->DeleteLocalRef(content);
-                    }
-                }
+                pJNIEnv->DeleteLocalRef(filename);
+                pJNIEnv->DeleteLocalRef(content);
             }
 
         }
@@ -176,30 +134,15 @@ extern "C"
             JNIEnv *pJNIEnv = GetJNIEnv();
             if (pJNIEnv)
             {
-                // This is a sample, in our case we are expecting 2 arguments: a number, and a boolean
-                //
                 if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
                 {
+                    jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+
                     jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+                    jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxGetFile", "(Ljava/lang/String;)V");
+                    pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename);
 
-                    if (pJNIActivityClass == NULL)
-                        LOGI("jclass was null!?!");
-                    else
-                    {
-                        //Find the DropBoxLogin method
-                        jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxGetFile", "(Ljava/lang/String;)V");
-
-                        if (pJNIMethodID == NULL)
-                            LOGI("jmethodID was null!?!?");
-                        else
-                        {
-                            jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-
-                            pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename);
-
-                            pJNIEnv->DeleteLocalRef(filename);
-                        }
-                    }
+                    pJNIEnv->DeleteLocalRef(filename);
                 }
 
             }

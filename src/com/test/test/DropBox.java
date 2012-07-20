@@ -135,14 +135,17 @@ public class DropBox {
         
         FileOutputStream outputStream = null;
         try {
-            File file = new File(input);
-            outputStream = new FileOutputStream(file);
+            //Create a new input file so we can parse path information
+            File intputFileFromDropbox = new File(input);
             
             //Construct cachepath where the dropbox file should go
-            String cachePath = mCachePath + File.pathSeparator + file.getName();
+            String cachePath = mCachePath + File.pathSeparator + intputFileFromDropbox.getName();
+            Log.d(TAG, "getFile cachePath: " + cachePath);
+
+            outputStream = new FileOutputStream(cachePath);
             
             //Try to get the file and write it to the cache folder
-            DropboxFileInfo info = mApi.getFile(cachePath, null, outputStream, null);
+            DropboxFileInfo info = mApi.getFile(input, null, outputStream, null);
             getFileResult(cachePath);
         } catch (DropboxException e) {
             Log.e(TAG, "getFile() failed with random exception");
