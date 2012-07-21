@@ -84,6 +84,8 @@ import android.os.Message;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.graphics.PixelFormat;
+import com.google.android.gcm.GCMRegistrar;
+
 //----------------------------------------------------------------------
 
 // @@END_ACTIVITY_IMPORTS@@
@@ -223,6 +225,15 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 		{
 		    DropBox.Init(mHandler, ProjectSettings.DROPBOX_KEY, ProjectSettings.DROPBOX_SECRET);
 		    DropBox.onCreate(this);
+		}
+		
+		if(ProjectSettings.UseGoogleCloudMessaging)
+		{
+            GCMRegistrar.checkDevice(this);
+            final String regId = GCMRegistrar.getRegistrationId(this);
+            if (regId.equals("")) {
+                GCMRegistrar.register(this, ProjectSettings.GCM_PROJECT_ID);
+            }       
 		}
     }
 
