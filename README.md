@@ -68,6 +68,7 @@ To receive status from onDropBoxPutFileOverwrite and onDropBoxGetFile, the follo
 To receive status and messages, the following callbacks must be implemented in an AI named GCMAI
 
 **onRegistered**
+
     --------------------------------------------------------------------------------
     function GCMAI.onRegistered ( id )
     --------------------------------------------------------------------------------
@@ -79,6 +80,7 @@ To receive status and messages, the following callbacks must be implemented in a
     --------------------------------------------------------------------------------
     
 **onUnregistered**
+
     --------------------------------------------------------------------------------
     function GCMAI.onUnregistered ( id )
     --------------------------------------------------------------------------------
@@ -90,6 +92,7 @@ To receive status and messages, the following callbacks must be implemented in a
     --------------------------------------------------------------------------------
 
 **onMessageReceived**
+
     --------------------------------------------------------------------------------
     function GCMAI.onMessageReceived ( msg )
     --------------------------------------------------------------------------------
