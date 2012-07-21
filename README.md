@@ -73,7 +73,7 @@ To receive status and messages, the following callbacks must be implemented in a
     function GCMAI.onRegistered ( id )
     --------------------------------------------------------------------------------
         
-        log.message ( "GCM successfully registered, your device id is: "..id )
+        log.message ( "GCM successfully registered, your device id is: " .. id )
         
     --------------------------------------------------------------------------------
     end
@@ -97,7 +97,7 @@ To receive status and messages, the following callbacks must be implemented in a
     function GCMAI.onMessageReceived ( msg )
     --------------------------------------------------------------------------------
         
-        log.message ( "GDM Message Received: " .. msg )
+        log.message ( "GCM Message Received: " .. msg )
         
     --------------------------------------------------------------------------------
     end
