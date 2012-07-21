@@ -569,6 +569,50 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(filename, nativeString);
     }
 
+    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMRegistered ( JNIEnv *_pEnv, jobject obj, jstring id )
+    {
+        const char *nativeString = _pEnv->GetStringUTFChars(id, NULL);
+
+        S3DX::AIVariable args[1];
+        args[0].SetStringValue( nativeString );
+        S3DClient_SendEventToCurrentUser( "GCMAI", "onRegistered", 1, (const void*)args);
+
+        _pEnv->ReleaseStringUTFChars(id, nativeString);
+    }
+
+    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMUnregistered ( JNIEnv *_pEnv, jobject obj, jstring id )
+    {
+        const char *nativeString = _pEnv->GetStringUTFChars(id, NULL);
+
+        S3DX::AIVariable args[1];
+        args[0].SetStringValue( nativeString );
+        S3DClient_SendEventToCurrentUser( "GCMAI", "onUnregistered", 1, (const void*)args);
+
+        _pEnv->ReleaseStringUTFChars(id, nativeString);
+    }
+
+    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMMessageReceived ( JNIEnv *_pEnv, jobject obj, jstring message )
+    {
+        const char *nativeString = _pEnv->GetStringUTFChars(message, NULL);
+
+        S3DX::AIVariable args[1];
+        args[0].SetStringValue( nativeString );
+        S3DClient_SendEventToCurrentUser( "GCMAI", "onMessageReceived", 1, (const void*)args);
+
+        _pEnv->ReleaseStringUTFChars(message, nativeString);
+    }
+
+    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMError ( JNIEnv *_pEnv, jobject obj, jstring error )
+    {
+        const char *nativeString = _pEnv->GetStringUTFChars(error, NULL);
+
+        S3DX::AIVariable args[1];
+        args[0].SetStringValue( nativeString );
+        S3DClient_SendEventToCurrentUser( "GCMAI", "onError", 1, (const void*)args);
+
+        _pEnv->ReleaseStringUTFChars(error, nativeString);
+    }
+
     //----------------------------------------------------------------------
     // @@END_AAIO_CALLBACKS@@
     //----------------------------------------------------------------------
