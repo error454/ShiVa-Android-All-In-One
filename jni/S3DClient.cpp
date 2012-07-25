@@ -150,8 +150,8 @@ extern "C"
 
     static void ClientFunctionCallback_onScoreloopShowUI ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
-    	JNIEnv *pJNIEnv = GetJNIEnv();
-		if (pJNIEnv)
+        JNIEnv *pJNIEnv = GetJNIEnv();
+        if (pJNIEnv)
         {
             if ( ( _iInCount == 1 ) && _pIn[0].IsBoolean ( ) )
             {
@@ -159,40 +159,40 @@ extern "C"
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopShowUI", "(Z)V" );
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, _pIn[0].GetBooleanValue ( ));
             }
-		}
+        }
     }
     
     static void ClientFunctionCallback_onScoreloopAwardAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
-    	JNIEnv *pJNIEnv = GetJNIEnv();
-		if (pJNIEnv)
+        JNIEnv *pJNIEnv = GetJNIEnv();
+        if (pJNIEnv)
         {
             if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
             {
                 jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-				jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
-				jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopAwardAchievement", "(Ljava/lang/String;)V" );
-				pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopAwardAchievement", "(Ljava/lang/String;)V" );
+                pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
                 pJNIEnv->DeleteLocalRef(achievement);
-			}
-		}
+            }
+        }
     }
     
     static void ClientFunctionCallback_onScoreloopIncrementAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
-		JNIEnv *pJNIEnv = GetJNIEnv();
-		if (pJNIEnv)
+        JNIEnv *pJNIEnv = GetJNIEnv();
+        if (pJNIEnv)
         {
-			if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
+            if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
             {
-				jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-				jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
-				jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "(Ljava/lang/String;)V" );
-				pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
+                jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "(Ljava/lang/String;)V" );
+                pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
                 pJNIEnv->DeleteLocalRef(achievement);
-			}
-		}
-	}
+            }
+        }
+    }
     //TODO: onScoreloopIncrementTieredAchievement
     
     

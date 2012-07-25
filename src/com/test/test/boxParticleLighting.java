@@ -128,20 +128,20 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     
     //------------------------------------------------------------------
-	// @@BEGIN_ACTIVITY_MESSAGES_LIST@@
+    // @@BEGIN_ACTIVITY_MESSAGES_LIST@@
     //------------------------------------------------------------------
-	public static final int MSG_START_ENGINE 		    = 0 ;
-	public static final int MSG_RESUME_ENGINE 		    = 1 ;
-	public static final int MSG_PAUSE_ENGINE 		    = 2 ;
-	public static final int MSG_HIDE_SPLASH 		    = 3 ;
-	public static final int MSG_PLAY_OVERLAY_MOVIE 	    = 4 ;
-	public static final int MSG_STOP_OVERLAY_MOVIE 	    = 5 ;
-	public static final int MSG_ENABLE_CAMERA_DEVICE    = 6 ;
-	public static final int MSG_ENABLE_VIBRATOR 	    = 7 ;
+    public static final int MSG_START_ENGINE             = 0 ;
+    public static final int MSG_RESUME_ENGINE             = 1 ;
+    public static final int MSG_PAUSE_ENGINE             = 2 ;
+    public static final int MSG_HIDE_SPLASH             = 3 ;
+    public static final int MSG_PLAY_OVERLAY_MOVIE         = 4 ;
+    public static final int MSG_STOP_OVERLAY_MOVIE         = 5 ;
+    public static final int MSG_ENABLE_CAMERA_DEVICE    = 6 ;
+    public static final int MSG_ENABLE_VIBRATOR         = 7 ;
     //------------------------------------------------------------------
-	// @@END_ACTIVITY_MESSAGES_LIST@@
+    // @@END_ACTIVITY_MESSAGES_LIST@@
     //------------------------------------------------------------------
-	
+    
     //------------------------------------------------------------------
     @Override
     protected void onCreate ( Bundle savedInstanceState )
@@ -185,56 +185,56 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         setFullscreen   ( ) ;
         setNoTitle      ( ) ;
 
-		// Create the main view group and inflate startup screen (but do not add it right now, to avoid a "black flash")
-		//
-		oSplashView 		= View.inflate ( this, R.layout.main, null ) ;
-		oViewGroup 			= new RelativeLayout ( this ) ;
-        setContentView  	( oViewGroup ) ;
+        // Create the main view group and inflate startup screen (but do not add it right now, to avoid a "black flash")
+        //
+        oSplashView         = View.inflate ( this, R.layout.main, null ) ;
+        oViewGroup             = new RelativeLayout ( this ) ;
+        setContentView      ( oViewGroup ) ;
 
-    	//--------------------------------------------------------------
-		// @@ON_ACTIVITY_CREATED@@
-    	//--------------------------------------------------------------
-		
+        //--------------------------------------------------------------
+        // @@ON_ACTIVITY_CREATED@@
+        //--------------------------------------------------------------
+        
         // Asynchronously initialize engine and other stuff 
         //
         createAsync ( ) ;     
 
-		// Register lock-screen intent handler
-		//
-		registerLockScreenHandlers ( ) ;
-		
-		mHandler = new Handler()
-		{
-		    @Override
-		    public void handleMessage(Message msg) 
-		    {
-		        switch(msg.what)
-		        {
-    		        case MSG_LOGIN:
-    		            DropBoxLogin();
-    		            break;
-    		        case MSG_LOGOUT:
-    		            DropBoxLogout();
-    		            break;
-		        }
-		        super.handleMessage(msg);
-		    }
-		};
-		
-		if(ProjectSettings.UseDropboxAPI)
-		{
-		    DropBox.Init(mHandler, ProjectSettings.DROPBOX_KEY, ProjectSettings.DROPBOX_SECRET);
-		    DropBox.onCreate(this);
-		}
-		
-		if(ProjectSettings.UseGoogleCloudMessaging)
-		{
+        // Register lock-screen intent handler
+        //
+        registerLockScreenHandlers ( ) ;
+        
+        mHandler = new Handler()
+        {
+            @Override
+            public void handleMessage(Message msg) 
+            {
+                switch(msg.what)
+                {
+                    case MSG_LOGIN:
+                        DropBoxLogin();
+                        break;
+                    case MSG_LOGOUT:
+                        DropBoxLogout();
+                        break;
+                }
+                super.handleMessage(msg);
+            }
+        };
+        
+        if(ProjectSettings.UseDropboxAPI)
+        {
+            DropBox.Init(mHandler, ProjectSettings.DROPBOX_KEY, ProjectSettings.DROPBOX_SECRET);
+            DropBox.onCreate(this);
+        }
+        
+        if(ProjectSettings.UseGoogleCloudMessaging)
+        {
             GCMRegistrar.checkDevice(this);
             final String regId = GCMRegistrar.getRegistrationId(this);
             if (regId.equals("")) {
                 GCMRegistrar.register(this, ProjectSettings.GCM_PROJECT_ID);
             }       
-		}
+        }
     }
 
     //------------------------------------------------------------------
@@ -242,26 +242,26 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     {
         Thread t = new Thread ( ) 
         {
-		    public void run ( ) 
-		    {
-	            // Create useful directories, extract packs and create 3DView
+            public void run ( ) 
+            {
+                // Create useful directories, extract packs and create 3DView
                 //
-                if ( ! createCacheDirectory 	( ) ||
-                     ! createHomeDirectory  	( ) ||
-                     ! extractMainPack         	( ) ||
+                if ( ! createCacheDirectory     ( ) ||
+                     ! createHomeDirectory      ( ) ||
+                     ! extractMainPack             ( ) ||
                      ! extractAdditionalFiles   ( ) )
                 {
-			        try { runOnUiThread ( new Runnable ( ) { public void run ( ) { onStorageError ( ) ; } } ) ; } 
-			        catch ( Exception e ) { }
+                    try { runOnUiThread ( new Runnable ( ) { public void run ( ) { onStorageError ( ) ; } } ) ; } 
+                    catch ( Exception e ) { }
                 }
                 else
                 {
-			        try { runOnUiThread ( new Runnable ( ) { public void run ( ) { onStartEngine ( ) ; } } ) ; } 
-			        catch ( Exception e ) { }
-                }		        		        
+                    try { runOnUiThread ( new Runnable ( ) { public void run ( ) { onStartEngine ( ) ; } } ) ; } 
+                    catch ( Exception e ) { }
+                }                                
             }
-	    } ;
-	    t.start ( ) ;
+        } ;
+        t.start ( ) ;
     }
 
     //------------------------------------------------------------------
@@ -280,29 +280,29 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 
         if ( o3DView != null )
         {
-			//o3DView.setZOrderOnTop ( true ) ; // Uncomment to make transparent background to work
-			oViewGroup.addView    ( o3DView ) ;
+            //o3DView.setZOrderOnTop ( true ) ; // Uncomment to make transparent background to work
+            oViewGroup.addView    ( o3DView ) ;
 
             // Add the splash view on top of the 3D view
             //
             oViewGroup.removeView ( oSplashView ) ;
-    	    oViewGroup.addView    ( oSplashView ) ;
-			
+            oViewGroup.addView    ( oSplashView ) ;
+            
             // Enable wake lock
             //
             onEnableWakeLock ( true ) ;
 
-    		// Inform the system we want the volume buttons to control the multimedia stream
-    		//
-    		setVolumeControlStream ( AudioManager.STREAM_MUSIC ) ;
+            // Inform the system we want the volume buttons to control the multimedia stream
+            //
+            setVolumeControlStream ( AudioManager.STREAM_MUSIC ) ;
 
             // Send a delayed event to actually start engine and show the 3D View
             //
             Message msg     = new Message ( )  ;
             msg.what        = MSG_START_ENGINE ;
             msg.obj         = this ;
-    		oUIHandler  	.sendMessage ( msg ) ;
-		}
+            oUIHandler      .sendMessage ( msg ) ;
+        }
     }
 
     //------------------------------------------------------------------
@@ -326,9 +326,9 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         {
             switch ( msg.what ) 
             {
-    		//----------------------------------------------------------
-			// @@BEGIN_ACTIVITY_MESSAGES_HANDLING@@
-    		//----------------------------------------------------------
+            //----------------------------------------------------------
+            // @@BEGIN_ACTIVITY_MESSAGES_HANDLING@@
+            //----------------------------------------------------------
             case MSG_START_ENGINE :
                 {
                     if ( o3DView != null )
@@ -339,11 +339,11 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 
                         // Enable motion sensors
                         //
-            			onEnableAccelerometerUpdates ( true ) ;
-						
-    					//----------------------------------------------
-						// @@ON_ACTIVITY_ENGINE_STARTED@@
-    					//----------------------------------------------
+                        onEnableAccelerometerUpdates ( true ) ;
+                        
+                        //----------------------------------------------
+                        // @@ON_ACTIVITY_ENGINE_STARTED@@
+                        //----------------------------------------------
                     }
                 }
                 break ;
@@ -381,51 +381,51 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 
             case MSG_PAUSE_ENGINE :
                 {
-			        if ( o3DView != null )
-			        {
+                    if ( o3DView != null )
+                    {
                         Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
                         Log.d ( Globals.sApplicationName, "Pause activity " + Globals.sApplicationName ) ;
                         Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
-			            
-				        // Disable sensors, camera capture, location updates, wake lock...
-				        //
-				        bCameraDeviceWasEnabledBeforePause          = bCameraDeviceEnabled         ;
-				        bAccelerometerUpdatesWereEnabledBeforePause = bAccelerometerUpdatesEnabled ;
-				        bHeadingUpdatesWereEnabledBeforePause       = bHeadingUpdatesEnabled       ;
-				        bLocationUpdatesWereEnabledBeforePause      = bLocationUpdatesEnabled      ;
-				        bWakeLockWasEnabledBeforePause              = bWakeLockEnabled             ;
-				        //TODO: sOverlayMoviePlayingBeforePause             = sOverlayMoviePlaying         ;
+                        
+                        // Disable sensors, camera capture, location updates, wake lock...
+                        //
+                        bCameraDeviceWasEnabledBeforePause          = bCameraDeviceEnabled         ;
+                        bAccelerometerUpdatesWereEnabledBeforePause = bAccelerometerUpdatesEnabled ;
+                        bHeadingUpdatesWereEnabledBeforePause       = bHeadingUpdatesEnabled       ;
+                        bLocationUpdatesWereEnabledBeforePause      = bLocationUpdatesEnabled      ;
+                        bWakeLockWasEnabledBeforePause              = bWakeLockEnabled             ;
+                        //TODO: sOverlayMoviePlayingBeforePause             = sOverlayMoviePlaying         ;
         
-						onCloseCameraDevice          ( ) ;
-				        onEnableAccelerometerUpdates ( false ) ;
-				        onEnableHeadingUpdates       ( false ) ;
-				        onEnableLocationUpdates      ( false ) ;
-				        onEnableWakeLock             ( false ) ;
-				        onStopOverlayMovie           ( ) ;
-				
-						// Pause view
-						//
-			            o3DView.onPause ( ) ;
-			        }
-				}
-				break ;
+                        onCloseCameraDevice          ( ) ;
+                        onEnableAccelerometerUpdates ( false ) ;
+                        onEnableHeadingUpdates       ( false ) ;
+                        onEnableLocationUpdates      ( false ) ;
+                        onEnableWakeLock             ( false ) ;
+                        onStopOverlayMovie           ( ) ;
+                
+                        // Pause view
+                        //
+                        o3DView.onPause ( ) ;
+                    }
+                }
+                break ;
                 
             case MSG_HIDE_SPLASH :
                 {
-					if ( o3DView != null )
-                	{
+                    if ( o3DView != null )
+                    {
                         Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
                         Log.d ( Globals.sApplicationName, "Hide splash view" ) ;
                         Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
-                	    
+                        
                         // Remove splash view
                         //
-						oViewGroup.removeView ( oSplashView ) ;
-					
-						// Force focus to 3D view
-						//
-						o3DView.requestFocus ( ) ;
-					}
+                        oViewGroup.removeView ( oSplashView ) ;
+                    
+                        // Force focus to 3D view
+                        //
+                        o3DView.requestFocus ( ) ;
+                    }
                 }
                 break ;
 
@@ -436,34 +436,34 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 }
                 break ;
 
-			case MSG_PLAY_OVERLAY_MOVIE :
-				{
-					onPlayOverlayMovie ( (String)msg.obj ) ;
-				}
-				break ;
+            case MSG_PLAY_OVERLAY_MOVIE :
+                {
+                    onPlayOverlayMovie ( (String)msg.obj ) ;
+                }
+                break ;
 
-			case MSG_STOP_OVERLAY_MOVIE :
-				{
-					onStopOverlayMovie ( ) ;
-				}
-				break ;
+            case MSG_STOP_OVERLAY_MOVIE :
+                {
+                    onStopOverlayMovie ( ) ;
+                }
+                break ;
 
-			case MSG_ENABLE_VIBRATOR :
-				{
-					onVibrate ( msg.arg1 > 0 ) ;
-				}
-				break ;
-    		//----------------------------------------------------------
-			// @@END_ACTIVITY_MESSAGES_HANDLING@@
-    		//----------------------------------------------------------
+            case MSG_ENABLE_VIBRATOR :
+                {
+                    onVibrate ( msg.arg1 > 0 ) ;
+                }
+                break ;
+            //----------------------------------------------------------
+            // @@END_ACTIVITY_MESSAGES_HANDLING@@
+            //----------------------------------------------------------
             }
             super.handleMessage ( msg ) ;
         }
     } ;
 
-	
+    
     //------------------------------------------------------------------
-	// @@BEGIN_ACTIVITY_METHODS@@	
+    // @@BEGIN_ACTIVITY_METHODS@@    
     //------------------------------------------------------------------
     @Override
     protected void onStart ( )
@@ -504,7 +504,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         else
         {
             onResumeActually ( ) ;
-		}
+        }
     }
     
     protected void onResumeActually ( )
@@ -517,16 +517,16 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         //
         if ( ( o3DView != null ) && ( oSplashView != null ) && ( oSplashView.getParent ( ) != oViewGroup ) )
         {
-    	    oViewGroup.addView ( oSplashView ) ;
-	    }
+            oViewGroup.addView ( oSplashView ) ;
+        }
             
         // Send a delayed event to actually resume engine and show the 3D View
         //
         Message msg     = new Message ( )  ;
         msg.what        = MSG_RESUME_ENGINE ;
         msg.obj         = this ;
-        //oUIHandler  	.sendMessageDelayed ( msg, 500 ) ;
-		oUIHandler  	.sendMessage ( msg ) ;		        
+        //oUIHandler      .sendMessageDelayed ( msg, 500 ) ;
+        oUIHandler      .sendMessage ( msg ) ;                
     }
     
     //------------------------------------------------------------------
@@ -544,8 +544,8 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         Message msg     = new Message ( )  ;
         msg.what        = MSG_PAUSE_ENGINE ;
         msg.obj         = this ;
-        //oUIHandler  	.sendMessageDelayed ( msg, 500 ) ;
-		oUIHandler  	.sendMessage ( msg ) ;		
+        //oUIHandler      .sendMessageDelayed ( msg, 500 ) ;
+        oUIHandler      .sendMessage ( msg ) ;        
     }
     
     //------------------------------------------------------------------
@@ -565,20 +565,20 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
         super.onDestroy ( ) ;
 
-    	//--------------------------------------------------------------
-		// @@ON_ACTIVITY_DESTROYED@@
-    	//--------------------------------------------------------------
-		
-		// Unregister lock-screen intent handler
-		//
-		unregisterLockScreenHandlers ( ) ;
+        //--------------------------------------------------------------
+        // @@ON_ACTIVITY_DESTROYED@@
+        //--------------------------------------------------------------
+        
+        // Unregister lock-screen intent handler
+        //
+        unregisterLockScreenHandlers ( ) ;
 
         // Destroy 3D view
         //
         if ( o3DView != null )
         {
-        	o3DView.onTerminate ( ) ;
-		}
+            o3DView.onTerminate ( ) ;
+        }
     }
     
     //------------------------------------------------------------------
@@ -592,27 +592,27 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     @Override
     public void onBackPressed ( )
     {
-		// Just forward to the view so the game can handle it (input.kKeyEscape in the script)
-		//
+        // Just forward to the view so the game can handle it (input.kKeyEscape in the script)
+        //
         if ( o3DView != null )
-		{
-			o3DView.onKeyDown ( KeyEvent.KEYCODE_BACK, new KeyEvent ( KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK ) ) ;
-			o3DView.onKeyUp   ( KeyEvent.KEYCODE_BACK, new KeyEvent ( KeyEvent.ACTION_UP,   KeyEvent.KEYCODE_BACK ) ) ;
-		}
+        {
+            o3DView.onKeyDown ( KeyEvent.KEYCODE_BACK, new KeyEvent ( KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK ) ) ;
+            o3DView.onKeyUp   ( KeyEvent.KEYCODE_BACK, new KeyEvent ( KeyEvent.ACTION_UP,   KeyEvent.KEYCODE_BACK ) ) ;
+        }
     }
 
     //------------------------------------------------------------------
     @Override
-	public boolean onCreateOptionsMenu (Menu menu) 
+    public boolean onCreateOptionsMenu (Menu menu) 
     {
-		// Just forward to the view so the game can handle it (input.kKeyMenu in the script)
-		//
+        // Just forward to the view so the game can handle it (input.kKeyMenu in the script)
+        //
         if ( o3DView != null )
-		{
-			o3DView.onKeyDown ( KeyEvent.KEYCODE_MENU, new KeyEvent ( KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU ) ) ;
-			o3DView.onKeyUp   ( KeyEvent.KEYCODE_MENU, new KeyEvent ( KeyEvent.ACTION_UP,   KeyEvent.KEYCODE_MENU ) ) ;
-		}
-		return false ;
+        {
+            o3DView.onKeyDown ( KeyEvent.KEYCODE_MENU, new KeyEvent ( KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU ) ) ;
+            o3DView.onKeyUp   ( KeyEvent.KEYCODE_MENU, new KeyEvent ( KeyEvent.ACTION_UP,   KeyEvent.KEYCODE_MENU ) ) ;
+        }
+        return false ;
     }
     
     //------------------------------------------------------------------
@@ -628,7 +628,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     protected void registerLockScreenHandlers ( )
     {
-		IntentFilter oIntentFilter = new IntentFilter ( ) ;
+        IntentFilter oIntentFilter = new IntentFilter ( ) ;
         oIntentFilter.addAction ( Intent.ACTION_USER_PRESENT ) ;
         oIntentFilter.addAction ( Intent.ACTION_SCREEN_OFF ) ;
         oIntentReceiver = new BroadcastReceiver ( ) 
@@ -653,26 +653,26 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     
     protected void unregisterLockScreenHandlers ( )
     {
-		if ( oIntentReceiver != null )
-		{
-		    unregisterReceiver  ( oIntentReceiver ) ;
-		    oIntentReceiver     = null ;
-	    }
-    }	        
+        if ( oIntentReceiver != null )
+        {
+            unregisterReceiver  ( oIntentReceiver ) ;
+            oIntentReceiver     = null ;
+        }
+    }            
     
-	public void onScreenLocked ( )
-	{
+    public void onScreenLocked ( )
+    {
         //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
         //Log.d ( Globals.sApplicationName, "Screen locked" ) ;
         //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
         bScreenLocked = true ;
-	}
-	
-	public void onScreenUnlocked ( )
-	{
+    }
+    
+    public void onScreenUnlocked ( )
+    {
         //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
         //Log.d ( Globals.sApplicationName, "Screen unlocked" ) ;
-        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;	    
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;        
         bScreenLocked = false ;
         
         // Screen has been unlocked, do we need to resume?
@@ -681,20 +681,20 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         {
             onResumeActually ( ) ;
         }
-	}
+    }
     
     //------------------------------------------------------------------
     // OpenURL callback.
     //
-	public static void onOpenURL ( String sURL, String sTarget )
-	{
-	    if ( oThis != null )
-	    {
+    public static void onOpenURL ( String sURL, String sTarget )
+    {
+        if ( oThis != null )
+        {
             Intent i            = new Intent ( Intent.ACTION_VIEW ) ;
-		    i.setData		    ( Uri.parse  ( sURL ) ) ;
-		    oThis.startActivity ( i ) ;
-	    }
-	}
+            i.setData            ( Uri.parse  ( sURL ) ) ;
+            oThis.startActivity ( i ) ;
+        }
+    }
 
     //------------------------------------------------------------------
     // Sound functions.
@@ -721,18 +721,18 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     public static void onSuspendSound ( boolean bSuspend )
     {
-		/* Only available starting from 2.2... so let the engine do it
+        /* Only available starting from 2.2... so let the engine do it
         if ( oSoundPool != null )
         {
-			if ( bSuspend ) oSoundPool.autoPause  ( ) ;
-			else 			oSoundPool.autoResume ( ) ;
-		}*/
+            if ( bSuspend ) oSoundPool.autoPause  ( ) ;
+            else             oSoundPool.autoResume ( ) ;
+        }*/
     }
     
     //------------------------------------------------------------------
     public static int onLoadSound ( String sURI )
     {
-		Log.d ( Globals.sApplicationName, "### onLoadSound: " + sURI ) ;
+        Log.d ( Globals.sApplicationName, "### onLoadSound: " + sURI ) ;
         return oSoundPool.load ( sURI, 1 ) ;
         /*
         try
@@ -754,68 +754,68 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     public static int onPlaySound ( int iSound, float fVolume, boolean bLoop, float fPriority )
     {
-		//Log.d ( Globals.sApplicationName, "### onPlaySound: " + String.format ( "%d, %f, %s, %f", iSound, fVolume, bLoop ? "true" : "false", fPriority ) ) ;
-		int iStream = oSoundPool.play ( iSound, fVolume, fVolume, (int)(fPriority * 255.0f), bLoop ? -1 : 0, 1.0f )  ;		
-		//Log.d ( Globals.sApplicationName, "### onPlaySound: " + String.format ( "%d", iStream ) ) ;		
-		return ( iStream > 0 ) ? iStream : -1 ;
+        //Log.d ( Globals.sApplicationName, "### onPlaySound: " + String.format ( "%d, %f, %s, %f", iSound, fVolume, bLoop ? "true" : "false", fPriority ) ) ;
+        int iStream = oSoundPool.play ( iSound, fVolume, fVolume, (int)(fPriority * 255.0f), bLoop ? -1 : 0, 1.0f )  ;        
+        //Log.d ( Globals.sApplicationName, "### onPlaySound: " + String.format ( "%d", iStream ) ) ;        
+        return ( iStream > 0 ) ? iStream : -1 ;
     }
 
     //------------------------------------------------------------------
     public static void onPauseSound ( int iStream )
     {
-		if ( iStream > 0 )
-		{
-        	//Log.d ( Globals.sApplicationName, "### onPauseSound: " + String.format ( "%d", iStream ) ) ;
-        	oSoundPool.pause ( iStream ) ;
-		}
+        if ( iStream > 0 )
+        {
+            //Log.d ( Globals.sApplicationName, "### onPauseSound: " + String.format ( "%d", iStream ) ) ;
+            oSoundPool.pause ( iStream ) ;
+        }
     }
     
     //------------------------------------------------------------------
     public static void onResumeSound ( int iStream )
     {
-		if ( iStream > 0 )
-		{
-        	oSoundPool.resume ( iStream ) ;
-		}
+        if ( iStream > 0 )
+        {
+            oSoundPool.resume ( iStream ) ;
+        }
     }
     
     //------------------------------------------------------------------
     public static void onStopSound ( int iStream )
     {
-		if ( iStream > 0 )
-		{
-			//Log.d ( Globals.sApplicationName, "### onStopSound: " + String.format ( "%d", iStream ) ) ;
-        	oSoundPool.setVolume ( iStream, 0.0f, 0.0f ) ;
-        	oSoundPool.setLoop   ( iStream, 0 ) ;
-        	oSoundPool.stop	     ( iStream ) ;
-		}
+        if ( iStream > 0 )
+        {
+            //Log.d ( Globals.sApplicationName, "### onStopSound: " + String.format ( "%d", iStream ) ) ;
+            oSoundPool.setVolume ( iStream, 0.0f, 0.0f ) ;
+            oSoundPool.setLoop   ( iStream, 0 ) ;
+            oSoundPool.stop         ( iStream ) ;
+        }
     }
     
     //------------------------------------------------------------------
     public static void onSetSoundPitch ( int iStream, float fPitch )
     {
-		if ( iStream > 0 )
-		{
-         	oSoundPool.setRate ( iStream, fPitch ) ;
-		}
+        if ( iStream > 0 )
+        {
+             oSoundPool.setRate ( iStream, fPitch ) ;
+        }
     }
     
     //------------------------------------------------------------------
     public static void onSetSoundLooping ( int iStream, boolean bLoop )
     {
-		if ( iStream > 0 )
-		{
-        	oSoundPool.setLoop ( iStream, bLoop ? -1 : 0 ) ;
-		}
+        if ( iStream > 0 )
+        {
+            oSoundPool.setLoop ( iStream, bLoop ? -1 : 0 ) ;
+        }
     }
     
     //------------------------------------------------------------------
     public static void onSetSoundVolume ( int iStream, float fVolume )
     {
-		if ( iStream > 0 )
-		{
-        	oSoundPool.setVolume ( iStream, fVolume, fVolume ) ;
-		}
+        if ( iStream > 0 )
+        {
+            oSoundPool.setVolume ( iStream, fVolume, fVolume ) ;
+        }
     }
     
     //------------------------------------------------------------------
@@ -823,107 +823,107 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //
     public static int onLoadMusic ( String sURI )
     {
-		//Log.d ( Globals.sApplicationName, "### onLoadMusic: " + sURI ) ;
-		
-		for ( int i = 1 ; i < 64 ; i++ )
-		{
-			if ( aMusicsList[i] == null )
-			{
-				aMusicsList[i] = sURI ;
-				return i ;
-			}
-		}
-		return 0 ; // Means "failed"
+        //Log.d ( Globals.sApplicationName, "### onLoadMusic: " + sURI ) ;
+        
+        for ( int i = 1 ; i < 64 ; i++ )
+        {
+            if ( aMusicsList[i] == null )
+            {
+                aMusicsList[i] = sURI ;
+                return i ;
+            }
+        }
+        return 0 ; // Means "failed"
     }
     
     //------------------------------------------------------------------
     public static void onUnloadMusic ( int iMusic )
     {
-		//Log.d ( Globals.sApplicationName, "### onUnloadMusic: " + String.format ( "%d", iMusic ) ) ;
-		
-		if ( iMusic < 64 )
-		{
-			aMusicsList[ iMusic ] = null ;
-		}
+        //Log.d ( Globals.sApplicationName, "### onUnloadMusic: " + String.format ( "%d", iMusic ) ) ;
+        
+        if ( iMusic < 64 )
+        {
+            aMusicsList[ iMusic ] = null ;
+        }
     }
 
     //------------------------------------------------------------------
     public static int onPlayMusic ( int iMusic, float fVolume, boolean bLoop, float fPriority )
     {
-		//Log.d ( Globals.sApplicationName, "### onPlayMusic: " + String.format ( "%d, %f, %s, %f", iMusic, fVolume, bLoop ? "true" : "false", fPriority ) ) ;
+        //Log.d ( Globals.sApplicationName, "### onPlayMusic: " + String.format ( "%d, %f, %s, %f", iMusic, fVolume, bLoop ? "true" : "false", fPriority ) ) ;
 
-		if ( ( iMusic < 64 ) && ( aMusicsList[ iMusic ] != null ) )
-		{
-			if ( oMediaPlayer != null )
-			{
-				oMediaPlayer.stop ( ) ;
-				try
-				{
-					oMediaPlayer.setDataSource 	( aMusicsList[ iMusic ] ) ;
-				}
-				catch ( Exception e ) { e.printStackTrace ( ) ; return -1 ; }
-			}
-			else
-			{
-				oMediaPlayer = MediaPlayer.create ( oThis, Uri.parse ( aMusicsList[ iMusic ] ) ) ;
-			}
+        if ( ( iMusic < 64 ) && ( aMusicsList[ iMusic ] != null ) )
+        {
+            if ( oMediaPlayer != null )
+            {
+                oMediaPlayer.stop ( ) ;
+                try
+                {
+                    oMediaPlayer.setDataSource     ( aMusicsList[ iMusic ] ) ;
+                }
+                catch ( Exception e ) { e.printStackTrace ( ) ; return -1 ; }
+            }
+            else
+            {
+                oMediaPlayer = MediaPlayer.create ( oThis, Uri.parse ( aMusicsList[ iMusic ] ) ) ;
+            }
 
-			if ( oMediaPlayer != null )
-			{
-				oMediaPlayer.setAudioStreamType	( AudioManager.STREAM_MUSIC ) ;
-				oMediaPlayer.setLooping			( bLoop ) ;
-				oMediaPlayer.setVolume 			( fVolume, fVolume ) ;
-				oMediaPlayer.start	 			( ) ;
-				return 0 ; // Stream 0 is reserved for music
-			}
-		}
+            if ( oMediaPlayer != null )
+            {
+                oMediaPlayer.setAudioStreamType    ( AudioManager.STREAM_MUSIC ) ;
+                oMediaPlayer.setLooping            ( bLoop ) ;
+                oMediaPlayer.setVolume             ( fVolume, fVolume ) ;
+                oMediaPlayer.start                 ( ) ;
+                return 0 ; // Stream 0 is reserved for music
+            }
+        }
         return -1 ;
     }
 
     //------------------------------------------------------------------
     public static void onPauseMusic ( int iStream )
     {
-		Log.d ( Globals.sApplicationName, "### onPauseMusic: " + String.format ( "%d", iStream ) ) ;        
+        Log.d ( Globals.sApplicationName, "### onPauseMusic: " + String.format ( "%d", iStream ) ) ;        
 
-		if ( oMediaPlayer != null )
-		{
-			oMediaPlayer.pause ( ) ;
-		}
+        if ( oMediaPlayer != null )
+        {
+            oMediaPlayer.pause ( ) ;
+        }
     }
     
     //------------------------------------------------------------------
     public static void onResumeMusic ( int iStream )
     {
-		//Log.d ( Globals.sApplicationName, "### onResumeMusic: " + String.format ( "%d", iStream ) ) ;                
+        //Log.d ( Globals.sApplicationName, "### onResumeMusic: " + String.format ( "%d", iStream ) ) ;                
 
-		if ( oMediaPlayer != null )
-		{
-			oMediaPlayer.start ( ) ;
-		}
+        if ( oMediaPlayer != null )
+        {
+            oMediaPlayer.start ( ) ;
+        }
     }
     
     //------------------------------------------------------------------
     public static void onStopMusic ( int iStream )
     {
-		//Log.d ( Globals.sApplicationName, "### onStopMusic: " + String.format ( "%d", iStream ) ) ;              
-		
-		if ( oMediaPlayer != null )
-		{
-			oMediaPlayer.stop    ( ) ;
-			oMediaPlayer.release ( ) ;
-			oMediaPlayer	  = null ;
-		}          
+        //Log.d ( Globals.sApplicationName, "### onStopMusic: " + String.format ( "%d", iStream ) ) ;              
+        
+        if ( oMediaPlayer != null )
+        {
+            oMediaPlayer.stop    ( ) ;
+            oMediaPlayer.release ( ) ;
+            oMediaPlayer      = null ;
+        }          
     }
     
     //------------------------------------------------------------------
     public static void onSetMusicVolume ( int iStream, float fVolume )
     {
-		//Log.d ( Globals.sApplicationName, "### onSetMusicVolume: " + String.format ( "%d, %f", iStream, fVolume ) ) ;        
-		
-		if ( oMediaPlayer != null )
-		{
-			oMediaPlayer.setVolume 	( fVolume, fVolume ) ;
-		}
+        //Log.d ( Globals.sApplicationName, "### onSetMusicVolume: " + String.format ( "%d, %f", iStream, fVolume ) ) ;        
+        
+        if ( oMediaPlayer != null )
+        {
+            oMediaPlayer.setVolume     ( fVolume, fVolume ) ;
+        }
     }
 
     //------------------------------------------------------------------
@@ -954,9 +954,9 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 
                 if ( oWakeLock != null )
                 {
-                	oWakeLock.acquire ( ) ;
-					Log.d ( Globals.sApplicationName, "#### onEnableWakeLock: ON" ) ;
-				}
+                    oWakeLock.acquire ( ) ;
+                    Log.d ( Globals.sApplicationName, "#### onEnableWakeLock: ON" ) ;
+                }
             }
         }
         else
@@ -965,19 +965,19 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
             {
                 if ( oWakeLock.isHeld ( ) )
                 {
-					Log.d ( Globals.sApplicationName, "#### onEnableWakeLock: OFF" ) ;
+                    Log.d ( Globals.sApplicationName, "#### onEnableWakeLock: OFF" ) ;
                     oWakeLock.release ( ) ;
                 }
-				oWakeLock = null ;
+                oWakeLock = null ;
             }
         }
 
-		if ( o3DView != null )
-		{
-			o3DView.setKeepScreenOn ( bEnable ) ;
-		}
-		
-		bWakeLockEnabled = bEnable ;
+        if ( o3DView != null )
+        {
+            o3DView.setKeepScreenOn ( bEnable ) ;
+        }
+        
+        bWakeLockEnabled = bEnable ;
     }    
     
     //------------------------------------------------------------------
@@ -987,42 +987,42 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     {
         Log.d ( Globals.sApplicationName, "#### onPlayOverlayMovie: " + sURI ) ;
 
-		try 
-		{
-	        if ( oVideoView == null )        
-	        {
-	            oVideoView = new VideoView ( oThis ) ;    
+        try 
+        {
+            if ( oVideoView == null )        
+            {
+                oVideoView = new VideoView ( oThis ) ;    
                 
-	            if ( oVideoView != null )
-	            {
-					oVideoView.setOnPreparedListener	( oThis ) ;
-					oVideoView.setOnErrorListener		( oThis ) ;
-	                oVideoView.setOnCompletionListener 	( oThis ) ;
-	
-					RelativeLayout.LayoutParams oVideoViewLayoutParams = new RelativeLayout.LayoutParams ( RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT ) ;
-					oVideoViewLayoutParams.addRule 	( RelativeLayout.CENTER_IN_PARENT ) ;
-					oViewGroup.addView				( oVideoView, oVideoViewLayoutParams ) ;
-					//o3DView.setVisibility 			( View.INVISIBLE ) ; // Kills the rendering context, play with ZOrder instead
-		            oVideoView.setVideoURI  		( Uri.parse ( sURI ) ) ;
-					oVideoView.setMediaController 	( new MediaController ( oThis ) ) ;
-				   	oVideoView.requestFocus 		( ) ;
-		            oVideoView.start 		        ( ) ;
-					oVideoView.setZOrderMediaOverlay( true ) ;
+                if ( oVideoView != null )
+                {
+                    oVideoView.setOnPreparedListener    ( oThis ) ;
+                    oVideoView.setOnErrorListener        ( oThis ) ;
+                    oVideoView.setOnCompletionListener     ( oThis ) ;
+    
+                    RelativeLayout.LayoutParams oVideoViewLayoutParams = new RelativeLayout.LayoutParams ( RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT ) ;
+                    oVideoViewLayoutParams.addRule     ( RelativeLayout.CENTER_IN_PARENT ) ;
+                    oViewGroup.addView                ( oVideoView, oVideoViewLayoutParams ) ;
+                    //o3DView.setVisibility             ( View.INVISIBLE ) ; // Kills the rendering context, play with ZOrder instead
+                    oVideoView.setVideoURI          ( Uri.parse ( sURI ) ) ;
+                    oVideoView.setMediaController     ( new MediaController ( oThis ) ) ;
+                       oVideoView.requestFocus         ( ) ;
+                    oVideoView.start                 ( ) ;
+                    oVideoView.setZOrderMediaOverlay( true ) ;
                     if ( ! sURI.contains ( ".mp3" ) )
                     {
-	 					// TODO: backup the current orientation
+                         // TODO: backup the current orientation
                         oThis.setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ) ;
-                    }		
-		            return oVideoView.isPlaying 	( ) ;
-				}
-	        }
-		}
-		catch ( Exception e )
-		{
-			Log.d ( Globals.sApplicationName, "onPlayOverlayMovie: " + e.getMessage ( ), e ) ;
-			
-			onStopOverlayMovie ( ) ;
-		}
+                    }        
+                    return oVideoView.isPlaying     ( ) ;
+                }
+            }
+        }
+        catch ( Exception e )
+        {
+            Log.d ( Globals.sApplicationName, "onPlayOverlayMovie: " + e.getMessage ( ), e ) ;
+            
+            onStopOverlayMovie ( ) ;
+        }
 
         return false ;
     }   
@@ -1034,14 +1034,14 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         
         if ( oVideoView != null )
         {
-            oVideoView.stopPlayback 		( ) ;
+            oVideoView.stopPlayback         ( ) ;
             oVideoView.setVisibility        ( View.INVISIBLE ) ;
-			oViewGroup.removeView   		( oVideoView ) ;
-			oVideoView 						= null ;
-			//o3DView.setVisibility 			( View.VISIBLE ) ;
-			o3DView.onOverlayMovieStopped	( ) ;
+            oViewGroup.removeView           ( oVideoView ) ;
+            oVideoView                         = null ;
+            //o3DView.setVisibility             ( View.VISIBLE ) ;
+            o3DView.onOverlayMovieStopped    ( ) ;
         }
-		oThis.setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ) ; // TODO: restore the original orientation
+        oThis.setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ) ; // TODO: restore the original orientation
     }   
 
     //------------------------------------------------------------------
@@ -1059,7 +1059,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     public boolean onError ( MediaPlayer mp, int what, int extra )
     {
-		return false ;
+        return false ;
     } 
     
     //------------------------------------------------------------------
@@ -1067,33 +1067,33 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //
     public static boolean onOpenCameraDevice ( )
     {
-		if ( oCameraPreview == null )
-		{
-       		oCameraPreview = new CameraPreview ( oThis, 320, 240 ) ;
-		
-			if ( oCameraPreview != null )
-			{
-				oViewGroup.addView   ( oCameraPreview ) ;
-				//oCameraPreview.setZOrderMediaOverlay ( true ) ; // Uncomment to display the preview surface
-				bCameraDeviceEnabled = true ;
-				return bCameraDeviceEnabled ;
-			}
-			return false ;
-		}
-		return true ;
-	}
-	
+        if ( oCameraPreview == null )
+        {
+               oCameraPreview = new CameraPreview ( oThis, 320, 240 ) ;
+        
+            if ( oCameraPreview != null )
+            {
+                oViewGroup.addView   ( oCameraPreview ) ;
+                //oCameraPreview.setZOrderMediaOverlay ( true ) ; // Uncomment to display the preview surface
+                bCameraDeviceEnabled = true ;
+                return bCameraDeviceEnabled ;
+            }
+            return false ;
+        }
+        return true ;
+    }
+    
     //------------------------------------------------------------------
     public static void onCloseCameraDevice ( )
     {
-		if ( oCameraPreview != null )
-		{
-			oCameraPreview.clearPreviewCallbackWithBuffer ( ) ;
-			oViewGroup.removeView ( oCameraPreview ) ;
-        	oCameraPreview       = null  ;
-        	bCameraDeviceEnabled = false ;
-		}
-	}
+        if ( oCameraPreview != null )
+        {
+            oCameraPreview.clearPreviewCallbackWithBuffer ( ) ;
+            oViewGroup.removeView ( oCameraPreview ) ;
+            oCameraPreview       = null  ;
+            bCameraDeviceEnabled = false ;
+        }
+    }
 
     //------------------------------------------------------------------
     public static void onNewCameraFrame ( byte [] data, int w, int h )
@@ -1102,8 +1102,8 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         {
             o3DView.onCameraDeviceFrame ( data, w, h ) ;
         }
-	}
-	
+    }
+    
     //------------------------------------------------------------------
     // Location
     //
@@ -1130,7 +1130,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 {
                     Log.d ( Globals.sApplicationName, "Coarse location sensor available" ) ;
                     try { oLocationManager.requestLocationUpdates ( LocationManager.NETWORK_PROVIDER, 0, 0, o3DView, Looper.getMainLooper ( ) ) ; bAtLeastOneProviderEnabled = true ; }
-					catch ( Exception e ) { e.printStackTrace ( ) ; }
+                    catch ( Exception e ) { e.printStackTrace ( ) ; }
                 }
                 else
                 {
@@ -1139,8 +1139,8 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 if ( oLocationManager.isProviderEnabled ( LocationManager.GPS_PROVIDER ) )
                 {
                     Log.d ( Globals.sApplicationName, "Fine location sensor available" ) ;
-					try { oLocationManager.requestLocationUpdates ( LocationManager.GPS_PROVIDER, 0, 0, o3DView, Looper.getMainLooper ( ) ) ; bAtLeastOneProviderEnabled = true ; }
-					catch ( Exception e ) { e.printStackTrace ( ) ; }
+                    try { oLocationManager.requestLocationUpdates ( LocationManager.GPS_PROVIDER, 0, 0, o3DView, Looper.getMainLooper ( ) ) ; bAtLeastOneProviderEnabled = true ; }
+                    catch ( Exception e ) { e.printStackTrace ( ) ; }
                 }
                 else
                 {
@@ -1170,17 +1170,17 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     {
         if ( oSensorManager != null )
         {
-		    Sensor oDefaultOrientationSensor  = oSensorManager.getDefaultSensor ( Sensor.TYPE_ORIENTATION ) ;
-		    if   ( oDefaultOrientationSensor != null )
-		    {
+            Sensor oDefaultOrientationSensor  = oSensorManager.getDefaultSensor ( Sensor.TYPE_ORIENTATION ) ;
+            if   ( oDefaultOrientationSensor != null )
+            {
                  if ( bEnable ) oSensorManager.registerListener   ( o3DView, oDefaultOrientationSensor, SensorManager.SENSOR_DELAY_GAME ) ;
                  else           oSensorManager.unregisterListener ( o3DView, oDefaultOrientationSensor ) ;
                  return (bHeadingUpdatesEnabled = bEnable) ;
             }
         }
         return false ;
-	}
-	    
+    }
+        
     //------------------------------------------------------------------
     // Accelerometer
     //
@@ -1189,16 +1189,16 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         if ( oSensorManager != null )
         {
             Sensor oDefaultAccelerometerSensor  = oSensorManager.getDefaultSensor ( Sensor.TYPE_ACCELEROMETER ) ;
-		    if   ( oDefaultAccelerometerSensor != null )
-		    {
+            if   ( oDefaultAccelerometerSensor != null )
+            {
                  if ( bEnable ) oSensorManager.registerListener   ( o3DView, oDefaultAccelerometerSensor, SensorManager.SENSOR_DELAY_GAME ) ;
                  else           oSensorManager.unregisterListener ( o3DView, oDefaultAccelerometerSensor ) ;
                  return (bAccelerometerUpdatesEnabled = bEnable) ;
             }
         }
         return false ;
-	}
-	    
+    }
+        
     //------------------------------------------------------------------
     // View options methods (must be called before SetContentView).
     //
@@ -1261,7 +1261,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     { 
         if ( ! createWritableDirectory ( sOutputDirPath, true ) )
         {
-			Log.d ( Globals.sApplicationName, "Could not create folder " + sOutputDirPath ) ;
+            Log.d ( Globals.sApplicationName, "Could not create folder " + sOutputDirPath ) ;
             return false ;
         }
 
@@ -1288,7 +1288,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
             }
         }
         catch ( IOException e ) { e.printStackTrace ( ) ; }
-		Log.d ( Globals.sApplicationName, "Could not extract asset " + sOutputName + " to folder" + sOutputDirPath ) ;
+        Log.d ( Globals.sApplicationName, "Could not extract asset " + sOutputName + " to folder" + sOutputDirPath ) ;
         return false ;               
     }    
     
@@ -1320,18 +1320,18 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 
                     if ( ! createWritableDirectory ( mPackDirPath, true ) )
                     {
-            			Log.d ( Globals.sApplicationName, "Could not create folder " + mPackDirPath ) ;
-            			
+                        Log.d ( Globals.sApplicationName, "Could not create folder " + mPackDirPath ) ;
+                        
                         // If something went wrong try on the phone internal filesystem 
                         //
                         mPackDirPath = getCacheDir ( ).getAbsolutePath ( ) ;
                     
                         if ( ! createWritableDirectory ( mPackDirPath, true ) )
                         {
-                			Log.d ( Globals.sApplicationName, "Could not create folder " + mPackDirPath ) ;
+                            Log.d ( Globals.sApplicationName, "Could not create folder " + mPackDirPath ) ;
 
-                			return false ; // No choice...
-                        }                                			
+                            return false ; // No choice...
+                        }                                            
                     }
                     
                     return true ;
@@ -1384,7 +1384,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 for ( int i = 0 ; i < aAssets.length ; i++ )
                 {
                     //if ( ! aAssets[i].endsWith ( ".stk" ) )
-					if ( ! aAssets[i].endsWith ( "S3DMain.smf" ) ) // Using the SMF extension instead of STK so it forces AAPT to not compress the file (Android < 2.2 only)
+                    if ( ! aAssets[i].endsWith ( "S3DMain.smf" ) ) // Using the SMF extension instead of STK so it forces AAPT to not compress the file (Android < 2.2 only)
                     {
                         // Extract file
                         //
@@ -1474,61 +1474,61 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     }    
 
     //------------------------------------------------------------------
-	// @@END_ACTIVITY_METHODS@@	
+    // @@END_ACTIVITY_METHODS@@    
     //------------------------------------------------------------------
 
-	//------------------------------------------------------------------
-	// @@BEGIN_SCORELOOP_METHODS@@	
-	//------------------------------------------------------------------
-	
-	//Used to feed back into shiva to show that an achievement was granted via scoreloop
+    //------------------------------------------------------------------
+    // @@BEGIN_SCORELOOP_METHODS@@    
+    //------------------------------------------------------------------
+    
+    //Used to feed back into shiva to show that an achievement was granted via scoreloop
     public native static void showAchievementInShiva(String id);
     
     /**
      * Launches the score loop UI
-	 * @param showMainUI true to open the main screen, false to open achievements
+     * @param showMainUI true to open the main screen, false to open achievements
      */
     public static void scoreloopShowUI(boolean showMainUI){
-    	
-    	mUIHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				ScoreloopManagerSingleton.get().askUserToAcceptTermsOfService( mActivity, new Continuation<Boolean>() {
-		    	    public void withValue(final Boolean value, final Exception error) {
-		    	        if (value != null && value) {
-		    	            Intent i;
-							//TODO
-							if(showMainUI)
-								i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
-							else
-								i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
-								
-		    	        	i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		    	        	S3DEngine.getAppContext().startActivity(i);
-		    	        }
-		    	    }
-				});
-			}
-		});
-	}
+        
+        mUIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ScoreloopManagerSingleton.get().askUserToAcceptTermsOfService( mActivity, new Continuation<Boolean>() {
+                    public void withValue(final Boolean value, final Exception error) {
+                        if (value != null && value) {
+                            Intent i;
+                            //TODO
+                            if(showMainUI)
+                                i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
+                            else
+                                i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
+                                
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            S3DEngine.getAppContext().startActivity(i);
+                        }
+                    }
+                });
+            }
+        });
+    }
     
     /**
      * Called from Shiva, gives the specified achievement if it isn't already achieved
      * @param id The string postfix for the achievement
      */
     public static void scoreloopAwardAchievement(String id){
-    	//load achievements
-    	if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
-    		return;
-    	
-		//TODO revisit online/offline settings
-		
-    	// Retrieves the Achievement object associated with the award identifier
-    	if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
-	    	ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
-	    	showAchievementInShiva( id );
-	    	doAchievementCompletionCheck();
-    	}
+        //load achievements
+        if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
+            return;
+        
+        //TODO revisit online/offline settings
+        
+        // Retrieves the Achievement object associated with the award identifier
+        if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
+            ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
+            showAchievementInShiva( id );
+            doAchievementCompletionCheck();
+        }
     }
     
     /**
@@ -1536,96 +1536,96 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
      * @param id The string postfix for the achievement
      */
     public static void scoreloopIncrementAchievement(String id){
-    	if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
-    		return;
-    	
-		if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
-			if(ScoreloopManagerSingleton.get().incrementAward("com.test.test." + id, false, true))
-				showAchievementInShiva( id );
-		}
-    }
-	
-	//TODO The main idea here is to pass a variable number of strings in the order
-	//that they are to be achieved
-	public static void incrementTieredAchievement(String ...){
-	
-    	//Handle Win level logic
-    	else if(id.contentEquals("beat25")){
-    		if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat25")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat25", false, true))
-        			showAchievementInShiva( "beat25" );
-    		}
-    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat50")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat50", false, true))
-        			showAchievementInShiva( "beat50" );
-    		}
-    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat75")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat75", false, true))
-        			showAchievementInShiva( "beat75" );
-    		}
-    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.win")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.win", false, true)){
-        			showAchievementInShiva( "win" );
-        			doAchievementCompletionCheck();
-    			}
-    		}
-    	}
-    	
-    	else if(id.contentEquals("death25")){
-    		if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death25")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death25", false, true))
-        			showAchievementInShiva( "death25" );
-    		}
-    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death50")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death50", false, true))
-        			showAchievementInShiva( "death50" );
-    		}
-    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death75")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death75", false, true))
-        			showAchievementInShiva( "death75" );
-    		}
-    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.fail")){
-    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.fail", false, true)){
-        			showAchievementInShiva( "fail" );
-        			doAchievementCompletionCheck();
-    			}
-    		}
-    	}
+        if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
+            return;
+        
+        if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
+            if(ScoreloopManagerSingleton.get().incrementAward("com.test.test." + id, false, true))
+                showAchievementInShiva( id );
+        }
     }
     
-	/**
-	 * Checks if all achievements have been completed except for the one to grant
-	 * @param id The id to grant if all other achievements have been given
-	 */
-	private static void doAchievementCompletionCheck(String id){
-		List<Award> awards = ScoreloopManagerSingleton.get().getAwardList().getAwards();
-		List< Achievement > achievements = ScoreloopManagerSingleton.get().getAchievements();
-		boolean complete = true;
-		
-		for(int i = 0; i < achievements.size() - 1; i++){
-			if(achievements.get(i) != null){
-	    		//If the award is not achieved and the award is not the completionist award
-				String id = awards.get(i).getIdentifier();
-				
-	    		if(!achievements.get(i).isAchieved() && !id.contentEquals("com.test.test." + id)){
-	    			complete = false;
-	    			break;
-	    		}
-			}
-		}
-		
-		if(complete){
-			ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
-			showAchievementInShiva( id );
-		}
-	}
+    //TODO The main idea here is to pass a variable number of strings in the order
+    //that they are to be achieved
+    public static void incrementTieredAchievement(String ...){
+    
+        //Handle Win level logic
+        else if(id.contentEquals("beat25")){
+            if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat25")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat25", false, true))
+                    showAchievementInShiva( "beat25" );
+            }
+            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat50")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat50", false, true))
+                    showAchievementInShiva( "beat50" );
+            }
+            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat75")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat75", false, true))
+                    showAchievementInShiva( "beat75" );
+            }
+            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.win")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.win", false, true)){
+                    showAchievementInShiva( "win" );
+                    doAchievementCompletionCheck();
+                }
+            }
+        }
+        
+        else if(id.contentEquals("death25")){
+            if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death25")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death25", false, true))
+                    showAchievementInShiva( "death25" );
+            }
+            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death50")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death50", false, true))
+                    showAchievementInShiva( "death50" );
+            }
+            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death75")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death75", false, true))
+                    showAchievementInShiva( "death75" );
+            }
+            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.fail")){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.fail", false, true)){
+                    showAchievementInShiva( "fail" );
+                    doAchievementCompletionCheck();
+                }
+            }
+        }
+    }
+    
+    /**
+     * Checks if all achievements have been completed except for the one to grant
+     * @param id The id to grant if all other achievements have been given
+     */
+    private static void doAchievementCompletionCheck(String id){
+        List<Award> awards = ScoreloopManagerSingleton.get().getAwardList().getAwards();
+        List< Achievement > achievements = ScoreloopManagerSingleton.get().getAchievements();
+        boolean complete = true;
+        
+        for(int i = 0; i < achievements.size() - 1; i++){
+            if(achievements.get(i) != null){
+                //If the award is not achieved and the award is not the completionist award
+                String id = awards.get(i).getIdentifier();
+                
+                if(!achievements.get(i).isAchieved() && !id.contentEquals("com.test.test." + id)){
+                    complete = false;
+                    break;
+                }
+            }
+        }
+        
+        if(complete){
+            ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
+            showAchievementInShiva( id );
+        }
+    }
     
     //------------------------------------------------------------------
-  	// @@END_SCORELOOP_METHODS@@	
-  	//------------------------------------------------------------------
-	
+      // @@END_SCORELOOP_METHODS@@    
+      //------------------------------------------------------------------
+    
     //------------------------------------------------------------------
-	// @@BEGIN_ACTIVITY_VARIABLES@@	
+    // @@BEGIN_ACTIVITY_VARIABLES@@    
     //------------------------------------------------------------------
     // Software keyboard view.
     //
@@ -1640,7 +1640,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // Splash screen view.
     //
-    private static View 			oSplashView		;
+    private static View             oSplashView        ;
 
     //------------------------------------------------------------------
     // Video surface view.
@@ -1661,7 +1661,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     // Media player object to play musics from Java.
     //
     private static MediaPlayer      oMediaPlayer    ;
-	private static String [ ]       aMusicsList     = new String [64] ;
+    private static String [ ]       aMusicsList     = new String [64] ;
 
     //------------------------------------------------------------------
     // Vibrator object.
@@ -1671,7 +1671,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // Camera.
     //
-	private static CameraPreview 	oCameraPreview  ;
+    private static CameraPreview     oCameraPreview  ;
     
     //------------------------------------------------------------------
     // Sensor manager object.
@@ -1710,7 +1710,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // State variables
     //
-	private static boolean bCameraDeviceEnabled                        = false ;
+    private static boolean bCameraDeviceEnabled                        = false ;
     private static boolean bAccelerometerUpdatesEnabled                = false ;
     private static boolean bHeadingUpdatesEnabled                      = false ;
     private static boolean bLocationUpdatesEnabled                     = false ;
@@ -1719,7 +1719,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     private static boolean bWantToResume                               = false ;
     //TODO: private static String  sOverlayMoviePlaying                        ;
                            
-	private static boolean bCameraDeviceWasEnabledBeforePause          = false ;
+    private static boolean bCameraDeviceWasEnabledBeforePause          = false ;
     private static boolean bAccelerometerUpdatesWereEnabledBeforePause = false ;
     private static boolean bHeadingUpdatesWereEnabledBeforePause       = false ;
     private static boolean bLocationUpdatesWereEnabledBeforePause      = false ;
@@ -1727,7 +1727,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //TODO: private static String  sOverlayMoviePlayingBeforePause             ;
 
     //------------------------------------------------------------------
-	// @@END_ACTIVITY_VARIABLES@@	
+    // @@END_ACTIVITY_VARIABLES@@    
     //------------------------------------------------------------------
 
     //------------------------------------------------------------------
@@ -1784,16 +1784,16 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //
     static 
     {
-    	//--------------------------------------------------------------
-		// @@BEGIN_ACTIVITY_NATIVE_LIBRARIES@@	
-    	//--------------------------------------------------------------
-		System.loadLibrary ( "crypto" ) ;
-		System.loadLibrary ( "ssl" ) ;
+        //--------------------------------------------------------------
+        // @@BEGIN_ACTIVITY_NATIVE_LIBRARIES@@    
+        //--------------------------------------------------------------
+        System.loadLibrary ( "crypto" ) ;
+        System.loadLibrary ( "ssl" ) ;
         System.loadLibrary ( "openal" ) ;
         System.loadLibrary ( "S3DClient" ) ;
-    	//--------------------------------------------------------------
-		// @@END_ACTIVITY_NATIVE_LIBRARIES@@	
-    	//--------------------------------------------------------------
+        //--------------------------------------------------------------
+        // @@END_ACTIVITY_NATIVE_LIBRARIES@@    
+        //--------------------------------------------------------------
     }    
 }
 
@@ -1802,309 +1802,309 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 //
 class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback
 {
-	SurfaceHolder mHolder;
-	Camera mCamera;
+    SurfaceHolder mHolder;
+    Camera mCamera;
 
-	//private NativeProcessor processor;
+    //private NativeProcessor processor;
 
-	private int preview_width, preview_height;
-	private int pixelformat;
-	private PixelFormat pixelinfo;
-	private boxParticleLighting processor;
+    private int preview_width, preview_height;
+    private int pixelformat;
+    private PixelFormat pixelinfo;
+    private boxParticleLighting processor;
 
-	public CameraPreview(boxParticleLighting context, int preview_width, int preview_height) 
-	{
-		super(context);
+    public CameraPreview(boxParticleLighting context, int preview_width, int preview_height) 
+    {
+        super(context);
 
-		//listAllCameraMethods();
-		
-		// Install a SurfaceHolder.Callback so we get notified when the
-		// underlying surface is created and destroyed.
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        //listAllCameraMethods();
+        
+        // Install a SurfaceHolder.Callback so we get notified when the
+        // underlying surface is created and destroyed.
+        mHolder = getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-		this.preview_width = preview_width;
-		this.preview_height = preview_height;
+        this.preview_width = preview_width;
+        this.preview_height = preview_height;
 
-		//processor = new NativeProcessor();
+        //processor = new NativeProcessor();
         processor = context;
-	}
+    }
 
-	public void surfaceCreated(SurfaceHolder holder) 
-	{
-		// The Surface has been created, acquire the camera and tell it where
-		// to draw.
-		mCamera = Camera.open();
-		try 
-		{
-			listAllCameraSupportedPreviewSizes ( ) ;
-			mCamera.setPreviewDisplay(holder);
-		} 
-		catch (IOException exception) 
-		{
-			mCamera.release();
-			mCamera = null;
-		}
-	}
+    public void surfaceCreated(SurfaceHolder holder) 
+    {
+        // The Surface has been created, acquire the camera and tell it where
+        // to draw.
+        mCamera = Camera.open();
+        try 
+        {
+            listAllCameraSupportedPreviewSizes ( ) ;
+            mCamera.setPreviewDisplay(holder);
+        } 
+        catch (IOException exception) 
+        {
+            mCamera.release();
+            mCamera = null;
+        }
+    }
 
-	public void surfaceDestroyed(SurfaceHolder holder) 
-	{
-		// Surface will be destroyed when we return, so stop the preview.
-		// Because the CameraDevice object is not a shared resource, it's very
-		// important to release it when the activity is paused.
-		mCamera.stopPreview();
-		mCamera.release();
+    public void surfaceDestroyed(SurfaceHolder holder) 
+    {
+        // Surface will be destroyed when we return, so stop the preview.
+        // Because the CameraDevice object is not a shared resource, it's very
+        // important to release it when the activity is paused.
+        mCamera.stopPreview();
+        mCamera.release();
 
-		processor = null;
-		mCamera = null;
-		mAcb 	= null;
-		mPCWB 	= null;
+        processor = null;
+        mCamera = null;
+        mAcb     = null;
+        mPCWB     = null;
 
-	}
+    }
 
-	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) 
-	{
-		// Now that the size is known, set up the camera parameters and begin
-		// the preview.
+    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) 
+    {
+        // Now that the size is known, set up the camera parameters and begin
+        // the preview.
 
-		Camera.Parameters parameters = mCamera.getParameters();
-		List<Camera.Size> pvsizes = mCamera.getParameters().getSupportedPreviewSizes();
-		int best_width  = 1000000;
-		int best_height = 1000000;
-		for(Size x: pvsizes)
-		{
-			if ( x.width - preview_width > 0 && x.width <= best_width )
-			{
-				best_width  = x.width;
-				best_height = x.height;
-			}
-		}
-		preview_width  = best_width;
-		preview_height = best_height;
+        Camera.Parameters parameters = mCamera.getParameters();
+        List<Camera.Size> pvsizes = mCamera.getParameters().getSupportedPreviewSizes();
+        int best_width  = 1000000;
+        int best_height = 1000000;
+        for(Size x: pvsizes)
+        {
+            if ( x.width - preview_width > 0 && x.width <= best_width )
+            {
+                best_width  = x.width;
+                best_height = x.height;
+            }
+        }
+        preview_width  = best_width;
+        preview_height = best_height;
 
-		parameters.setPreviewSize(preview_width, preview_height);
+        parameters.setPreviewSize(preview_width, preview_height);
 
-		mCamera.setParameters(parameters);
+        mCamera.setParameters(parameters);
 
-		pixelinfo = new PixelFormat();
-		pixelformat = mCamera.getParameters().getPreviewFormat();
-		PixelFormat.getPixelFormatInfo(pixelformat, pixelinfo);
+        pixelinfo = new PixelFormat();
+        pixelformat = mCamera.getParameters().getPreviewFormat();
+        PixelFormat.getPixelFormatInfo(pixelformat, pixelinfo);
 
-		Size preview_size = mCamera.getParameters().getPreviewSize();
-		preview_width = preview_size.width;
-		preview_height = preview_size.height;
-		int bufSize = preview_width * preview_height * pixelinfo.bitsPerPixel / 8;
+        Size preview_size = mCamera.getParameters().getPreviewSize();
+        preview_width = preview_size.width;
+        preview_height = preview_size.height;
+        int bufSize = preview_width * preview_height * pixelinfo.bitsPerPixel / 8;
 
-		// Must call this before calling addCallbackBuffer to get all the
-		// reflection variables setup
-		initForACB();
-		initForPCWB();
+        // Must call this before calling addCallbackBuffer to get all the
+        // reflection variables setup
+        initForACB();
+        initForPCWB();
 
-		// Use only one buffer, so that we don't preview to many frames and bog
-		// down system
-		byte[] buffer = new byte[bufSize];
-		addCallbackBuffer(buffer);
-		setPreviewCallbackWithBuffer();
+        // Use only one buffer, so that we don't preview to many frames and bog
+        // down system
+        byte[] buffer = new byte[bufSize];
+        addCallbackBuffer(buffer);
+        setPreviewCallbackWithBuffer();
 
-		mCamera.startPreview();
-		
-		Log.d("boxParticleLighting", String.format ( "Preview started (%dx%d)", preview_width, preview_height ) ) ;
-	}
+        mCamera.startPreview();
+        
+        Log.d("boxParticleLighting", String.format ( "Preview started (%dx%d)", preview_width, preview_height ) ) ;
+    }
 
-	/**
-	 * This method will list all methods of the android.hardware.Camera class,
-	 * even the hidden ones. With the information it provides, you can use the
-	 * same approach I took below to expose methods that were written but hidden
-	 * in eclair
-	 */
-	private void listAllCameraMethods() 
-	{
-		try 
-		{
-			Class<?> c = Class.forName("android.hardware.Camera");
-			Method[] m = c.getMethods();
-			for (int i = 0; i < m.length; i++) 
-			{
-				Log.d("boxParticleLighting", "  method:" + m[i].toString());
-			}
-		} 
-		catch (Exception e) 
-		{
-			// TODO Auto-generated catch block
-			Log.e("boxParticleLighting", e.toString());
-		}
-	}
+    /**
+     * This method will list all methods of the android.hardware.Camera class,
+     * even the hidden ones. With the information it provides, you can use the
+     * same approach I took below to expose methods that were written but hidden
+     * in eclair
+     */
+    private void listAllCameraMethods() 
+    {
+        try 
+        {
+            Class<?> c = Class.forName("android.hardware.Camera");
+            Method[] m = c.getMethods();
+            for (int i = 0; i < m.length; i++) 
+            {
+                Log.d("boxParticleLighting", "  method:" + m[i].toString());
+            }
+        } 
+        catch (Exception e) 
+        {
+            // TODO Auto-generated catch block
+            Log.e("boxParticleLighting", e.toString());
+        }
+    }
 
-	private void listAllCameraSupportedPreviewSizes() 
-	{
-		if ( mCamera != null )
-		{
-			Log.d("boxParticleLighting", "Camera supported preview sizes:");
-			Camera.Parameters parameters = mCamera.getParameters();
-			List<Camera.Size> pvsizes = mCamera.getParameters().getSupportedPreviewSizes();
-			for(Size x: pvsizes)
-			{
-				Log.d("boxParticleLighting", String.format("    - %dx%d", x.width, x.height));
-			}
-		}
-	}
+    private void listAllCameraSupportedPreviewSizes() 
+    {
+        if ( mCamera != null )
+        {
+            Log.d("boxParticleLighting", "Camera supported preview sizes:");
+            Camera.Parameters parameters = mCamera.getParameters();
+            List<Camera.Size> pvsizes = mCamera.getParameters().getSupportedPreviewSizes();
+            for(Size x: pvsizes)
+            {
+                Log.d("boxParticleLighting", String.format("    - %dx%d", x.width, x.height));
+            }
+        }
+    }
 
-	/**
-	 * These variables are re-used over and over by addCallbackBuffer
-	 */
-	Method mAcb;
+    /**
+     * These variables are re-used over and over by addCallbackBuffer
+     */
+    Method mAcb;
 
-	private void initForACB() {
-		try 
-		{
-			mAcb = Class.forName("android.hardware.Camera").getMethod("addCallbackBuffer", byte[].class);
+    private void initForACB() {
+        try 
+        {
+            mAcb = Class.forName("android.hardware.Camera").getMethod("addCallbackBuffer", byte[].class);
 
-		} 
-		catch (Exception e) 
-		{
-			Log.e("boxParticleLighting", "Problem setting up for addCallbackBuffer: " + e.toString());
-		}
-	}
+        } 
+        catch (Exception e) 
+        {
+            Log.e("boxParticleLighting", "Problem setting up for addCallbackBuffer: " + e.toString());
+        }
+    }
 
-	/**
-	 * This method allows you to add a byte buffer to the queue of buffers to be
-	 * used by preview. See:
-	 * http://android.git.kernel.org/?p=platform/frameworks
-	 * /base.git;a=blob;f=core/java/android/hardware/Camera.java;hb=9d
-	 * b3d07b9620b4269ab33f78604a36327e536ce1
-	 * 
-	 * @param b
-	 *            The buffer to register. Size should be width * height *
-	 *            bitsPerPixel / 8.
-	 */
-	private void addCallbackBuffer(byte[] b) 
-	{
-		/* TODO:
-		try 
-		{
-			mAcb.invoke(mCamera, b);
-		} 
-		catch (Exception e) 
-		{
-			Log.e("boxParticleLighting", "invoking addCallbackBuffer failed: " + e.toString());
-		}
-		*/
-	}
+    /**
+     * This method allows you to add a byte buffer to the queue of buffers to be
+     * used by preview. See:
+     * http://android.git.kernel.org/?p=platform/frameworks
+     * /base.git;a=blob;f=core/java/android/hardware/Camera.java;hb=9d
+     * b3d07b9620b4269ab33f78604a36327e536ce1
+     * 
+     * @param b
+     *            The buffer to register. Size should be width * height *
+     *            bitsPerPixel / 8.
+     */
+    private void addCallbackBuffer(byte[] b) 
+    {
+        /* TODO:
+        try 
+        {
+            mAcb.invoke(mCamera, b);
+        } 
+        catch (Exception e) 
+        {
+            Log.e("boxParticleLighting", "invoking addCallbackBuffer failed: " + e.toString());
+        }
+        */
+    }
 
-	Method mPCWB;
+    Method mPCWB;
 
-	private void initForPCWB() 
-	{
-		/* TODO:
-		try 
-		{
-			mPCWB = Class.forName("android.hardware.Camera").getMethod("setPreviewCallbackWithBuffer", PreviewCallback.class);
-		} 
-		catch (Exception e) 
-		{
-			Log.e("boxParticleLighting","Problem setting up for setPreviewCallbackWithBuffer: " + e.toString());
-		}
-		*/
-	}
+    private void initForPCWB() 
+    {
+        /* TODO:
+        try 
+        {
+            mPCWB = Class.forName("android.hardware.Camera").getMethod("setPreviewCallbackWithBuffer", PreviewCallback.class);
+        } 
+        catch (Exception e) 
+        {
+            Log.e("boxParticleLighting","Problem setting up for setPreviewCallbackWithBuffer: " + e.toString());
+        }
+        */
+    }
 
-	/**
-	 * Use this method instead of setPreviewCallback if you want to use manually
-	 * allocated buffers. Assumes that "this" implements Camera.PreviewCallback
-	 */
-	private void setPreviewCallbackWithBuffer() 
-	{
-		 mCamera.setPreviewCallback(this);
-		 /* TODO:
-		try {
+    /**
+     * Use this method instead of setPreviewCallback if you want to use manually
+     * allocated buffers. Assumes that "this" implements Camera.PreviewCallback
+     */
+    private void setPreviewCallbackWithBuffer() 
+    {
+         mCamera.setPreviewCallback(this);
+         /* TODO:
+        try {
 
-			// If we were able to find the setPreviewCallbackWithBuffer method
-			// of Camera,
-			// we can now invoke it on our Camera instance, setting 'this' to be
-			// the
-			// callback handler
-			mPCWB.invoke(mCamera, this);
+            // If we were able to find the setPreviewCallbackWithBuffer method
+            // of Camera,
+            // we can now invoke it on our Camera instance, setting 'this' to be
+            // the
+            // callback handler
+            mPCWB.invoke(mCamera, this);
 
-			Log.d("boxParticleLighting","setPreviewCallbackWithBuffer: called");
+            Log.d("boxParticleLighting","setPreviewCallbackWithBuffer: called");
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			Log.e("boxParticleLighting", e.toString());
-		}*/
-	}
+            Log.e("boxParticleLighting", e.toString());
+        }*/
+    }
 
-	protected void clearPreviewCallbackWithBuffer() 
-	{
-		 mCamera.setPreviewCallback(null);
-		/* TODO:
-		try {
+    protected void clearPreviewCallbackWithBuffer() 
+    {
+         mCamera.setPreviewCallback(null);
+        /* TODO:
+        try {
 
-			// If we were able to find the setPreviewCallbackWithBuffer method
-			// of Camera,
-			// we can now invoke it on our Camera instance, setting 'this' to be
-			// the
-			// callback handler
-			mPCWB.invoke(mCamera, (PreviewCallback) null);
+            // If we were able to find the setPreviewCallbackWithBuffer method
+            // of Camera,
+            // we can now invoke it on our Camera instance, setting 'this' to be
+            // the
+            // callback handler
+            mPCWB.invoke(mCamera, (PreviewCallback) null);
 
-			Log.d("boxParticleLighting","setPreviewCallbackWithBuffer: cleared");
+            Log.d("boxParticleLighting","setPreviewCallbackWithBuffer: cleared");
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			Log.e("boxParticleLighting", e.toString());
-		}*/
-	}
+            Log.e("boxParticleLighting", e.toString());
+        }*/
+    }
 
-	Date start;
-	int fcount = 0;
-	boolean processing = false;
+    Date start;
+    int fcount = 0;
+    boolean processing = false;
 
-	/**
-	 * Demonstration of how to use onPreviewFrame. In this case I'm not
-	 * processing the data, I'm just adding the buffer back to the buffer queue
-	 * for re-use
-	 */
-	public void onPreviewFrame(byte[] data, Camera camera) 
-	{        
-		//Log.d("boxParticleLighting","onPreviewFrame: called");
+    /**
+     * Demonstration of how to use onPreviewFrame. In this case I'm not
+     * processing the data, I'm just adding the buffer back to the buffer queue
+     * for re-use
+     */
+    public void onPreviewFrame(byte[] data, Camera camera) 
+    {        
+        //Log.d("boxParticleLighting","onPreviewFrame: called");
 
         processor.onNewCameraFrame ( data, preview_width, preview_height ) ;
-		//processor.post(data, preview_width, preview_height, pixelformat, this);
-		
-		/*		
-		if (start == null) 
-		{
-			start = new Date();
-		}
-		fcount++;
-		if (fcount % 100 == 0) {
-			double ms = (new Date()).getTime() - start.getTime();
-			Log.d("boxParticleLighting", "fps:" + fcount / (ms / 1000.0));
-			start = new Date();
-			fcount = 0;
-		}
-		*/
-	}
+        //processor.post(data, preview_width, preview_height, pixelformat, this);
+        
+        /*        
+        if (start == null) 
+        {
+            start = new Date();
+        }
+        fcount++;
+        if (fcount % 100 == 0) {
+            double ms = (new Date()).getTime() - start.getTime();
+            Log.d("boxParticleLighting", "fps:" + fcount / (ms / 1000.0));
+            start = new Date();
+            fcount = 0;
+        }
+        */
+    }
 
-	//@Override
-	//public void onDoneNativeProcessing(byte[] buffer) {
-	//	addCallbackBuffer(buffer);
-	//}
+    //@Override
+    //public void onDoneNativeProcessing(byte[] buffer) {
+    //    addCallbackBuffer(buffer);
+    //}
 
-	//public void addCallbackStack(LinkedList<PoolCallback> callbackstack) {
-	//	processor.addCallbackStack(callbackstack);
-	//}
+    //public void addCallbackStack(LinkedList<PoolCallback> callbackstack) {
+    //    processor.addCallbackStack(callbackstack);
+    //}
 
-	/**This must be called when the activity pauses, in Activity.onPause
-	 * This has the side effect of clearing the callback stack.
-	 * 
-	 */
-	//public void onPause() {
-	//	addCallbackStack(null);
-	//	processor.stop();	
-	//}
+    /**This must be called when the activity pauses, in Activity.onPause
+     * This has the side effect of clearing the callback stack.
+     * 
+     */
+    //public void onPause() {
+    //    addCallbackStack(null);
+    //    processor.stop();    
+    //}
 
-	//public void onResume() {
-	//	processor.start();
-	//}
+    //public void onResume() {
+    //    processor.start();
+    //}
 
 }
