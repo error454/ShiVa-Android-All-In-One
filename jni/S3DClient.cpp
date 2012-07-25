@@ -86,7 +86,7 @@ extern "C"
         if (pJNIEnv)
         {
             jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
-            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogin", "()V");
+            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxLogin", "()V");
             pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
         return 0;
@@ -98,7 +98,7 @@ extern "C"
         if (pJNIEnv)
         {
             jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
-            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxLogout", "()V");
+            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxLogout", "()V");
             pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
         return 0 ;
@@ -116,50 +116,99 @@ extern "C"
                 jstring content = pJNIEnv->NewStringUTF(_pIn[1].GetStringValue());
 
                 jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
-                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxPutFileOverwrite", "(Ljava/lang/String;Ljava/lang/String;)V");
+                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxPutFileOverwrite", "(Ljava/lang/String;Ljava/lang/String;)V");
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename, content);
 
                 pJNIEnv->DeleteLocalRef(filename);
                 pJNIEnv->DeleteLocalRef(content);
             }
-
         }
 
         return 0;
     }
 
-        //Call the dropbox putFileOverwrite function
-        static int ClientFunctionCallback_onDropBoxGetFile ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    //Call the dropbox putFileOverwrite function
+    static int ClientFunctionCallback_onDropBoxGetFile ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    {
+        JNIEnv *pJNIEnv = GetJNIEnv();
+        if (pJNIEnv)
         {
-            JNIEnv *pJNIEnv = GetJNIEnv();
-            if (pJNIEnv)
+            if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
             {
-                if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
-                {
-                    jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+                jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
 
-                    jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
-                    jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "DropBoxGetFile", "(Ljava/lang/String;)V");
-                    pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename);
+                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxGetFile", "(Ljava/lang/String;)V");
+                pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename);
 
-                    pJNIEnv->DeleteLocalRef(filename);
-                }
-
+                pJNIEnv->DeleteLocalRef(filename);
             }
-
-            return 0;
         }
 
+        return 0;
+    }
+
+    static void ClientFunctionCallback_onScoreloopShowUI ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    {
+    	JNIEnv *pJNIEnv = GetJNIEnv();
+		if (pJNIEnv)
+        {
+            if ( ( _iInCount == 1 ) && _pIn[0].IsBoolean ( ) )
+            {
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+                jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopShowUI", "(Z)V" );
+                pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, _pIn[0].GetBooleanValue ( ));
+            }
+		}
+    }
+    
+    static void ClientFunctionCallback_onScoreloopAwardAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    {
+    	JNIEnv *pJNIEnv = GetJNIEnv();
+		if (pJNIEnv)
+        {
+            if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
+            {
+                jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+				jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+				jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopAwardAchievement", "(Ljava/lang/String;)V" );
+				pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
+                pJNIEnv->DeleteLocalRef(achievement);
+			}
+		}
+    }
+    
+    static void ClientFunctionCallback_onScoreloopIncrementAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    {
+		JNIEnv *pJNIEnv = GetJNIEnv();
+		if (pJNIEnv)
+        {
+			if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
+            {
+				jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
+				jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+				jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "(Ljava/lang/String;)V" );
+				pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
+                pJNIEnv->DeleteLocalRef(achievement);
+			}
+		}
+	}
+    //TODO: onScoreloopIncrementTieredAchievement
+    
+    
     //-----------------------------------------------------------------------------
 
-    static const int        iClientFunctionsCount = 5 ; // Modify this number when adding new functions just below
+    static const int        iClientFunctionsCount = 8 ; // Modify this number when adding new functions just below
     static S3DX::AIFunction aClientFunctions  [ ] =
     {
         { "onEngineEvent", ClientFunctionCallback_onEngineEvent, "...", "...", "...", 0 },
         { "onDropBoxLogin", ClientFunctionCallback_onDropBoxLogin, "...", "...", "...", 0 },
         { "onDropBoxLogout", ClientFunctionCallback_onDropBoxLogout, "...", "...", "...", 0 },
         { "onDropBoxPutFileOverwrite", ClientFunctionCallback_onDropBoxPutFileOverwrite, "...", "...", "...", 0 },
-        { "onDropBoxGetFile", ClientFunctionCallback_onDropBoxGetFile, "...", "...", "...", 0 }
+        { "onDropBoxGetFile", ClientFunctionCallback_onDropBoxGetFile, "...", "...", "...", 0 },
+        { "onScoreloopShowUI", ClientFunctionCallback_onScoreloopShowUI, "...", "...", "...", 0 },
+        { "onScoreloopAwardAchievement", ClientFunctionCallback_onScoreloopAwardAchievement, "...", "...", "...", 0 },
+        { "onScoreloopIncrementAchievement", ClientFunctionCallback_onScoreloopIncrementAchievement, "...", "...", "...", 0 }        
     } ;
 
     //----------------------------------------------------------------------

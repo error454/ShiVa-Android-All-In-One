@@ -53,6 +53,10 @@ public class S3DEngine extends Application
         // Call parent constructor
         //
         super.onCreate  ( ) ;
+		
+		if(ProjectSettings.UseScoreloop){
+			ScoreloopManagerSingleton.init(this, ProjectSettings.SL_API_KEY);
+		}
     }
     
     //------------------------------------------------------------------
@@ -61,6 +65,10 @@ public class S3DEngine extends Application
     {
         //Log.d ( "S3DENGINE MAIN", "### onTerminate" ) ;
         super.onTerminate ( ) ;
+		
+		if(ProjectSettings.UseScoreloop){
+			ScoreloopManagerSingleton.destroy();
+		}
     }
     
     //------------------------------------------------------------------

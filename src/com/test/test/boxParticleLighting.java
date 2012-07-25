@@ -1477,6 +1477,153 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 	// @@END_ACTIVITY_METHODS@@	
     //------------------------------------------------------------------
 
+	//------------------------------------------------------------------
+	// @@BEGIN_SCORELOOP_METHODS@@	
+	//------------------------------------------------------------------
+	
+	//Used to feed back into shiva to show that an achievement was granted via scoreloop
+    public native static void showAchievementInShiva(String id);
+    
+    /**
+     * Launches the score loop UI
+	 * @param showMainUI true to open the main screen, false to open achievements
+     */
+    public static void scoreloopShowUI(boolean showMainUI){
+    	
+    	mUIHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				ScoreloopManagerSingleton.get().askUserToAcceptTermsOfService( mActivity, new Continuation<Boolean>() {
+		    	    public void withValue(final Boolean value, final Exception error) {
+		    	        if (value != null && value) {
+		    	            Intent i;
+							//TODO
+							if(showMainUI)
+								i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
+							else
+								i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
+								
+		    	        	i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		    	        	S3DEngine.getAppContext().startActivity(i);
+		    	        }
+		    	    }
+				});
+			}
+		});
+	}
+    
+    /**
+     * Called from Shiva, gives the specified achievement if it isn't already achieved
+     * @param id The string postfix for the achievement
+     */
+    public static void scoreloopAwardAchievement(String id){
+    	//load achievements
+    	if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
+    		return;
+    	
+		//TODO revisit online/offline settings
+		
+    	// Retrieves the Achievement object associated with the award identifier
+    	if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
+	    	ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
+	    	showAchievementInShiva( id );
+	    	doAchievementCompletionCheck();
+    	}
+    }
+    
+    /**
+     * Called from Shiva, increments the specified achievement and awards it if it isn't already achieved
+     * @param id The string postfix for the achievement
+     */
+    public static void scoreloopIncrementAchievement(String id){
+    	if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
+    		return;
+    	
+		if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
+			if(ScoreloopManagerSingleton.get().incrementAward("com.test.test." + id, false, true))
+				showAchievementInShiva( id );
+		}
+    }
+	
+	//TODO The main idea here is to pass a variable number of strings in the order
+	//that they are to be achieved
+	public static void incrementTieredAchievement(String ...){
+	
+    	//Handle Win level logic
+    	else if(id.contentEquals("beat25")){
+    		if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat25")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat25", false, true))
+        			showAchievementInShiva( "beat25" );
+    		}
+    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat50")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat50", false, true))
+        			showAchievementInShiva( "beat50" );
+    		}
+    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat75")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat75", false, true))
+        			showAchievementInShiva( "beat75" );
+    		}
+    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.win")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.win", false, true)){
+        			showAchievementInShiva( "win" );
+        			doAchievementCompletionCheck();
+    			}
+    		}
+    	}
+    	
+    	else if(id.contentEquals("death25")){
+    		if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death25")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death25", false, true))
+        			showAchievementInShiva( "death25" );
+    		}
+    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death50")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death50", false, true))
+        			showAchievementInShiva( "death50" );
+    		}
+    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death75")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death75", false, true))
+        			showAchievementInShiva( "death75" );
+    		}
+    		else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.fail")){
+    			if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.fail", false, true)){
+        			showAchievementInShiva( "fail" );
+        			doAchievementCompletionCheck();
+    			}
+    		}
+    	}
+    }
+    
+	/**
+	 * Checks if all achievements have been completed except for the one to grant
+	 * @param id The id to grant if all other achievements have been given
+	 */
+	private static void doAchievementCompletionCheck(String id){
+		List<Award> awards = ScoreloopManagerSingleton.get().getAwardList().getAwards();
+		List< Achievement > achievements = ScoreloopManagerSingleton.get().getAchievements();
+		boolean complete = true;
+		
+		for(int i = 0; i < achievements.size() - 1; i++){
+			if(achievements.get(i) != null){
+	    		//If the award is not achieved and the award is not the completionist award
+				String id = awards.get(i).getIdentifier();
+				
+	    		if(!achievements.get(i).isAchieved() && !id.contentEquals("com.test.test." + id)){
+	    			complete = false;
+	    			break;
+	    		}
+			}
+		}
+		
+		if(complete){
+			ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
+			showAchievementInShiva( id );
+		}
+	}
+    
+    //------------------------------------------------------------------
+  	// @@END_SCORELOOP_METHODS@@	
+  	//------------------------------------------------------------------
+	
     //------------------------------------------------------------------
 	// @@BEGIN_ACTIVITY_VARIABLES@@	
     //------------------------------------------------------------------
@@ -1586,17 +1733,17 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // @@BEGIN_JNI_CALLBACK_METHODS@@   
     //------------------------------------------------------------------
-    public static void DropBoxLogin(){
+    public static void dropBoxLogin(){
         if(ProjectSettings.UseDropboxAPI)
             DropBox.logIn(oThis.getApplicationContext());
     }
     
-    public static void DropBoxLogout(){
+    public static void dropBoxLogout(){
         if(ProjectSettings.UseDropboxAPI)
             DropBox.logOut(oThis.getApplicationContext());
     }
     
-    public static void DropBoxPutFileOverwrite(final String file, final String contents){
+    public static void dropBoxPutFileOverwrite(final String file, final String contents){
         if(ProjectSettings.UseDropboxAPI){
             Runnable r = new Runnable() {
                 @Override
@@ -1611,7 +1758,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         }
     }
     
-    public static void DropBoxGetFile(final String file){
+    public static void dropBoxGetFile(final String file){
         if(ProjectSettings.UseDropboxAPI){
             Runnable r = new Runnable() {
                 @Override
