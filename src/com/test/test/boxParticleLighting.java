@@ -1547,52 +1547,26 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     
     //TODO The main idea here is to pass a variable number of strings in the order
     //that they are to be achieved
-    public static void incrementTieredAchievement(String ...){
+    /**
+     * Called from Shiva, takes a list of awards and treats them as a tiered achievement.
+     * For instance if you wanted achievements for winning 5, 10 and 15 times you could pass:
+     * win5, win10, win15.  The function then checks if the first award is achieved, if not it
+     * increments it, if so it increments the next achievement and so on.
+     * @param achievements A variable number of achievement postfixes
+     */
+    public static void incrementTieredAchievement(String ... achievements){
     
-        //Handle Win level logic
-        else if(id.contentEquals("beat25")){
-            if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat25")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat25", false, true))
-                    showAchievementInShiva( "beat25" );
-            }
-            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat50")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat50", false, true))
-                    showAchievementInShiva( "beat50" );
-            }
-            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.beat75")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.beat75", false, true))
-                    showAchievementInShiva( "beat75" );
-            }
-            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.win")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.win", false, true)){
-                    showAchievementInShiva( "win" );
-                    doAchievementCompletionCheck();
-                }
-            }
-        }
-        
-        else if(id.contentEquals("death25")){
-            if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death25")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death25", false, true))
-                    showAchievementInShiva( "death25" );
-            }
-            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death50")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death50", false, true))
-                    showAchievementInShiva( "death50" );
-            }
-            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.death75")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.death75", false, true))
-                    showAchievementInShiva( "death75" );
-            }
-            else if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.hypercanestudios.accelerocketer.fail")){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.hypercanestudios.accelerocketer.fail", false, true)){
-                    showAchievementInShiva( "fail" );
-                    doAchievementCompletionCheck();
+        for(String achievement : achievements){
+            if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + achievement)){
+                if(ScoreloopManagerSingleton.get().incrementAward("com.test.test." + achievement, false, true)){
+                    showAchievementInShiva( achievement );
+                    break;
                 }
             }
         }
     }
     
+    //TODO think of a clean way to allow the user to set this id or call this manually...
     /**
      * Checks if all achievements have been completed except for the one to grant
      * @param id The id to grant if all other achievements have been given

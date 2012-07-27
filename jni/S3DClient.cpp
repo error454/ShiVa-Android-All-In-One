@@ -104,7 +104,6 @@ extern "C"
         return 0 ;
     }
 
-    //Call the dropbox putFileOverwrite function
     static int ClientFunctionCallback_onDropBoxPutFileOverwrite ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
         JNIEnv *pJNIEnv = GetJNIEnv();
@@ -127,7 +126,6 @@ extern "C"
         return 0;
     }
 
-    //Call the dropbox putFileOverwrite function
     static int ClientFunctionCallback_onDropBoxGetFile ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
         JNIEnv *pJNIEnv = GetJNIEnv();
@@ -193,8 +191,35 @@ extern "C"
             }
         }
     }
-    //TODO: onScoreloopIncrementTieredAchievement
     
+    static void ClientFunctionCallback_onScoreloopIncrementTieredAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    {
+        JNIEnv *pJNIEnv = GetJNIEnv();
+        if (pJNIEnv)
+        {
+            //Make sure they're all strings
+            for(int stringArg = 0; stringArg < _iInCount - 1; stringArg++)
+            {
+                if( !_pIn[stringArg].IsString( ) )
+                    return;
+            }
+            
+            jstring achievements[_iInCount];
+            
+            for(int stringArg = 0; stringArg < _iInCount - 1; stringArg++)
+            {
+                achievements[stringArg] = pJNIEnv->NewStringUTF(_pIn[stringArg].GetStringValue());
+            }
+            
+            jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+            
+            //TODO call vararg function
+            
+            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "([Ljava/lang/String;)V" );
+            pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
+            pJNIEnv->DeleteLocalRef(achievement);
+        }
+    }
     
     //-----------------------------------------------------------------------------
 
@@ -661,6 +686,19 @@ extern "C"
 
         _pEnv->ReleaseStringUTFChars(error, nativeString);
     }
+    
+    JNIEXPORT void JNICALL Java_com_test_test_showAchievementInShiva ( JNIEnv *_pEnv, jobject obj, jstring id )
+	{
+		//Convert java string 'id' to a const char * so we can pass it to shiva
+		const char *nativeString = _pEnv->GetStringUTFChars(id, NULL);
+
+		S3DX::AIVariable args[1];
+		args[0].SetStringValue( nativeString );
+		S3DClient_SendEventToCurrentUser( "achievementAI", "onShowAchievement", 1, (const void*)args);
+
+		//Release string
+		_pEnv->ReleaseStringUTFChars(id, nativeString);
+	}
 
     //----------------------------------------------------------------------
     // @@END_AAIO_CALLBACKS@@
