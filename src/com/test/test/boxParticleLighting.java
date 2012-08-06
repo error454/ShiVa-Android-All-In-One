@@ -211,10 +211,10 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 switch(msg.what)
                 {
                     case MSG_LOGIN:
-                        DropBoxLogin();
+                        dropBoxLogin();
                         break;
                     case MSG_LOGOUT:
-                        DropBoxLogout();
+                        dropBoxLogout();
                         break;
                 }
                 super.handleMessage(msg);
@@ -229,6 +229,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         
         if(ProjectSettings.UseGoogleCloudMessaging)
         {
+            Log.i("BPL", "starting GCM");
             GCMRegistrar.checkDevice(this);
             final String regId = GCMRegistrar.getRegistrationId(this);
             if (regId.equals("")) {
@@ -1480,7 +1481,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // @@BEGIN_SCORELOOP_METHODS@@    
     //------------------------------------------------------------------
-    
+    /*
     //Used to feed back into shiva to show that an achievement was granted via scoreloop
     public native static void showAchievementInShiva(String id);
     
@@ -1488,111 +1489,6 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
      * Launches the score loop UI
      * @param showMainUI true to open the main screen, false to open achievements
      */
-    public static void scoreloopShowUI(boolean showMainUI){
-        
-        mUIHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                ScoreloopManagerSingleton.get().askUserToAcceptTermsOfService( mActivity, new Continuation<Boolean>() {
-                    public void withValue(final Boolean value, final Exception error) {
-                        if (value != null && value) {
-                            Intent i;
-                            //TODO
-                            if(showMainUI)
-                                i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
-                            else
-                                i = new Intent(S3DEngine.getAppContext(), AchievementsScreenActivity.class);
-                                
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            S3DEngine.getAppContext().startActivity(i);
-                        }
-                    }
-                });
-            }
-        });
-    }
-    
-    /**
-     * Called from Shiva, gives the specified achievement if it isn't already achieved
-     * @param id The string postfix for the achievement
-     */
-    public static void scoreloopAwardAchievement(String id){
-        //load achievements
-        if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
-            return;
-        
-        //TODO revisit online/offline settings
-        
-        // Retrieves the Achievement object associated with the award identifier
-        if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
-            ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
-            showAchievementInShiva( id );
-            doAchievementCompletionCheck();
-        }
-    }
-    
-    /**
-     * Called from Shiva, increments the specified achievement and awards it if it isn't already achieved
-     * @param id The string postfix for the achievement
-     */
-    public static void scoreloopIncrementAchievement(String id){
-        if(!ScoreloopManagerSingleton.get().hasLoadedAchievements())
-            return;
-        
-        if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + id)){
-            if(ScoreloopManagerSingleton.get().incrementAward("com.test.test." + id, false, true))
-                showAchievementInShiva( id );
-        }
-    }
-    
-    //TODO The main idea here is to pass a variable number of strings in the order
-    //that they are to be achieved
-    /**
-     * Called from Shiva, takes a list of awards and treats them as a tiered achievement.
-     * For instance if you wanted achievements for winning 5, 10 and 15 times you could pass:
-     * win5, win10, win15.  The function then checks if the first award is achieved, if not it
-     * increments it, if so it increments the next achievement and so on.
-     * @param achievements A variable number of achievement postfixes
-     */
-    public static void incrementTieredAchievement(String ... achievements){
-    
-        for(String achievement : achievements){
-            if(!ScoreloopManagerSingleton.get().isAwardAchieved("com.test.test." + achievement)){
-                if(ScoreloopManagerSingleton.get().incrementAward("com.test.test." + achievement, false, true)){
-                    showAchievementInShiva( achievement );
-                    break;
-                }
-            }
-        }
-    }
-    
-    //TODO think of a clean way to allow the user to set this id or call this manually...
-    /**
-     * Checks if all achievements have been completed except for the one to grant
-     * @param id The id to grant if all other achievements have been given
-     */
-    private static void doAchievementCompletionCheck(String id){
-        List<Award> awards = ScoreloopManagerSingleton.get().getAwardList().getAwards();
-        List< Achievement > achievements = ScoreloopManagerSingleton.get().getAchievements();
-        boolean complete = true;
-        
-        for(int i = 0; i < achievements.size() - 1; i++){
-            if(achievements.get(i) != null){
-                //If the award is not achieved and the award is not the completionist award
-                String id = awards.get(i).getIdentifier();
-                
-                if(!achievements.get(i).isAchieved() && !id.contentEquals("com.test.test." + id)){
-                    complete = false;
-                    break;
-                }
-            }
-        }
-        
-        if(complete){
-            ScoreloopManagerSingleton.get().achieveAward("com.test.test." + id, false, true);
-            showAchievementInShiva( id );
-        }
-    }
     
     //------------------------------------------------------------------
       // @@END_SCORELOOP_METHODS@@    

@@ -115,7 +115,7 @@ public class DropBox {
      */
     public static void logIn(Context context){
         try{
-            mApi.getSession().startAuthentication(context.getApplicationContext());
+            mApi.getSession().startAuthentication(context);
         } catch (RuntimeException e){
             Log.e(TAG, "There is another application installed with the same Dropbox key");
         }
@@ -133,7 +133,7 @@ public class DropBox {
             File intputFileFromDropbox = new File(input);
             
             //Construct cachepath where the dropbox file should go
-            String cachePath = mCachePath + File.pathSeparator + intputFileFromDropbox.getName();
+            String cachePath = mCachePath + File.separator + intputFileFromDropbox.getName();
             Log.d(TAG, "getFile cachePath: " + cachePath);
 
             outputStream = new FileOutputStream(cachePath);

@@ -146,7 +146,7 @@ extern "C"
         return 0;
     }
 
-    static void ClientFunctionCallback_onScoreloopShowUI ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    static int ClientFunctionCallback_onScoreloopShowUI ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
@@ -158,9 +158,11 @@ extern "C"
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, _pIn[0].GetBooleanValue ( ));
             }
         }
+
+        return 0;
     }
     
-    static void ClientFunctionCallback_onScoreloopAwardAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    static int ClientFunctionCallback_onScoreloopAwardAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
@@ -174,9 +176,11 @@ extern "C"
                 pJNIEnv->DeleteLocalRef(achievement);
             }
         }
+
+        return 0;
     }
     
-    static void ClientFunctionCallback_onScoreloopIncrementAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    static int ClientFunctionCallback_onScoreloopIncrementAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
@@ -190,9 +194,11 @@ extern "C"
                 pJNIEnv->DeleteLocalRef(achievement);
             }
         }
+
+        return 0;
     }
     
-    static void ClientFunctionCallback_onScoreloopIncrementTieredAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
+    static int ClientFunctionCallback_onScoreloopIncrementTieredAchievement ( int _iInCount, const S3DX::AIVariable *_pIn, S3DX::AIVariable *_pOut )
     {
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
@@ -201,7 +207,7 @@ extern "C"
             for(int stringArg = 0; stringArg < _iInCount - 1; stringArg++)
             {
                 if( !_pIn[stringArg].IsString( ) )
-                    return;
+                    return -1;
             }
             
             jstring achievements[_iInCount];
@@ -215,10 +221,12 @@ extern "C"
             
             //TODO call vararg function
             
-            jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "([Ljava/lang/String;)V" );
-            pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
-            pJNIEnv->DeleteLocalRef(achievement);
+            //jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "([Ljava/lang/String;)V" );
+            //pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
+            //pJNIEnv->DeleteLocalRef(achievement);
         }
+
+        return 0;
     }
     
     //-----------------------------------------------------------------------------
