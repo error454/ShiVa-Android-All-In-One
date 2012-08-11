@@ -20,12 +20,12 @@
 //
 #if (defined _WIN32)
 extern "C"  _CRTIMP double  strtod  ( const char *, char ** ) ;
-#define                     strtof  (float)strtod
+#define                     S3DX_STRTOF  (float)strtod
 #elif (defined ANDROID_NDK)
 extern "C"          double  strtod  ( const char *, char ** ) ;
-#define                     strtof  (float)strtod
+#define                     S3DX_STRTOF  (float)strtod
 #elif (defined __DARWIN_ALIAS)
-extern              float	strtof  ( const char *, char ** ) __DARWIN_ALIAS( strtof ) ;
+extern "C"          float	strtof  ( const char *, char ** ) __DARWIN_ALIAS( strtof ) ;
 #elif (defined strtof)
 // Nothing
 #elif (defined __clang__)
@@ -79,7 +79,9 @@ inline bool __streq ( const char *_p1, const char *_p2 )
 #define S3DX_ABS(__a__)                 (((__a__) < 0) ? (-(__a__)) : (__a__))
 #define S3DX_SQR(__a__)                 ((__a__)*(__a__))
 
+#ifndef S3DX_STRTOF
 #define S3DX_STRTOF                 strtof
+#endif
 #define S3DX_SPRINTF                sprintf
 #define S3DX_STRCPY                 strcpy
 #define S3DX_STRCAT                 strcat

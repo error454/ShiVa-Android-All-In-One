@@ -4,6 +4,7 @@
 //-----------------------------------------------------------------------------
 #include "S3DXAIPackage.h"
 #include "S3DXAIEngineAPI.h"
+#include "S3DXAudioBackend.h"
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -50,7 +51,7 @@ namespace S3DX
         //  the operating system. Useful on Android to implement JNI calls.
         //  Available starting from SDK 1.9.0.6.
         //
-        virtual         void            SetJavaVM                   ( void *_pJavaVM ) { } ;
+        virtual         void            SetJavaVM                   ( void *_pJavaVM ) { }
 
         //---------------------------------------------------------------------
         //  Direct3D Device Interface : this method is called by the engine at
@@ -59,7 +60,7 @@ namespace S3DX
         //  such as fullscreen effects, UI, etc.
         //  Available starting from SDK 1.9.0.9.
         //
-        virtual         void            SetDirect3DDevice           ( void *_pD3DDevice ) { } ;
+        virtual         void            SetDirect3DDevice           ( void *_pD3DDevice ) { }
 
         //---------------------------------------------------------------------
         //  XAudio2 Interface : this method is called by the engine at plugin 
@@ -67,7 +68,7 @@ namespace S3DX
         //  system. Useful on Xbox 360 to implement custom audio management.
         //  Available starting from SDK 1.9.0.9.
         //
-        virtual         void            SetXAudio2                  ( void *_pXAudio2 ) { } ;
+        virtual         void            SetXAudio2                  ( void *_pXAudio2 ) { }
 
         //---------------------------------------------------------------------
         //  Engine events definition 
@@ -89,7 +90,7 @@ namespace S3DX
         //  various events occur (see event codes definition).
         //  Available starting from SDK 1.9.0.9.
         //
-        virtual         void            OnEngineEvent               ( uint32 _iEventCode, uint32 _iArgumentCount, AIVariable *_pArguments ) { } ;
+        virtual         void            OnEngineEvent               ( uint32 _iEventCode, uint32 _iArgumentCount, AIVariable *_pArguments ) { }
 
         //---------------------------------------------------------------------
         //  Native Client Module Instance : this method is called by the engine 
@@ -98,8 +99,15 @@ namespace S3DX
         //  Note that this is a pointer to the pp::Instance, not to the PP_Instance.
         //  Available starting from SDK 1.9.1.0.
         //
-        virtual         void            SetNaClModuleInstance       ( void *_pInstance ) { } ;
+        virtual         void            SetNaClModuleInstance       ( void *_pInstance ) { }
 
+        //---------------------------------------------------------------------
+        //  Audio backends : those method are called by the engine at plugin 
+        //  initialization time.
+        //  Available starting from SDK 1.9.2.0.
+        //
+        virtual         uint32          GetAudioBackendCount        ( ) const { return 0 ; }
+        virtual         AudioBackend   *GetAudioBackendAt           ( uint32 _iIndex ) { return NULL ; }
     } ;
 
     //  Plugin entry point function typedef
