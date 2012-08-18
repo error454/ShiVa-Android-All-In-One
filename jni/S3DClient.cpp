@@ -651,6 +651,13 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(filename, nativeString);
     }
 
+    JNIEXPORT void JNICALL Java_com_test_test_DropBox_authenticationComplete ( JNIEnv *_pEnv, jobject obj, jboolean result )
+    {
+        S3DX::AIVariable args[1];
+        args[0].SetBooleanValue( result );
+        S3DClient_SendEventToCurrentUser( "DropBoxAI", "onAuthenticationComplete", 1, (const void*)args);
+    }
+
     JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMRegistered ( JNIEnv *_pEnv, jobject obj, jstring id )
     {
         const char *nativeString = _pEnv->GetStringUTFChars(id, NULL);

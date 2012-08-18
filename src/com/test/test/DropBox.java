@@ -91,6 +91,8 @@ public class DropBox {
                 mLoggedIn = false;
             }
         }
+        
+        authenticationComplete(mLoggedIn);
     }
     
     /**
@@ -166,6 +168,12 @@ public class DropBox {
      * @param filename The full path to the requested file
      */
     public native static void getFileResult(String filename);
+    
+    /**
+     * Used to signal that authentication has completed
+     * @param result true for success i.e. logged in
+     */
+    public native static void authenticationComplete(boolean result);
     
     /**
      * Writes a string to the specified file.  This is meant for fairly low content writes.
