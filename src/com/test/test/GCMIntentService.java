@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
+import com.google.android.gcm.GCMRegistrar;
 
 public class GCMIntentService extends GCMBaseIntentService {
 
     private static final String TAG = "GCMIntentService";
     
-    private native void onGCMRegistered(String id);
-    private native void onGCMUnregistered(String id);
-    private native void onGCMMessageReceived(String message);
-    private native void onGCMError(String error);
+    private static native void onGCMRegistered(String id);
+    private static native void onGCMUnregistered(String id);
+    private static native void onGCMMessageReceived(String message);
+    private static native void onGCMError(String error);
     
     @Override
     protected void onError(Context context, String errorId) {
@@ -42,5 +43,12 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onUnregistered(Context context, String regId) {
         onGCMUnregistered(regId);
+    }
+    
+    public static void forceIDUpdate(Context context){
+        if(GCMRegistrar.isRegistered(context)){
+            onGCMRegistered(GCMRegistrar.getRegistrationId(context));
+        }
+    
     }
 }

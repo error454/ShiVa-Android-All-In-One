@@ -116,6 +116,8 @@ class Globals
 
 public class boxParticleLighting extends Activity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener
 {
+    private static final String TAG = "BPL";
+    
     //------------------------------------------------------------------
     // @@BEGIN_ADDONS@@
     //------------------------------------------------------------------
@@ -229,12 +231,17 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         
         if(ProjectSettings.UseGoogleCloudMessaging)
         {
-            Log.i("BPL", "starting GCM");
+            Log.i(TAG, "starting GCM");
             GCMRegistrar.checkDevice(this);
             final String regId = GCMRegistrar.getRegistrationId(this);
             if (regId.equals("")) {
+                Log.i(TAG, "registration id was empty, registering");
                 GCMRegistrar.register(this, ProjectSettings.GCM_PROJECT_ID);
-            }       
+            }
+            else{
+                Log.i(TAG, "registration id was not empty, forcing update");
+                GCMIntentService.forceIDUpdate(this);
+            }
         }
     }
 
