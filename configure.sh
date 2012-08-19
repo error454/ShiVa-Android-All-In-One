@@ -28,6 +28,7 @@ oldPackage="com.test.test"
 oldName="boxParticleLighting"
 oldFriendlyName="boxParticleLighting"
 oldNDKPath="/cygdrive/C/sdks/android-ndk-r7/"
+oldProjectName="ShiVa Android All In One"
 #####DO NOT EDIT BELOW THIS LINE#####
 source functions.sh
 
