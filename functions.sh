@@ -43,7 +43,10 @@ function renameFiles {
     
     echo Renaming main class from $oldName.java to $newName.java
     mv src/$oldSlashPackage/$oldName.java src/$oldSlashPackage/$newName.java
-        
+    
+    echo Renaming build.xml project name $oldProjectName to $newFriendlyName
+    find -type f -iname "build.xml" -exec sed -i s@"$oldProjectName"@"$newFriendlyName"@g {} \;
+    
     echo Moving folder $oldSlashPackage to $newSlashPackage
     mkdir -p src/$newSlashPackage
     mv src/$oldSlashPackage/* src/$newSlashPackage
