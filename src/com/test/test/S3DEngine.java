@@ -55,7 +55,7 @@ public class S3DEngine extends Application
         super.onCreate  ( ) ;
 		
 		if(ProjectSettings.UseScoreloop){
-			ScoreloopManagerSingleton.init(this, ProjectSettings.SL_API_KEY);
+//			ScoreloopManagerSingleton.init(this, ProjectSettings.SL_API_KEY);
 		}
     }
     
@@ -67,7 +67,7 @@ public class S3DEngine extends Application
         super.onTerminate ( ) ;
 		
 		if(ProjectSettings.UseScoreloop){
-			ScoreloopManagerSingleton.destroy();
+//			ScoreloopManagerSingleton.destroy();
 		}
     }
     
