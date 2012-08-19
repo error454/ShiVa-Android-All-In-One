@@ -21,6 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.app.Application;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.opengl.GLSurfaceView;
@@ -647,6 +648,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         IntentFilter oIntentFilter = new IntentFilter ( ) ;
         oIntentFilter.addAction ( Intent.ACTION_USER_PRESENT ) ;
         oIntentFilter.addAction ( Intent.ACTION_SCREEN_OFF ) ;
+        oIntentFilter.addAction ( Intent.ACTION_SCREEN_ON ) ;
         oIntentReceiver = new BroadcastReceiver ( ) 
         {
             @Override
@@ -661,6 +663,10 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 else if ( action.contentEquals ( Intent.ACTION_SCREEN_OFF ) )
                 {
                     ((boxParticleLighting)context).onScreenLocked ( ) ;
+                }
+                else if ( action.contentEquals ( Intent.ACTION_SCREEN_ON ) )
+                {
+                    ((boxParticleLighting)context).onScreenOn ( ) ;
                 }
             }
         } ;
@@ -694,6 +700,21 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         // Screen has been unlocked, do we need to resume?
         //
         if ( bWantToResume )
+        {
+            onResumeActually ( ) ;
+        }
+    }
+    
+    public void onScreenOn ( )
+    {
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+        //Log.d ( Globals.sApplicationName, "Screen on" ) ;
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;        
+        
+    	KeyguardManager kgMgr = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+    	bScreenLocked = kgMgr.inKeyguardRestrictedInputMode();
+        
+        if ( !bScreenLocked && bWantToResume )
         {
             onResumeActually ( ) ;
         }
