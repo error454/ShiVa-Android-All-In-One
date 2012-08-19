@@ -50,7 +50,7 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
 					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; mkdir -p libs/armeabi &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
 
 				</exec>
-		<antcall target="-compile"/>
+		<antcall target="compile"/>
 		<antcall target="debug"/>
 	</target>
 	<target name="Build release apk">
@@ -69,7 +69,7 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
 					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; mkdir -p libs/armeabi &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
 
 				</exec>
-		<antcall target="-compile"/>
+		<antcall target="compile"/>
 		<antcall target="release"/>
 	</target>
 
