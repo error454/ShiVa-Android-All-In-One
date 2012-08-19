@@ -27,6 +27,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLES11;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -105,6 +106,8 @@ class Globals
     public static boolean bUseGLES2 = true;
 
     public static boolean bForceDefaultOrientation = false;
+    
+    public static int mDefaultOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
     //------------------------------------------------------------------
 
@@ -132,12 +135,12 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     //------------------------------------------------------------------
     // @@BEGIN_ACTIVITY_MESSAGES_LIST@@
     //------------------------------------------------------------------
-    public static final int MSG_START_ENGINE             = 0 ;
-    public static final int MSG_RESUME_ENGINE             = 1 ;
-    public static final int MSG_PAUSE_ENGINE             = 2 ;
+    public static final int MSG_START_ENGINE            = 0 ;
+    public static final int MSG_RESUME_ENGINE           = 1 ;
+    public static final int MSG_PAUSE_ENGINE            = 2 ;
     public static final int MSG_HIDE_SPLASH             = 3 ;
-    public static final int MSG_PLAY_OVERLAY_MOVIE         = 4 ;
-    public static final int MSG_STOP_OVERLAY_MOVIE         = 5 ;
+    public static final int MSG_PLAY_OVERLAY_MOVIE      = 4 ;
+    public static final int MSG_STOP_OVERLAY_MOVIE      = 5 ;
     public static final int MSG_ENABLE_CAMERA_DEVICE    = 6 ;
     public static final int MSG_ENABLE_VIBRATOR         = 7 ;
     //------------------------------------------------------------------
@@ -185,13 +188,18 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         // Request fullscreen mode
         //
         setFullscreen   ( ) ;
-        setNoTitle      ( ) ;
 
         // Create the main view group and inflate startup screen (but do not add it right now, to avoid a "black flash")
         //
-        oSplashView         = View.inflate ( this, R.layout.main, null ) ;
-        oViewGroup             = new RelativeLayout ( this ) ;
+        //oSplashView         = View.inflate ( this, R.layout.main, null ) ;
+        oViewGroup          = new RelativeLayout ( this ) ;
         setContentView      ( oViewGroup ) ;
+        
+        // The reason that the splashview doesn't have the correct dimensions is because the inflation doesn't have any
+        // parent views to know what fill_parent means.  This uses the RelativeLayout created above as the parent
+        // for inflation without adding the view to the parent
+        LayoutInflater inflater = (LayoutInflater)this.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        oSplashView         = inflater.inflate ( R.layout.main, oViewGroup, false) ;
 
         //--------------------------------------------------------------
         // @@ON_ACTIVITY_CREATED@@
@@ -309,7 +317,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
             Message msg     = new Message ( )  ;
             msg.what        = MSG_START_ENGINE ;
             msg.obj         = this ;
-            oUIHandler      .sendMessage ( msg ) ;
+            oUIHandler      .sendMessage ( msg );
         }
     }
 
@@ -1019,7 +1027,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                     if ( ! sURI.contains ( ".mp3" ) )
                     {
                          // TODO: backup the current orientation
-                        oThis.setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ) ;
+                        oThis.setRequestedOrientation ( Globals.mDefaultOrientation ) ;
                     }        
                     return oVideoView.isPlaying     ( ) ;
                 }
@@ -1049,7 +1057,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
             //o3DView.setVisibility             ( View.VISIBLE ) ;
             o3DView.onOverlayMovieStopped    ( ) ;
         }
-        oThis.setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ) ; // TODO: restore the original orientation
+        oThis.setRequestedOrientation ( Globals.mDefaultOrientation ) ; // TODO: restore the original orientation
     }   
 
     //------------------------------------------------------------------
@@ -1214,10 +1222,6 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     {
         requestWindowFeature   ( Window.FEATURE_NO_TITLE ) ;
         getWindow ( ).setFlags ( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN ) ;
-    }
-    public void setNoTitle ( )
-    {
-        requestWindowFeature ( Window.FEATURE_NO_TITLE ) ;
     }
 
     //------------------------------------------------------------------
