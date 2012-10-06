@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-package com.test.test;
+package com.wordpress.mobilecoder.aaio;
 //----------------------------------------------------------------------                
 import java.io.IOException;
 import java.io.FileDescriptor;
@@ -513,10 +513,10 @@ class S3DRenderer implements GLSurfaceView.Renderer
 		if ( ( context.checkCallingOrSelfPermission ( android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) &&
 		     ( context.checkCallingOrSelfPermission ( android.Manifest.permission.ACCESS_FINE_LOCATION   ) == PackageManager.PERMISSION_GRANTED ) )
 		{
-        	engineSetLocationSupport    ( ((boxParticleLighting)oContext).areLocationUpdatesSupported ( ) ) ;
+        	engineSetLocationSupport    ( ((AAIOMain)oContext).areLocationUpdatesSupported ( ) ) ;
         	
 		}
-		engineSetHeadingSupport     	( ((boxParticleLighting)oContext).areHeadingUpdatesSupported  ( ) ) ;		
+		engineSetHeadingSupport     	( ((AAIOMain)oContext).areHeadingUpdatesSupported  ( ) ) ;		
 
 		if ( context.checkCallingOrSelfPermission ( android.Manifest.permission.INTERNET ) == PackageManager.PERMISSION_GRANTED )
 		{
@@ -625,8 +625,8 @@ class S3DRenderer implements GLSurfaceView.Renderer
 					if   ( ! sOverlayMovieToPlay.equals ( sOverlayMovie ) )
 					{
 						sOverlayMovie = sOverlayMovieToPlay ;
-						if ( sOverlayMovie.length ( ) > 0 ) Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_PLAY_OVERLAY_MOVIE, sOverlayMovie ).sendToTarget ( ) ;
-						else                                Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_STOP_OVERLAY_MOVIE                ).sendToTarget ( ) ;
+						if ( sOverlayMovie.length ( ) > 0 ) Message.obtain ( ((AAIOMain)oContext).oUIHandler, AAIOMain.MSG_PLAY_OVERLAY_MOVIE, sOverlayMovie ).sendToTarget ( ) ;
+						else                                Message.obtain ( ((AAIOMain)oContext).oUIHandler, AAIOMain.MSG_STOP_OVERLAY_MOVIE                ).sendToTarget ( ) ;
 					}
 
 					// Camera device handling
@@ -635,7 +635,7 @@ class S3DRenderer implements GLSurfaceView.Renderer
 					if    ( bCameraDeviceState != bCameraDevice )
 					{
 						bCameraDevice = bCameraDeviceState ;
-						Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_ENABLE_CAMERA_DEVICE, bCameraDevice ? 1 : 0, 0 ).sendToTarget ( ) ;
+						Message.obtain ( ((AAIOMain)oContext).oUIHandler, AAIOMain.MSG_ENABLE_CAMERA_DEVICE, bCameraDevice ? 1 : 0, 0 ).sendToTarget ( ) ;
 					}
 				
 					// Swap buffers handling (only useful when doing some benchmarking, not actually needed in a retail app)
@@ -653,7 +653,7 @@ class S3DRenderer implements GLSurfaceView.Renderer
 					//if    ( bVibratorState != bVibrate )
 					//{
 					//	bVibrate = bVibratorState ;
-					//	Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_ENABLE_VIBRATOR, bVibrate ? 1 : 0, 0 ).sendToTarget ( ) ;
+					//	Message.obtain ( ((AAIOMain)oContext).oUIHandler, AAIOMain.MSG_ENABLE_VIBRATOR, bVibrate ? 1 : 0, 0 ).sendToTarget ( ) ;
 					//}
 				}
 				else
@@ -668,7 +668,7 @@ class S3DRenderer implements GLSurfaceView.Renderer
 		    //
             if ( bSplashVisible )
             {
-                Message.obtain ( ((boxParticleLighting)oContext).oUIHandler, boxParticleLighting.MSG_HIDE_SPLASH ).sendToTarget ( ) ;
+                Message.obtain ( ((AAIOMain)oContext).oUIHandler, AAIOMain.MSG_HIDE_SPLASH ).sendToTarget ( ) ;
                 bSplashVisible = false ;
             }			
         }

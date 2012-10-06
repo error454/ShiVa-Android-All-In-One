@@ -24,10 +24,10 @@ newNDKPath="default"
 #These are the default names of the git repo, you do not 
 #need to change these unless you are renaming your project
 #for a second time.
-oldPackage="com.test.test"
-oldName="boxParticleLighting"
-oldFriendlyName="boxParticleLighting"
-oldNDKPath="/cygdrive/C/sdks/android-ndk-r7/"
+oldPackage="com.wordpress.mobilecoder.aaio"
+oldName="AAIOMain"
+oldFriendlyName="ShiVa Android All In One"
+oldNDKPath="/cygdrive/C/sdk/android-ndk-r8b/"
 oldProjectName="ShiVa Android All In One"
 #####DO NOT EDIT BELOW THIS LINE#####
 source functions.sh

@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // @@END_JNI_INCLUDES@@
 //----------------------------------------------------------------------        
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "boxParticleLighting", __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "AAIOMain", __VA_ARGS__)
 //----------------------------------------------------------------------        
 extern "C"
 { 
@@ -85,7 +85,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
-            jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
+            jclass pJNIActivityClass = pJNIEnv->FindClass("com/wordpress/mobilecoder/aaio/AAIO");
             jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxLogin", "()V");
             pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
@@ -97,7 +97,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
-            jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
+            jclass pJNIActivityClass = pJNIEnv->FindClass("com/wordpress/mobilecoder/aaio/AAIO");
             jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxLogout", "()V");
             pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
@@ -114,7 +114,7 @@ extern "C"
                 jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
                 jstring content = pJNIEnv->NewStringUTF(_pIn[1].GetStringValue());
 
-                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
+                jclass pJNIActivityClass = pJNIEnv->FindClass("com/wordpress/mobilecoder/aaio/AAIO");
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxPutFileOverwrite", "(Ljava/lang/String;Ljava/lang/String;)V");
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename, content);
 
@@ -135,7 +135,7 @@ extern "C"
             {
                 jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
 
-                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
+                jclass pJNIActivityClass = pJNIEnv->FindClass("com/wordpress/mobilecoder/aaio/AAIO");
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxGetFile", "(Ljava/lang/String;)V");
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename);
 
@@ -153,7 +153,7 @@ extern "C"
         {
             if ( ( _iInCount == 1 ) && _pIn[0].IsBoolean ( ) )
             {
-                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIO" );
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopShowUI", "(Z)V" );
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, _pIn[0].GetBooleanValue ( ));
             }
@@ -170,7 +170,7 @@ extern "C"
             if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
             {
                 jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIO" );
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopAwardAchievement", "(Ljava/lang/String;)V" );
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
                 pJNIEnv->DeleteLocalRef(achievement);
@@ -188,7 +188,7 @@ extern "C"
             if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
             {
                 jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIO" );
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "(Ljava/lang/String;)V" );
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
                 pJNIEnv->DeleteLocalRef(achievement);
@@ -217,7 +217,7 @@ extern "C"
                 achievements[stringArg] = pJNIEnv->NewStringUTF(_pIn[stringArg].GetStringValue());
             }
             
-            jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
+            jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIO" );
             
             //TODO call vararg function
             
@@ -286,7 +286,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID        = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onOpenURL", "(Ljava/lang/String;Ljava/lang/String;)V" ) ;
 
             pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, pJNIEnv->NewStringUTF ( _pURL ), pJNIEnv->NewStringUTF ( _pTarget ) ) ;
@@ -299,7 +299,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID        = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onInitSound", "()Z" ) ;
 
             return pJNIEnv->CallStaticBooleanMethod ( pJNIActivityClass, pJNIMethodID ) ;
@@ -312,7 +312,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID        = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onShutdownSound", "()V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID ) ;
@@ -324,7 +324,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID        = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onSuspendSound", "(Z)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _bSuspend ) ;
@@ -350,7 +350,7 @@ extern "C"
 
                  if ( DumpBufferToFile ( _pBuffer, _iBufferSize, aFilePath ) )
                  {
-                     jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+                     jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
                      jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onLoadSound", "(Ljava/lang/String;)I" ) ;
 
                      return pJNIEnv->CallStaticIntMethod ( pJNIActivityClass, pJNIMethodID, pJNIEnv->NewStringUTF ( aFilePath ) ) ;
@@ -365,7 +365,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onUnloadSound", "(I)V" ) ;
 
             pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex ) ;
@@ -377,7 +377,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onPlaySound", "(IFZF)I" ) ;
 
             return pJNIEnv->CallStaticIntMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex, _fVolume, _bLoop, _fPriority ) ;
@@ -390,7 +390,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onPauseSound", "(I)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex ) ;
@@ -402,7 +402,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onResumeSound", "(I)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex ) ;
@@ -414,7 +414,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onStopSound", "(I)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex ) ;
@@ -426,7 +426,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onSetSoundVolume", "(IF)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex, _fVolume ) ;
@@ -438,7 +438,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onSetSoundPitch", "(IF)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex, _fPitch ) ;
@@ -450,7 +450,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onSetSoundLooping", "(IZ)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iSoundIndex, _bLoop ) ;
@@ -477,7 +477,7 @@ extern "C"
 
                  if ( DumpBufferToFile ( _pBuffer, _iBufferSize, aFilePath ) )
                  {
-                     jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+                     jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
                      jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onLoadMusic", "(Ljava/lang/String;)I" ) ;
 
                      return pJNIEnv->CallStaticIntMethod ( pJNIActivityClass, pJNIMethodID, pJNIEnv->NewStringUTF ( aFilePath ) ) ;
@@ -492,7 +492,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onUnloadMusic", "(I)V" ) ;
 
             pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iMusicIndex ) ;
@@ -504,7 +504,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+            jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
             jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onPlayMusic", "(IFZF)I" ) ;
 
             return pJNIEnv->CallStaticIntMethod ( pJNIActivityClass, pJNIMethodID, _iMusicIndex, _fVolume, _bLoop, _fPriority ) ;
@@ -517,7 +517,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onPauseMusic", "(I)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iMusicIndex ) ;
@@ -529,7 +529,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onResumeMusic", "(I)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iMusicIndex ) ;
@@ -541,7 +541,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onStopMusic", "(I)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iMusicIndex ) ;
@@ -553,7 +553,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
         if    ( pJNIEnv )
         {
-             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+             jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
              jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onSetMusicVolume", "(IF)V" ) ;
 
              pJNIEnv->CallStaticVoidMethod ( pJNIActivityClass, pJNIMethodID, _iMusicIndex, _fVolume ) ;
@@ -597,7 +597,7 @@ extern "C"
             JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
             if    ( pJNIEnv )
             {
-                 jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+                 jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
                  jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onEnableLocationUpdates", "(Z)Z" ) ;
 
                  return pJNIEnv->CallStaticBooleanMethod ( pJNIActivityClass, pJNIMethodID, _bEnable ) ;
@@ -613,7 +613,7 @@ extern "C"
             JNIEnv *pJNIEnv = GetJNIEnv ( ) ;
             if    ( pJNIEnv )
             {
-                 jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" ) ;
+                 jclass    pJNIActivityClass = pJNIEnv->FindClass ( "com/wordpress/mobilecoder/aaio/AAIOMain" ) ;
                  jmethodID pJNIMethodID         = pJNIEnv->GetStaticMethodID ( pJNIActivityClass, "onEnableHeadingUpdates", "(Z)Z" ) ;
 
                  return pJNIEnv->CallStaticBooleanMethod ( pJNIActivityClass, pJNIMethodID, _bEnable ) ;
@@ -628,7 +628,7 @@ extern "C"
     //----------------------------------------------------------------------
     // @@BEGIN_AAIO_CALLBACKS@@
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_DropBox_putFileOverwriteResult ( JNIEnv *_pEnv, jobject obj, jstring filename, jlong bytes )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_DropBox_putFileOverwriteResult ( JNIEnv *_pEnv, jobject obj, jstring filename, jlong bytes )
     {
         const char *nativeString = _pEnv->GetStringUTFChars(filename, NULL);
 
@@ -640,7 +640,7 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(filename, nativeString);
     }
 
-    JNIEXPORT void JNICALL Java_com_test_test_DropBox_getFileResult ( JNIEnv *_pEnv, jobject obj, jstring filename )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_DropBox_getFileResult ( JNIEnv *_pEnv, jobject obj, jstring filename )
     {
         const char *nativeString = _pEnv->GetStringUTFChars(filename, NULL);
 
@@ -651,14 +651,14 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(filename, nativeString);
     }
 
-    JNIEXPORT void JNICALL Java_com_test_test_DropBox_authenticationComplete ( JNIEnv *_pEnv, jobject obj, jboolean result )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_DropBox_authenticationComplete ( JNIEnv *_pEnv, jobject obj, jboolean result )
     {
         S3DX::AIVariable args[1];
         args[0].SetBooleanValue( result );
         S3DClient_SendEventToCurrentUser( "DropBoxAI", "onAuthenticationComplete", 1, (const void*)args);
     }
 
-    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMRegistered ( JNIEnv *_pEnv, jobject obj, jstring id )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_GCMIntentService_onGCMRegistered ( JNIEnv *_pEnv, jobject obj, jstring id )
     {
         const char *nativeString = _pEnv->GetStringUTFChars(id, NULL);
 
@@ -669,7 +669,7 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(id, nativeString);
     }
 
-    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMUnregistered ( JNIEnv *_pEnv, jobject obj, jstring id )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_GCMIntentService_onGCMUnregistered ( JNIEnv *_pEnv, jobject obj, jstring id )
     {
         const char *nativeString = _pEnv->GetStringUTFChars(id, NULL);
 
@@ -680,7 +680,7 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(id, nativeString);
     }
 
-    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMMessageReceived ( JNIEnv *_pEnv, jobject obj, jstring message )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_GCMIntentService_onGCMMessageReceived ( JNIEnv *_pEnv, jobject obj, jstring message )
     {
         const char *nativeString = _pEnv->GetStringUTFChars(message, NULL);
 
@@ -691,7 +691,7 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(message, nativeString);
     }
 
-    JNIEXPORT void JNICALL Java_com_test_test_GCMIntentService_onGCMError ( JNIEnv *_pEnv, jobject obj, jstring error )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_GCMIntentService_onGCMError ( JNIEnv *_pEnv, jobject obj, jstring error )
     {
         const char *nativeString = _pEnv->GetStringUTFChars(error, NULL);
 
@@ -702,7 +702,7 @@ extern "C"
         _pEnv->ReleaseStringUTFChars(error, nativeString);
     }
     
-    JNIEXPORT void JNICALL Java_com_test_test_showAchievementInShiva ( JNIEnv *_pEnv, jobject obj, jstring id )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_showAchievementInShiva ( JNIEnv *_pEnv, jobject obj, jstring id )
 	{
 		//Convert java string 'id' to a const char * so we can pass it to shiva
 		const char *nativeString = _pEnv->GetStringUTFChars(id, NULL);
@@ -718,7 +718,7 @@ extern "C"
     //----------------------------------------------------------------------
     // @@END_AAIO_CALLBACKS@@
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetDirectories ( JNIEnv *_pEnv, jobject obj, jstring sCacheDirPath, jstring sHomeDirPath, jstring sPackDirPath )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetDirectories ( JNIEnv *_pEnv, jobject obj, jstring sCacheDirPath, jstring sHomeDirPath, jstring sPackDirPath )
     {
         LOGI( "### engineSetDirectories" ) ;
         const char *pCacheStr = _pEnv->GetStringUTFChars ( sCacheDirPath, NULL ) ;
@@ -732,7 +732,7 @@ extern "C"
         if ( pPackStr  ) _pEnv->ReleaseStringUTFChars ( sPackDirPath,  pPackStr  ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetPackFileDescriptor ( JNIEnv *_pEnv, jobject obj, jobject fileDescriptor, jlong offset, jlong length )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetPackFileDescriptor ( JNIEnv *_pEnv, jobject obj, jobject fileDescriptor, jlong offset, jlong length )
     {
         LOGI( "### engineSetPackFileDescriptor" ) ;
         if ( fileDescriptor )
@@ -753,71 +753,71 @@ extern "C"
         }
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetLocationSupport ( JNIEnv *_pEnv, jobject obj, jboolean bSupport )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetLocationSupport ( JNIEnv *_pEnv, jobject obj, jboolean bSupport )
     {
         bSupportLocation = bSupport ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetHeadingSupport ( JNIEnv *_pEnv, jobject obj, jboolean bSupport )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetHeadingSupport ( JNIEnv *_pEnv, jobject obj, jboolean bSupport )
     {
         bSupportHeading = bSupport ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetDeviceName ( JNIEnv *_pEnv, jobject obj, jstring sName )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetDeviceName ( JNIEnv *_pEnv, jobject obj, jstring sName )
     {
         const char *pNameStr = _pEnv->GetStringUTFChars ( sName, NULL ) ;
         if ( pNameStr  ) strcpy ( aDeviceName,  pNameStr  ) ;
         if ( pNameStr ) _pEnv->ReleaseStringUTFChars ( sName, pNameStr ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetDeviceModel ( JNIEnv *_pEnv, jobject obj, jstring sModel )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetDeviceModel ( JNIEnv *_pEnv, jobject obj, jstring sModel )
     {
         const char *pModelStr = _pEnv->GetStringUTFChars ( sModel, NULL ) ;
         if ( pModelStr  ) strcpy ( aDeviceModel,  pModelStr  ) ;
         if ( pModelStr ) _pEnv->ReleaseStringUTFChars ( sModel, pModelStr ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetDeviceIPAddress ( JNIEnv *_pEnv, jobject obj, jstring sAddress )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetDeviceIPAddress ( JNIEnv *_pEnv, jobject obj, jstring sAddress )
     {
         const char *pAddressStr = _pEnv->GetStringUTFChars ( sAddress, NULL ) ;
         if ( pAddressStr  ) strcpy ( aDeviceIPAddress,  pAddressStr  ) ;
         if ( pAddressStr ) _pEnv->ReleaseStringUTFChars ( sAddress, pAddressStr ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetDeviceUUID ( JNIEnv *_pEnv, jobject obj, jstring sUUID )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetDeviceUUID ( JNIEnv *_pEnv, jobject obj, jstring sUUID )
     {
         const char *pUUIDStr = _pEnv->GetStringUTFChars ( sUUID, NULL ) ;
         if ( pUUIDStr  ) strcpy ( aDeviceUUID,  pUUIDStr  ) ;
         if ( pUUIDStr ) _pEnv->ReleaseStringUTFChars ( sUUID, pUUIDStr ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetSystemVersion ( JNIEnv *_pEnv, jobject obj, jstring sVersion )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetSystemVersion ( JNIEnv *_pEnv, jobject obj, jstring sVersion )
     {
         const char *pVersionStr = _pEnv->GetStringUTFChars ( sVersion, NULL ) ;
         if ( pVersionStr  ) strcpy ( aSystemVersion,  pVersionStr  ) ;
         if ( pVersionStr ) _pEnv->ReleaseStringUTFChars ( sVersion, pVersionStr ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetSystemLanguage ( JNIEnv *_pEnv, jobject obj, jstring sLanguage )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetSystemLanguage ( JNIEnv *_pEnv, jobject obj, jstring sLanguage )
     {
         const char *pLanguageStr = _pEnv->GetStringUTFChars ( sLanguage, NULL ) ;
         if ( pLanguageStr  ) strcpy ( aSystemLanguage,  pLanguageStr  ) ;
         if ( pLanguageStr ) _pEnv->ReleaseStringUTFChars ( sLanguage, pLanguageStr ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetCameraDeviceCount ( JNIEnv *_pEnv, jobject obj, jint count )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetCameraDeviceCount ( JNIEnv *_pEnv, jobject obj, jint count )
     {
         iCameraDeviceCount = count ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetCameraDeviceName ( JNIEnv *_pEnv, jobject obj, jint index, jstring sName )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineSetCameraDeviceName ( JNIEnv *_pEnv, jobject obj, jint index, jstring sName )
     {
         const char *pNameStr = _pEnv->GetStringUTFChars ( sName, NULL ) ;
         if ( pNameStr ) strcpy ( aCameraDeviceNames[index],  pNameStr  ) ;
         if ( pNameStr ) _pEnv->ReleaseStringUTFChars ( sName, pNameStr ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnCameraDeviceFrame ( JNIEnv *_pEnv, jobject obj, jbyteArray data, jint w, jint h )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnCameraDeviceFrame ( JNIEnv *_pEnv, jobject obj, jbyteArray data, jint w, jint h )
     {
         /*???
         static char buf[ 1024 * 1024 * 4 ] ;
@@ -828,12 +828,12 @@ extern "C"
         */
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineForceDefaultOrientation ( JNIEnv *_pEnv, jobject obj, jboolean b )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineForceDefaultOrientation ( JNIEnv *_pEnv, jobject obj, jboolean b )
     {
         bForceNoViewportRotation = b ; // TODO: set an engine's option instead
     }
     //----------------------------------------------------------------------
-    JNIEXPORT jboolean JNICALL Java_com_test_test_S3DRenderer_engineInitialize ( JNIEnv *_pEnv, jobject obj )
+    JNIEXPORT jboolean JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineInitialize ( JNIEnv *_pEnv, jobject obj )
     {
         LOGI( "### engineInitialize" ) ;
 
@@ -956,14 +956,14 @@ extern "C"
         return true ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineShutdown ( JNIEnv *_pEnv, jobject obj )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineShutdown ( JNIEnv *_pEnv, jobject obj )
     {
         LOGI( "### engineShutdown" ) ;
         S3DClient_Shutdown ( ) ;
         pJavaVM = NULL ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT jboolean JNICALL Java_com_test_test_S3DRenderer_engineRunOneFrame ( JNIEnv *_pEnv, jobject obj )
+    JNIEXPORT jboolean JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineRunOneFrame ( JNIEnv *_pEnv, jobject obj )
     {
         //LOGI( "### runOneFrame" ) ;
         if (   bForceNoViewportRotation  ) S3DClient_iPhone_SetViewportRotation ( 0 ) ; // FIXME: avoid extra call by setting an engine's option instead
@@ -972,14 +972,14 @@ extern "C"
         return true ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_enginePause ( JNIEnv *_pEnv, jobject obj, jboolean b )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_enginePause ( JNIEnv *_pEnv, jobject obj, jboolean b )
     {
         if ( b ) LOGI( "### enginePause" ) ;
         else     LOGI( "### engineResume" ) ;
         S3DClient_Pause ( b ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnSurfaceCreated ( JNIEnv *_pEnv, jobject obj )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnSurfaceCreated ( JNIEnv *_pEnv, jobject obj )
     {
         LOGI( "### engineOnSurfaceCreated" ) ;
         if ( pJavaVM )
@@ -988,7 +988,7 @@ extern "C"
         }
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnSurfaceChanged ( JNIEnv *_pEnv, jobject obj, jint w, jint h )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnSurfaceChanged ( JNIEnv *_pEnv, jobject obj, jint w, jint h )
     {
         LOGI( "### engineOnSurfaceChanged" ) ;
         iSurfaceWidth  = w ;
@@ -1001,7 +1001,7 @@ extern "C"
         }
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnMouseMove ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnMouseMove ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y )
     {
         S3DClient_iPhone_OnMouseMoved           ( 2.0f * x / (float)iSurfaceWidth - 1.0f, 2.0f * ( (float)iSurfaceHeight - y ) / (float)iSurfaceHeight - 1.0f ) ;
         if ( ! bMouseButtonDown )
@@ -1012,7 +1012,7 @@ extern "C"
         //LOGI( "### Move: %f %f", 2.0f * x / (float)iSurfaceWidth - 1.0f, 2.0f * ( (float)iSurfaceHeight - y ) / (float)iSurfaceHeight - 1.0f ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnMouseButtonDown ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnMouseButtonDown ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y )
     {
         bMouseButtonDown = true ;
         S3DClient_iPhone_OnMouseMoved           ( 2.0f * x / (float)iSurfaceWidth - 1.0f, 2.0f * ( (float)iSurfaceHeight - y ) / (float)iSurfaceHeight - 1.0f ) ;
@@ -1021,7 +1021,7 @@ extern "C"
         //LOGI( "### Down: %f %f", 2.0f * x / (float)iSurfaceWidth - 1.0f, 2.0f * ( (float)iSurfaceHeight - y ) / (float)iSurfaceHeight - 1.0f ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnMouseButtonUp ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnMouseButtonUp ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y )
     {
         bMouseButtonDown = false ;
         S3DClient_iPhone_OnMouseMoved           ( 2.0f * x / (float)iSurfaceWidth - 1.0f, 2.0f * ( (float)iSurfaceHeight - y ) / (float)iSurfaceHeight - 1.0f ) ;
@@ -1030,7 +1030,7 @@ extern "C"
         //LOGI( "### Up: %f %f", 2.0f * x / (float)iSurfaceWidth - 1.0f, 2.0f * ( (float)iSurfaceHeight - y ) / (float)iSurfaceHeight - 1.0f ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnTouchesChange ( JNIEnv *_pEnv, jobject obj, jint tc1, jfloat x1, jfloat y1, jint tc2, jfloat x2, jfloat y2, jint tc3, jfloat x3, jfloat y3, jint tc4, jfloat x4, jfloat y4, jint tc5, jfloat x5, jfloat y5 )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnTouchesChange ( JNIEnv *_pEnv, jobject obj, jint tc1, jfloat x1, jfloat y1, jint tc2, jfloat x2, jfloat y2, jint tc3, jfloat x3, jfloat y3, jint tc4, jfloat x4, jfloat y4, jint tc5, jfloat x5, jfloat y5 )
     {
         if ( S3DClient_iPhone_IsMultiTouchEnabled ( ) )
         {
@@ -1044,7 +1044,7 @@ extern "C"
         //LOGI( "###### %d %d %d %d %d", tc1, tc2, tc3, tc4, tc5 ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnDeviceMove ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y, jfloat z )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnDeviceMove ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y, jfloat z )
     {
         if ( iSurfaceWidth > iSurfaceHeight ) // FIXME
             S3DClient_iPhone_OnDeviceMoved (  y / 9.81f, -x / 9.81f, z / 9.81f ) ;
@@ -1052,48 +1052,48 @@ extern "C"
             S3DClient_iPhone_OnDeviceMoved ( -x / 9.81f, -y / 9.81f, z / 9.81f ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnKeyboardKeyDown ( JNIEnv *_pEnv, jobject obj, jint key, jint uni )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnKeyboardKeyDown ( JNIEnv *_pEnv, jobject obj, jint key, jint uni )
     {
         S3DClient_Android_OnKeyboardKeyPressed ( key, uni ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnKeyboardKeyUp ( JNIEnv *_pEnv, jobject obj, jint key, jint uni )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnKeyboardKeyUp ( JNIEnv *_pEnv, jobject obj, jint key, jint uni )
     {
         S3DClient_Android_OnKeyboardKeyReleased ( key, uni ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnLocationChanged ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y, jfloat z )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnLocationChanged ( JNIEnv *_pEnv, jobject obj, jfloat x, jfloat y, jfloat z )
     {
         S3DClient_Android_UpdateLocation ( x, y, z ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnHeadingChanged ( JNIEnv *_pEnv, jobject obj, jfloat angle )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnHeadingChanged ( JNIEnv *_pEnv, jobject obj, jfloat angle )
     {
         S3DClient_Android_UpdateHeading ( angle, angle ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnOverlayMovieStopped ( JNIEnv *_pEnv, jobject obj )
+    JNIEXPORT void JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineOnOverlayMovieStopped ( JNIEnv *_pEnv, jobject obj )
     {
         aOverlayMovie[0] = '\0' ;
         S3DClient_OnOverlayMovieStopped ( ) ;
     }
     //----------------------------------------------------------------------
-    JNIEXPORT jstring JNICALL Java_com_test_test_S3DRenderer_engineGetOverlayMovie ( JNIEnv *_pEnv, jobject obj )
+    JNIEXPORT jstring JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineGetOverlayMovie ( JNIEnv *_pEnv, jobject obj )
     {
         return _pEnv->NewStringUTF ( aOverlayMovie ) ;
     }
     //----------------------------------------------------------------------
-    jboolean JNICALL Java_com_test_test_S3DRenderer_engineGetCameraDeviceState ( JNIEnv *_pEnv, jobject obj )
+    jboolean JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineGetCameraDeviceState ( JNIEnv *_pEnv, jobject obj )
     {
         return bWantCameraDeviceCapture ;
     }
     //----------------------------------------------------------------------
-    //jboolean Java_com_test_test_S3DRenderer_engineGetVibratorState ( JNIEnv *_pEnv, jobject obj )
+    //jboolean Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineGetVibratorState ( JNIEnv *_pEnv, jobject obj )
     //{
     //    return bVibrate ;
     //}
     //----------------------------------------------------------------------
-    JNIEXPORT jboolean JNICALL Java_com_test_test_S3DRenderer_engineGetWantSwapBuffers ( JNIEnv *_pEnv, jobject obj )
+    JNIEXPORT jboolean JNICALL Java_com_wordpress_mobilecoder_aaio_S3DRenderer_engineGetWantSwapBuffers ( JNIEnv *_pEnv, jobject obj )
     {
         return bWantSwapBuffers ;
     }

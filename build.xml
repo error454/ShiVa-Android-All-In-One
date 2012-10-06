@@ -1,87 +1,196 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ShiVa Android All In One" default="Build debug apk">
-	<path id="basedir.path">
-	    <pathelement path="${basedir}" />
-	</path>
-	<pathconvert targetos="unix" property="basedir.lib" refid="basedir.path"/>
-	<pathconvert targetos="unix" property="basedir.app" refid="basedir.path">
-		<map from="a:" to="/cygdrive/a"/>
-		<map from="b:" to="/cygdrive/b"/>
-		<map from="c:" to="/cygdrive/c"/>
-		<map from="d:" to="/cygdrive/d"/>
-		<map from="e:" to="/cygdrive/e"/>
-		<map from="f:" to="/cygdrive/f"/>
-		<map from="g:" to="/cygdrive/g"/>
-		<map from="h:" to="/cygdrive/h"/>
-		<map from="i:" to="/cygdrive/i"/>
-		<map from="j:" to="/cygdrive/j"/>
-		<map from="k:" to="/cygdrive/k"/>
-		<map from="l:" to="/cygdrive/l"/>
-		<map from="m:" to="/cygdrive/m"/>
-		<map from="n:" to="/cygdrive/n"/>
-		<map from="o:" to="/cygdrive/o"/>
-		<map from="p:" to="/cygdrive/p"/>
-		<map from="q:" to="/cygdrive/q"/>
-		<map from="r:" to="/cygdrive/r"/>
-		<map from="s:" to="/cygdrive/s"/>
-		<map from="t:" to="/cygdrive/t"/>
-		<map from="u:" to="/cygdrive/u"/>
-		<map from="v:" to="/cygdrive/v"/>
-		<map from="w:" to="/cygdrive/w"/>
-		<map from="x:" to="/cygdrive/x"/>
-		<map from="y:" to="/cygdrive/y"/>
-		<map from="z:" to="/cygdrive/z"/>
-	</pathconvert>	
+<project
+    name="ShiVa Android All In One"
+    default="Build debug apk" >
 
+    <path id="basedir.path" >
 
-	<target name="Build debug apk">
-		<echo file="${basedir}/jni/Application.mk">APP_OPTIM        := release
+        <pathelement path="${basedir}" />
+    </path>
+
+    <pathconvert
+        property="basedir.lib"
+        refid="basedir.path"
+        targetos="unix" />
+
+    <pathconvert
+        property="basedir.app"
+        refid="basedir.path"
+        targetos="unix" >
+
+        <map
+            from="a:"
+            to="/cygdrive/a" />
+
+        <map
+            from="b:"
+            to="/cygdrive/b" />
+
+        <map
+            from="c:"
+            to="/cygdrive/c" />
+
+        <map
+            from="d:"
+            to="/cygdrive/d" />
+
+        <map
+            from="e:"
+            to="/cygdrive/e" />
+
+        <map
+            from="f:"
+            to="/cygdrive/f" />
+
+        <map
+            from="g:"
+            to="/cygdrive/g" />
+
+        <map
+            from="h:"
+            to="/cygdrive/h" />
+
+        <map
+            from="i:"
+            to="/cygdrive/i" />
+
+        <map
+            from="j:"
+            to="/cygdrive/j" />
+
+        <map
+            from="k:"
+            to="/cygdrive/k" />
+
+        <map
+            from="l:"
+            to="/cygdrive/l" />
+
+        <map
+            from="m:"
+            to="/cygdrive/m" />
+
+        <map
+            from="n:"
+            to="/cygdrive/n" />
+
+        <map
+            from="o:"
+            to="/cygdrive/o" />
+
+        <map
+            from="p:"
+            to="/cygdrive/p" />
+
+        <map
+            from="q:"
+            to="/cygdrive/q" />
+
+        <map
+            from="r:"
+            to="/cygdrive/r" />
+
+        <map
+            from="s:"
+            to="/cygdrive/s" />
+
+        <map
+            from="t:"
+            to="/cygdrive/t" />
+
+        <map
+            from="u:"
+            to="/cygdrive/u" />
+
+        <map
+            from="v:"
+            to="/cygdrive/v" />
+
+        <map
+            from="w:"
+            to="/cygdrive/w" />
+
+        <map
+            from="x:"
+            to="/cygdrive/x" />
+
+        <map
+            from="y:"
+            to="/cygdrive/y" />
+
+        <map
+            from="z:"
+            to="/cygdrive/z" />
+    </pathconvert>
+
+    <target name="Build debug apk" >
+
+        <echo file="${basedir}/jni/Application.mk" >
+APP_OPTIM        := release
 APP_ABI          := armeabi armeabi-v7a
-APP_PLATFORM     := android-7
+APP_PLATFORM     := android-16
 APP_MODULES      := S3DClient
 APP_PROJECT_PATH := ${basedir.app}
 APP_PROJECT_LIBPATH := ${basedir.lib}
-		</echo>
-		<exec executable="C:\cygwin/bin/bash.exe">
-					<arg value="--login"/>
-					<arg value="-i"/>
-					<arg value="-c"/>
+        </echo>
 
-					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; mkdir -p libs/armeabi &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
+        <exec executable="C:\cygwin/bin/bash.exe" >
 
-				</exec>
-		<antcall target="compile"/>
-		<antcall target="debug"/>
-	</target>
-	<target name="Build release apk">
-		<echo file="${basedir}/jni/Application.mk">APP_OPTIM        := release
+            <arg value="--login" />
+
+            <arg value="-i" />
+
+            <arg value="-c" />
+
+            <arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdk/android-ndk-r8b/ndk-build -j4&amp;&amp; mkdir -p libs/armeabi &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so" />
+        </exec>
+
+        <antcall target="-compile" />
+
+        <antcall target="debug" />
+    </target>
+
+    <target name="Build release apk" >
+
+        <echo file="${basedir}/jni/Application.mk" >
+APP_OPTIM        := release
 APP_ABI          := armeabi armeabi-v7a
-APP_PLATFORM     := android-7
+APP_PLATFORM     := android-16
 APP_MODULES      := S3DClient
 APP_PROJECT_PATH := ${basedir.app}
 APP_PROJECT_LIBPATH := ${basedir.lib}
-		</echo>
-		<exec executable="C:\cygwin/bin/bash.exe">
-					<arg value="--login"/>
-					<arg value="-i"/>
-					<arg value="-c"/>
+        </echo>
 
-					<arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdks/android-ndk-r7/ndk-build &amp;&amp; mkdir -p libs/armeabi &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so"/>
+        <exec executable="C:\cygwin/bin/bash.exe" >
 
-				</exec>
-		<antcall target="compile"/>
-		<antcall target="release"/>
-	</target>
+            <arg value="--login" />
 
-<!-- The local.properties file is created and updated by the 'android'
-     tool.
-     It contains the path to the SDK. It should *NOT* be checked into
-     Version Control Systems. -->
+            <arg value="-i" />
+
+            <arg value="-c" />
+
+            <arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdk/android-ndk-r8b/ndk-build &amp;&amp; mkdir -p libs/armeabi &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so" />
+        </exec>
+
+        <antcall target="compile" />
+
+        <antcall target="release" />
+    </target>
+
+    <!--
+         The local.properties file is created and updated by the 'android' tool.
+         It contains the path to the SDK. It should *NOT* be checked into
+         Version Control Systems.
+
+
+    -->
+
     <property file="local.properties" />
 
-    <!-- The build.properties file can be created by you and is never touched
-         by the 'android' tool. This is the place to change some of the
-         default property values used by the Ant rules.
+    <!--
+         The ant.properties file can be created by you. It is only edited by the
+         'android' tool to add properties to it.
+         This is the place to change some Ant specific build properties.
          Here are some properties you may want to change/update:
 
          source.dir
@@ -89,66 +198,105 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
          out.dir
              The name of the output directory. Default is 'bin'.
 
+         For other overridable properties, look at the beginning of the rules
+         files in the SDK, at tools/ant/build.xml
+
          Properties related to the SDK location or the project target should
          be updated using the 'android' tool with the 'update' action.
 
          This file is an integral part of the build system for your
          application and should be checked into Version Control Systems.
 
-         -->
-    <property file="build.properties" />
 
-    <!-- The default.properties file is created and updated by the 'android'
+
+    -->
+
+    <property file="ant.properties" />
+
+    <!--
+         if sdk.dir was not set from one of the property file, then
+         get it from the ANDROID_HOME env var.
+         This must be done before we load project.properties since
+         the proguard config can use sdk.dir
+
+
+    -->
+
+    <property environment="env" />
+
+    <condition
+        property="sdk.dir"
+        value="${env.ANDROID_HOME}" >
+
+        <isset property="env.ANDROID_HOME" />
+    </condition>
+
+    <!--
+         The project.properties file is created and updated by the 'android'
          tool, as well as ADT.
+
+         This contains project specific properties such as project target, and library
+         dependencies. Lower level build properties are stored in ant.properties
+         (or in .classpath for Eclipse projects).
+
          This file is an integral part of the build system for your
-         application and should be checked into Version Control Systems. -->
-    <property file="default.properties" />
-    
-    <property file="project.properties" />
-        
+         application and should be checked into Version Control Systems.
 
 
-    <!-- Required pre-setup import -->
-    <import file="${sdk.dir}/tools/ant/pre_setup.xml" />
+    -->
+
+    <loadproperties srcFile="project.properties" />
+
+    <!-- quick check on sdk.dir -->
+
+    <fail
+        message="sdk.dir is missing. Make sure to generate local.properties using &apos;android update project&apos; or to inject it through the ANDROID_HOME environment variable."
+        unless="sdk.dir" />
+
+    <!--
+        Import per project custom build rules if present at the root of the project.
+        This is the place to put custom intermediary targets such as:
+            -pre-build
+            -pre-compile
+            -post-compile (This is typically used for code obfuscation.
+                           Compiled code location: ${out.classes.absolute.dir}
+                           If this is not done in place, override ${out.dex.input.absolute.dir})
+            -post-package
+            -post-build
+            -pre-clean
 
 
-<!-- extension targets. Uncomment the ones where you want to do custom work
-     in between standard targets -->
-<!--
-    <target name="-pre-build">
-    </target>
-    <target name="-pre-compile">
-    </target>
 
-    [This is typically used for code obfuscation.
-     Compiled code location: ${out.classes.absolute.dir}
-     If this is not done in place, override ${out.dex.input.absolute.dir}]
-    <target name="-post-compile">
-    </target>
--->
+    -->
 
-    <!-- Execute the Android Setup task that will setup some properties
-         specific to the target, and import the build rules files.
+    <import
+        file="custom_rules.xml"
+        optional="true" />
 
-         The rules file is imported from
-            <SDK>/tools/ant/
-         Depending on the project type it can be either:
-         - main_rules.xml
-         - lib_rules.xml
-         - test_rules.xml
+    <!--
+         Import the actual build file.
 
          To customize existing targets, there are two options:
          - Customize only one target:
              - copy/paste the target into this file, *before* the
-               <setup> task.
+               <import> task.
              - customize it to your needs.
-         - Customize the whole script.
+         - Customize the whole content of build.xml
              - copy/paste the content of the rules files (minus the top node)
-               into this file, *after* the <setup> task
-             - disable the import of the rules by changing the setup task
-               below to <setup import="false" />.
+               into this file, replacing the <import> task.
              - customize to your needs.
+
+         ***********************
+         ****** IMPORTANT ******
+         ***********************
+         In all cases you must update the value of version-tag below to read 'custom' instead of an integer,
+         in order to avoid having your file be overridden by tools such as "android update project"
+
+
+
     -->
-    <setup />
+    <!-- version-tag: 1 -->
+
+    <import file="${sdk.dir}/tools/ant/build.xml" />
 
 </project>

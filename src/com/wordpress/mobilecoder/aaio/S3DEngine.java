@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-package com.test.test;
+package com.wordpress.mobilecoder.aaio;
 //----------------------------------------------------------------------        
 import java.io.IOException;
 import java.io.FileInputStream;

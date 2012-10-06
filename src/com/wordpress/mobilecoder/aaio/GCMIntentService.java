@@ -1,4 +1,4 @@
-package com.test.test;
+package com.wordpress.mobilecoder.aaio;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.test.test;
+package com.wordpress.mobilecoder.aaio;
 
 import com.google.android.gcm.GCMRegistrar;
 

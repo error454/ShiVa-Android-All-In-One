@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-package com.test.test;
+package com.wordpress.mobilecoder.aaio;
 //----------------------------------------------------------------------
 // @@BEGIN_ACTIVITY_IMPORTS@@
 //----------------------------------------------------------------------
@@ -99,9 +99,9 @@ class Globals
     // @@BEGIN_ACTIVITY_GLOBALS@@
     //------------------------------------------------------------------
 
-    public static String sPackageName = "com.test.test";
+    public static String sPackageName = "com.wordpress.mobilecoder.aaio";
 
-    public static String sApplicationName = "boxParticleLighting";
+    public static String sApplicationName = "AAIOMain";
 
     public static boolean bUseGLES2 = true;
 
@@ -117,7 +117,7 @@ class Globals
 }
 //----------------------------------------------------------------------
 
-public class boxParticleLighting extends AAIO implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener
+public class AAIOMain extends AAIO implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener
 {
     private static final String TAG = "BPL";
     
@@ -602,15 +602,15 @@ public class boxParticleLighting extends AAIO implements MediaPlayer.OnCompletio
                 
                 if ( action.contentEquals ( Intent.ACTION_USER_PRESENT ) )
                 {
-                    ((boxParticleLighting)context).onScreenUnlocked ( ) ;
+                    ((AAIOMain)context).onScreenUnlocked ( ) ;
                 }
                 else if ( action.contentEquals ( Intent.ACTION_SCREEN_OFF ) )
                 {
-                    ((boxParticleLighting)context).onScreenLocked ( ) ;
+                    ((AAIOMain)context).onScreenLocked ( ) ;
                 }
                 else if ( action.contentEquals ( Intent.ACTION_SCREEN_ON ) )
                 {
-                    ((boxParticleLighting)context).onScreenOn ( ) ;
+                    ((AAIOMain)context).onScreenOn ( ) ;
                 }
             }
         } ;
@@ -1539,7 +1539,7 @@ public class boxParticleLighting extends AAIO implements MediaPlayer.OnCompletio
     //------------------------------------------------------------------
     // Singleton object.
     //
-    private static boxParticleLighting   oThis         ;        
+    private static AAIOMain   oThis         ;        
           
     //------------------------------------------------------------------
     // Various files access infos.
@@ -1607,9 +1607,9 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
     private int preview_width, preview_height;
     private int pixelformat;
     private PixelFormat pixelinfo;
-    private boxParticleLighting processor;
+    private AAIOMain processor;
 
-    public CameraPreview(boxParticleLighting context, int preview_width, int preview_height) 
+    public CameraPreview(AAIOMain context, int preview_width, int preview_height) 
     {
         super(context);
 
@@ -1706,7 +1706,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
 
         mCamera.startPreview();
         
-        Log.d("boxParticleLighting", String.format ( "Preview started (%dx%d)", preview_width, preview_height ) ) ;
+        Log.d("AAIOMain", String.format ( "Preview started (%dx%d)", preview_width, preview_height ) ) ;
     }
 
     /**
@@ -1723,13 +1723,13 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
             Method[] m = c.getMethods();
             for (int i = 0; i < m.length; i++) 
             {
-                Log.d("boxParticleLighting", "  method:" + m[i].toString());
+                Log.d("AAIOMain", "  method:" + m[i].toString());
             }
         } 
         catch (Exception e) 
         {
             // TODO Auto-generated catch block
-            Log.e("boxParticleLighting", e.toString());
+            Log.e("AAIOMain", e.toString());
         }
     }
 
@@ -1737,12 +1737,12 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
     {
         if ( mCamera != null )
         {
-            Log.d("boxParticleLighting", "Camera supported preview sizes:");
+            Log.d("AAIOMain", "Camera supported preview sizes:");
             Camera.Parameters parameters = mCamera.getParameters();
             List<Camera.Size> pvsizes = mCamera.getParameters().getSupportedPreviewSizes();
             for(Size x: pvsizes)
             {
-                Log.d("boxParticleLighting", String.format("    - %dx%d", x.width, x.height));
+                Log.d("AAIOMain", String.format("    - %dx%d", x.width, x.height));
             }
         }
     }
@@ -1760,7 +1760,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
         } 
         catch (Exception e) 
         {
-            Log.e("boxParticleLighting", "Problem setting up for addCallbackBuffer: " + e.toString());
+            Log.e("AAIOMain", "Problem setting up for addCallbackBuffer: " + e.toString());
         }
     }
 
@@ -1784,7 +1784,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
         } 
         catch (Exception e) 
         {
-            Log.e("boxParticleLighting", "invoking addCallbackBuffer failed: " + e.toString());
+            Log.e("AAIOMain", "invoking addCallbackBuffer failed: " + e.toString());
         }
         */
     }
@@ -1800,7 +1800,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
         } 
         catch (Exception e) 
         {
-            Log.e("boxParticleLighting","Problem setting up for setPreviewCallbackWithBuffer: " + e.toString());
+            Log.e("AAIOMain","Problem setting up for setPreviewCallbackWithBuffer: " + e.toString());
         }
         */
     }
@@ -1822,11 +1822,11 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
             // callback handler
             mPCWB.invoke(mCamera, this);
 
-            Log.d("boxParticleLighting","setPreviewCallbackWithBuffer: called");
+            Log.d("AAIOMain","setPreviewCallbackWithBuffer: called");
 
         } catch (Exception e) {
 
-            Log.e("boxParticleLighting", e.toString());
+            Log.e("AAIOMain", e.toString());
         }*/
     }
 
@@ -1843,11 +1843,11 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
             // callback handler
             mPCWB.invoke(mCamera, (PreviewCallback) null);
 
-            Log.d("boxParticleLighting","setPreviewCallbackWithBuffer: cleared");
+            Log.d("AAIOMain","setPreviewCallbackWithBuffer: cleared");
 
         } catch (Exception e) {
 
-            Log.e("boxParticleLighting", e.toString());
+            Log.e("AAIOMain", e.toString());
         }*/
     }
 
@@ -1862,7 +1862,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
      */
     public void onPreviewFrame(byte[] data, Camera camera) 
     {        
-        //Log.d("boxParticleLighting","onPreviewFrame: called");
+        //Log.d("AAIOMain","onPreviewFrame: called");
 
         processor.onNewCameraFrame ( data, preview_width, preview_height ) ;
         //processor.post(data, preview_width, preview_height, pixelformat, this);
@@ -1875,7 +1875,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camer
         fcount++;
         if (fcount % 100 == 0) {
             double ms = (new Date()).getTime() - start.getTime();
-            Log.d("boxParticleLighting", "fps:" + fcount / (ms / 1000.0));
+            Log.d("AAIOMain", "fps:" + fcount / (ms / 1000.0));
             start = new Date();
             fcount = 0;
         }

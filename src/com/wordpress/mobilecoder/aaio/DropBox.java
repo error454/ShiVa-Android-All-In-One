@@ -1,4 +1,4 @@
-package com.test.test;
+package com.wordpress.mobilecoder.aaio;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
