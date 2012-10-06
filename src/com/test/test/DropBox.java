@@ -119,7 +119,7 @@ public class DropBox {
         try{
             mApi.getSession().startAuthentication(context);
         } catch (RuntimeException e){
-            Log.e(TAG, "There is another application installed with the same Dropbox key");
+            Log.e(TAG, "We couldn't login to Dropbox.  Either 1) You aren't connected to the internet. 2) There is another application installed with the same Dropbox key 3) You forgot to uncomment out the Dropbox configuration in the manifest");
         }
     }
     
@@ -128,6 +128,8 @@ public class DropBox {
      * @param input The filename to get, this will be referenced locally from the dropbox app directory
      */
     public static void getFile(String input){
+        if(!mLoggedIn)
+            return;
         
         FileOutputStream outputStream = null;
         try {
@@ -183,6 +185,9 @@ public class DropBox {
      */
     public static void putFileOverwrite(String filename, String content){
         
+        if(!mLoggedIn)
+            return;
+        
         boolean retry;
         int retries = 3;
         
@@ -211,7 +216,7 @@ public class DropBox {
                     Log.e(TAG, "Unauthorized dropbox user");
                     
                     //Log user out
-                    mUIHandler.sendEmptyMessage(boxParticleLighting.MSG_LOGOUT);
+                    mUIHandler.sendEmptyMessage(AAIO.MSG_DROPBOX_LOGOUT);
                 } else if (e.error == DropboxServerException._403_FORBIDDEN) {
                     Log.e(TAG, "Dropbox returned 403");
                     // Not allowed to access this

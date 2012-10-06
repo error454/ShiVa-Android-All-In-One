@@ -85,7 +85,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
-            jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+            jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
             jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxLogin", "()V");
             pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
@@ -97,7 +97,7 @@ extern "C"
         JNIEnv *pJNIEnv = GetJNIEnv();
         if (pJNIEnv)
         {
-            jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+            jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
             jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxLogout", "()V");
             pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, NULL);
         }
@@ -114,7 +114,7 @@ extern "C"
                 jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
                 jstring content = pJNIEnv->NewStringUTF(_pIn[1].GetStringValue());
 
-                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxPutFileOverwrite", "(Ljava/lang/String;Ljava/lang/String;)V");
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename, content);
 
@@ -135,7 +135,7 @@ extern "C"
             {
                 jstring filename = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
 
-                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/boxParticleLighting");
+                jclass pJNIActivityClass = pJNIEnv->FindClass("com/test/test/AAIO");
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "dropBoxGetFile", "(Ljava/lang/String;)V");
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, filename);
 
@@ -153,7 +153,7 @@ extern "C"
         {
             if ( ( _iInCount == 1 ) && _pIn[0].IsBoolean ( ) )
             {
-                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopShowUI", "(Z)V" );
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, _pIn[0].GetBooleanValue ( ));
             }
@@ -170,7 +170,7 @@ extern "C"
             if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
             {
                 jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopAwardAchievement", "(Ljava/lang/String;)V" );
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
                 pJNIEnv->DeleteLocalRef(achievement);
@@ -188,7 +188,7 @@ extern "C"
             if ( ( _iInCount == 1 ) && _pIn[0].IsString ( ) )
             {
                 jstring achievement = pJNIEnv->NewStringUTF(_pIn[0].GetStringValue());
-                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+                jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
                 jmethodID pJNIMethodID = pJNIEnv->GetStaticMethodID(pJNIActivityClass, "scoreloopIncrementAchievement", "(Ljava/lang/String;)V" );
                 pJNIEnv->CallStaticVoidMethod(pJNIActivityClass, pJNIMethodID, achievement);
                 pJNIEnv->DeleteLocalRef(achievement);
@@ -217,7 +217,7 @@ extern "C"
                 achievements[stringArg] = pJNIEnv->NewStringUTF(_pIn[stringArg].GetStringValue());
             }
             
-            jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/boxParticleLighting" );
+            jclass pJNIActivityClass = pJNIEnv->FindClass ( "com/test/test/AAIO" );
             
             //TODO call vararg function
             

@@ -86,7 +86,6 @@ import android.os.Message;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.graphics.PixelFormat;
-import com.google.android.gcm.GCMRegistrar;
 
 //----------------------------------------------------------------------
 
@@ -118,20 +117,9 @@ class Globals
 }
 //----------------------------------------------------------------------
 
-public class boxParticleLighting extends Activity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener
+public class boxParticleLighting extends AAIO implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener
 {
     private static final String TAG = "BPL";
-    
-    //------------------------------------------------------------------
-    // @@BEGIN_ADDONS@@
-    //------------------------------------------------------------------
-    private Handler mHandler;
-    public static final int MSG_LOGIN = 1;
-    public static final int MSG_LOGOUT = 2;
-    
-    //------------------------------------------------------------------
-    // @@END_ADDONS@@
-    //------------------------------------------------------------------
     
     //------------------------------------------------------------------
     // @@BEGIN_ACTIVITY_MESSAGES_LIST@@
@@ -213,45 +201,6 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
         // Register lock-screen intent handler
         //
         registerLockScreenHandlers ( ) ;
-        
-        mHandler = new Handler()
-        {
-            @Override
-            public void handleMessage(Message msg) 
-            {
-                switch(msg.what)
-                {
-                    case MSG_LOGIN:
-                        dropBoxLogin();
-                        break;
-                    case MSG_LOGOUT:
-                        dropBoxLogout();
-                        break;
-                }
-                super.handleMessage(msg);
-            }
-        };
-        
-        if(ProjectSettings.UseDropboxAPI)
-        {
-            DropBox.Init(mHandler, ProjectSettings.DROPBOX_KEY, ProjectSettings.DROPBOX_SECRET);
-            DropBox.onCreate(this);
-        }
-        
-        if(ProjectSettings.UseGoogleCloudMessaging)
-        {
-            Log.i(TAG, "starting GCM");
-            GCMRegistrar.checkDevice(this);
-            final String regId = GCMRegistrar.getRegistrationId(this);
-            if (regId.equals("")) {
-                Log.i(TAG, "registration id was empty, registering");
-                GCMRegistrar.register(this, ProjectSettings.GCM_PROJECT_ID);
-            }
-            else{
-                Log.i(TAG, "registration id was not empty, forcing update");
-                GCMIntentService.forceIDUpdate(this);
-            }
-        }
     }
 
     //------------------------------------------------------------------
@@ -507,11 +456,6 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     {
         super.onResume ( ) ;
 
-        if(ProjectSettings.UseDropboxAPI)
-        {
-            DropBox.onResume(this);
-        }
-        
         // If screen is locked, just wait for unlock
         //
         if ( bScreenLocked )
@@ -1632,55 +1576,6 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
     // @@END_ACTIVITY_VARIABLES@@    
     //------------------------------------------------------------------
 
-    //------------------------------------------------------------------
-    // @@BEGIN_JNI_CALLBACK_METHODS@@   
-    //------------------------------------------------------------------
-    public static void dropBoxLogin(){
-        if(ProjectSettings.UseDropboxAPI)
-            DropBox.logIn(oThis.getApplicationContext());
-    }
-    
-    public static void dropBoxLogout(){
-        if(ProjectSettings.UseDropboxAPI)
-            DropBox.logOut(oThis.getApplicationContext());
-    }
-    
-    public static void dropBoxPutFileOverwrite(final String file, final String contents){
-        if(ProjectSettings.UseDropboxAPI){
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    DropBox.putFileOverwrite(file, contents);
-                }
-            };
-            
-            //This involves network so we need to run on a seperate thread
-            Thread t = new Thread(r);
-            t.run();
-        }
-    }
-    
-    public static void dropBoxGetFile(final String file){
-        if(ProjectSettings.UseDropboxAPI){
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    DropBox.getFile(file);
-                }
-            };
-            
-            //This involves network so we need to run on a seperate thread
-            Thread t = new Thread(r);
-            t.run();
-        }
-    }
-    
-    
-    //------------------------------------------------------------------
-    // @@END_JNI_CALLBACK_METHODS@@   
-    //------------------------------------------------------------------
-    
-    
     //------------------------------------------------------------------
     // Engine native library loading.
     //
