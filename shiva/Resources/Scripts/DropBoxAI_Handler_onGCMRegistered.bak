@@ -1,0 +1,23 @@
+--------------------------------------------------------------------------------
+--  Handler.......... : onGCMRegistered
+--  Author........... : 
+--  Description...... : 
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+function DropBoxAI.onGCMRegistered ( id )
+--------------------------------------------------------------------------------
+	
+    log.message ( "onGCMRegistered was called with id: " .. id )
+    if(this.mLoggedIn ( ))
+    then
+        log.message ( "Writing dropbox registration" )
+        this.sendEvent ( "onPutFileOverwrite", "ids", id)
+    else
+        log.message ( "GCM is registered but now waiting for dropbox" )
+        this.postEvent ( 1, "onGCMRegistered", id )
+    end
+	
+--------------------------------------------------------------------------------
+end
+--------------------------------------------------------------------------------
