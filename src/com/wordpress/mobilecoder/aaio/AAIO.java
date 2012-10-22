@@ -88,7 +88,9 @@ public class AAIO extends Activity {
     }
     
     //------------------------------------------------------------------
-    // @@BEGIN_JNI_CALLBACK_METHODS@@   
+    // @@BEGIN_JNI_CALLBACK_METHODS@@
+    // This set of methods is called by the JNI layer and dispatches the
+    // call as necessary to the appropriate thread/class/method
     //------------------------------------------------------------------
     /**
      * Login to dropbox
