@@ -1,7 +1,9 @@
 --------------------------------------------------------------------------------
 --  Handler.......... : onPutFileOverwriteResult
---  Author........... : 
---  Description...... : 
+--  Author........... : Zachary Burke
+--  Description...... : This callback is triggered when onPutFileOverwrite has
+--                      completed.  Here we are printing out the filename and
+--                      number of bytes written.
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------

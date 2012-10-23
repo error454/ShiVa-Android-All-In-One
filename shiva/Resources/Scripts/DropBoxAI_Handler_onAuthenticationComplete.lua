@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
 --  Handler.......... : onAuthenticationComplete
---  Author........... : 
---  Description...... : 
+--  Author........... : Zachary Burke
+--  Description...... : Called as a result of onLogin to let you know whether
+--                      the authentication was a success.
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------

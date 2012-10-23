@@ -1,15 +1,16 @@
 --------------------------------------------------------------------------------
 --  Handler.......... : onGetFileResult
---  Author........... : 
---  Description...... : 
+--  Author........... : Zachary Burke
+--  Description...... : Called when onGetFile completes, you can now read this
+--                      file like normal.
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
-function DropBoxAI.onGetFileResult ( filename )
+function DropBoxAI.onGetFileResult ( fullPathAndFilename )
 --------------------------------------------------------------------------------
 	
-	log.message ( "onGetFileResult: The path to the file is: " .. filename )
-    --log.message ( "file content: " .. cache.getFileContentAsString ( filename ) )
+	log.message ( "onGetFileResult: The path to the file is: " .. fullPathAndFilename )
+    --log.message ( "file content: " .. cache.getFileContentAsString ( fullPathAndFilename ) )
 	
 --------------------------------------------------------------------------------
 end

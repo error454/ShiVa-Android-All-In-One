@@ -1455,22 +1455,6 @@ public class AAIOMain extends AAIO implements MediaPlayer.OnCompletionListener, 
     //------------------------------------------------------------------
 
     //------------------------------------------------------------------
-    // @@BEGIN_SCORELOOP_METHODS@@    
-    //------------------------------------------------------------------
-    /*
-    //Used to feed back into shiva to show that an achievement was granted via scoreloop
-    public native static void showAchievementInShiva(String id);
-    
-    /**
-     * Launches the score loop UI
-     * @param showMainUI true to open the main screen, false to open achievements
-     */
-    
-    //------------------------------------------------------------------
-      // @@END_SCORELOOP_METHODS@@    
-      //------------------------------------------------------------------
-    
-    //------------------------------------------------------------------
     // @@BEGIN_ACTIVITY_VARIABLES@@    
     //------------------------------------------------------------------
     // Software keyboard view.
