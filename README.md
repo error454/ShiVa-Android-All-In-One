@@ -97,3 +97,19 @@ The obj/* folder is not included.  This is what contains the S3DClient which is 
 
 ##Note on original code
 The code that this project is based on was written by Stonetrip and was produced by their Unified Authoring Tool.
+
+##How to Contribute
+There are two primary ways to contribute to this project.
+
+1. File Bugs.  To file a bug, click on the Issues tab above and create a new issue.  This could be device-specific problems "XYZ doesn't work on Galaxy S", it could be an enhancement request "Service XYZ isn't integrated".  Etc.
+
+2. Contribute an SDK implementation.  If you are interested in contributing an SDK implementation, please follow these guidlines:
+    * Fork this project
+    * Create your own branch for developing your new feature/fix on (don't make changes in any of my branches)
+    * Submit a pull request to me when finished
+
+Coding guidlines:
+
+* Spaces instead of tabs, tabs == 4 spaces
+* Keep new code out of the main Java implementation (AAIOMain.java).  If you need to tap lifecycle events, use AAIO.java (AAIOMain extends this).
+* If you see any way of making any of this cleaner, please let me know
