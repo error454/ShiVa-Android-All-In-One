@@ -124,7 +124,7 @@
     </pathconvert>
 
     <target name="Build debug apk" >
-
+        <property name="build.target" value="debug" />
         <echo file="${basedir}/jni/Application.mk" >
 APP_OPTIM        := release
 APP_ABI          := armeabi armeabi-v7a
@@ -152,6 +152,7 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
 
     <target name="Build release apk" >
 
+        <property name="build.target" value="release" />
         <echo file="${basedir}/jni/Application.mk" >
 APP_OPTIM        := release
 APP_ABI          := armeabi armeabi-v7a
@@ -172,7 +173,7 @@ APP_PROJECT_LIBPATH := ${basedir.lib}
             <arg value="cd &quot;${basedir.app}&quot; &amp;&amp; /cygdrive/C/sdk/android-ndk-r8b/ndk-build &amp;&amp; mkdir -p libs/armeabi &amp;&amp; cp obj/local/armeabi/libopenal.so libs/armeabi/libopenal.so &amp;&amp; cp obj/local/armeabi/libssl.so libs/armeabi/libssl.so &amp;&amp; cp obj/local/armeabi/libcrypto.so libs/armeabi/libcrypto.so &amp;&amp; mkdir -p libs/armeabi-v7a &amp;&amp; cp obj/local/armeabi-v7a/libopenal.so libs/armeabi-v7a/libopenal.so &amp;&amp; cp obj/local/armeabi-v7a/libssl.so libs/armeabi-v7a/libssl.so &amp;&amp; cp obj/local/armeabi-v7a/libcrypto.so libs/armeabi-v7a/libcrypto.so" />
         </exec>
 
-        <antcall target="compile" />
+        <antcall target="-compile" />
 
         <antcall target="release" />
     </target>
