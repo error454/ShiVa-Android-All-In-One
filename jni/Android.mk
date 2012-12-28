@@ -4,7 +4,7 @@ include $(CLEAR_VARS)
 
 NDK_DEBUG_IMPORTS      := 1
 NDK_DEBUG_MODULES      := 1
-LOCAL_CFLAGS           := -O2 -DANDROID_NDK
+LOCAL_CFLAGS           := -O2 -DANDROID_NDK -Wno-psabi
 LOCAL_MODULE           := S3DClient
 LOCAL_MODULE_FILENAME  := libS3DClient
 LOCAL_SRC_FILES        := S3DClient.cpp

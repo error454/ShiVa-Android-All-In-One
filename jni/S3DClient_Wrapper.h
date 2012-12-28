@@ -82,6 +82,8 @@ typedef void ( * S3DClient_CameraDeviceCaptureStopCallback) ( int _iDeviceIndex,
 
 typedef void ( * S3DClient_HomeButtonCallback )             ( void *_pUserData ) ;
 
+typedef bool ( * S3DClient_DisplayBindCallback )            ( unsigned char _iDisplay, void *_pUserData ) ;
+
 
 //-----------------------------------------------------------------------------
 //  API
@@ -242,6 +244,12 @@ extern "C" void             S3DClient_XNA_OnTouchesChanged                      
                                                                                       int _iS2, int _iTC2, float _fX2, float _fY2, 
                                                                                       int _iS3, int _iTC3, float _fX3, float _fY3, 
                                                                                       int _iS4, int _iTC4, float _fX4, float _fY4 ) ;
+
+//-----------------------------------------------------------------------------
+// Experimental (do not use)
+//-----------------------------------------------------------------------------
+
+extern "C" void             S3DClient_SetDisplayBindCallback                        ( S3DClient_DisplayBindCallback _pCallback, void *_pUserData ) ;
 
 //-----------------------------------------------------------------------------
 #endif // __S3DClient_Wrapper_h__

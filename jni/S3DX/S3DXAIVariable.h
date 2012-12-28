@@ -319,6 +319,8 @@ namespace S3DX
         static  char           *GetStringPoolBufferAndCopy  ( const char       *_pString ) ;
         static  char           *GetStringPoolBufferAndCopy  ( const uint32      _iSize,
                                                               const char       *_pString ) ;
+        static  bool            ResetStringPool             ( const uint32      _iSize   ) ;
+
     private :
 
         //---------------------------------------------------------------------

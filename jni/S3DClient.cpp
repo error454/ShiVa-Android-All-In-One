@@ -33,7 +33,7 @@ extern "C"
 	static char         aOverlayMovie   [512]	        = "" ; 
     static char         aDeviceName      [64]           = "" ; 
     static char         aDeviceModel     [64]           = "" ; 
-	static char         aDeviceIPAddress [32]           = "" ;
+	static char         aDeviceIPAddress[128]           = "" ;
 	static char         aDeviceUUID		[256]			= "" ;
     static char         aSystemVersion   [32]           = "" ; 
     static char         aSystemLanguage  [32]           = "" ; 
@@ -407,14 +407,15 @@ extern "C"
     //----------------------------------------------------------------------        
     static bool S3DCameraDeviceCaptureStartCallback ( int _iDeviceIndex, int _iImageWidth, int _iImageHeight, int _iFrameRate, void *_pOwner )
     {
-        bWantCameraDeviceCapture = true ;
-        return true ; // ???
+        //bWantCameraDeviceCapture = true ;
+        //return true ; // ???
+        return false ;
     }
 	
     //----------------------------------------------------------------------        
     static void S3DCameraDeviceCaptureStopCallback ( int _iDeviceIndex, void *_pOwner )
     {
-        bWantCameraDeviceCapture = false ;
+        //bWantCameraDeviceCapture = false ;
     }
 	
     //----------------------------------------------------------------------        
@@ -557,14 +558,14 @@ extern "C"
     //----------------------------------------------------------------------        
     JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetCameraDeviceCount ( JNIEnv *_pEnv, jobject obj, jint count )
 	{
-	    iCameraDeviceCount = count ;
+	    //iCameraDeviceCount = count ;
 	}
     //----------------------------------------------------------------------        
     JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineSetCameraDeviceName ( JNIEnv *_pEnv, jobject obj, jint index, jstring sName )
 	{
-        const char *pNameStr = _pEnv->GetStringUTFChars ( sName, NULL ) ;
-        if ( pNameStr ) strcpy ( aCameraDeviceNames[index],  pNameStr  ) ;
-        if ( pNameStr ) _pEnv->ReleaseStringUTFChars ( sName, pNameStr ) ;
+        //const char *pNameStr = _pEnv->GetStringUTFChars ( sName, NULL ) ;
+        //if ( pNameStr ) strcpy ( aCameraDeviceNames[index],  pNameStr  ) ;
+        //if ( pNameStr ) _pEnv->ReleaseStringUTFChars ( sName, pNameStr ) ;
 	}
     //----------------------------------------------------------------------        
 	JNIEXPORT void JNICALL Java_com_test_test_S3DRenderer_engineOnCameraDeviceFrame ( JNIEnv *_pEnv, jobject obj, jbyteArray data, jint w, jint h )
@@ -667,13 +668,13 @@ extern "C"
 		S3DClient_Android_SetDeviceUUID							( aDeviceUUID ) ;
         S3DClient_Android_SetSystemVersion                      ( aSystemVersion ) ;
         S3DClient_Android_SetSystemLanguage                     ( aSystemLanguage ) ;
-        if ( iCameraDeviceCount > 0 )
+        /*if ( iCameraDeviceCount > 0 )
         {
             S3DClient_Android_SetCameraDeviceCount                  ( iCameraDeviceCount ) ;
             S3DClient_Android_SetCameraDeviceName                   ( 0, aCameraDeviceNames[0] ) ;
             S3DClient_Android_SetCameraDeviceCaptureStartCallback   ( S3DCameraDeviceCaptureStartCallback, NULL ) ; 
             S3DClient_Android_SetCameraDeviceCaptureStopCallback    ( S3DCameraDeviceCaptureStopCallback,  NULL ) ; 
-        }
+        }*/
         if ( iPackFD != -1 )
         {
             S3DClient_Android_AddFileAccessibleFromAPK          ( aMainPackPathNoPrefix, iPackFD, iPackOffset, iPackLength ) ; 

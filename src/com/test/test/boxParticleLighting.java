@@ -20,6 +20,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.app.Application;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.opengl.GLSurfaceView;
@@ -37,6 +38,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.view.Menu;
+import android.view.LayoutInflater;
 import android.inputmethodservice.KeyboardView;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -172,9 +174,17 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 
 		// Create the main view group and inflate startup screen (but do not add it right now, to avoid a "black flash")
 		//
-		oSplashView 		= View.inflate ( this, R.layout.main, null ) ;
+		//oSplashView 		= View.inflate ( this, R.layout.main, null ) ;
 		oViewGroup 			= new RelativeLayout ( this ) ;
         setContentView  	( oViewGroup ) ;
+
+        // Fix from: http://www.stonetrip.com/developer/forum/viewtopic.php?f=75&t=26449&p=49411#p49411
+        // The reason that the splashview doesn't have the correct dimensions is because the inflation doesn't have any
+        // parent views to know what fill_parent means.  This uses the RelativeLayout created above as the parent
+        // for inflation without adding the view to the parent
+        //
+        LayoutInflater inflater = (LayoutInflater)this.getSystemService ( Context.LAYOUT_INFLATER_SERVICE ) ;
+        oSplashView             = inflater.inflate ( R.layout.main, oViewGroup, false ) ;        
 
     	//--------------------------------------------------------------
 		// @@ON_ACTIVITY_CREATED@@
@@ -578,6 +588,7 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
 		IntentFilter oIntentFilter = new IntentFilter ( ) ;
         oIntentFilter.addAction ( Intent.ACTION_USER_PRESENT ) ;
         oIntentFilter.addAction ( Intent.ACTION_SCREEN_OFF ) ;
+        oIntentFilter.addAction ( Intent.ACTION_SCREEN_ON ) ;
         oIntentReceiver = new BroadcastReceiver ( ) 
         {
             @Override
@@ -592,6 +603,10 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
                 else if ( action.contentEquals ( Intent.ACTION_SCREEN_OFF ) )
                 {
                     ((boxParticleLighting)context).onScreenLocked ( ) ;
+                }
+                else if ( action.contentEquals ( Intent.ACTION_SCREEN_ON ) )
+                {
+                    ((boxParticleLighting)context).onScreenOn ( ) ;
                 }
             }
         } ;
@@ -629,7 +644,31 @@ public class boxParticleLighting extends Activity implements MediaPlayer.OnCompl
             onResumeActually ( ) ;
         }
 	}
-    
+
+    // Fix from: http://www.stonetrip.com/developer/forum/viewtopic.php?f=75&t=26448
+    // The problem is that Intent.ACTION_USER_PRESENT is only triggered if a lock screen is enabled. 
+    // In my case, I don't have a lock screen enabled. But in other cases a user could have a timeout 
+    // of X seconds before the lock screen is shown. In both cases, onResumeActually() never gets called 
+    // and so MSG_RESUME_ENGINE is never sent and we're sunk.
+    // I would recommend that you also capture Intent.ACTION_SCREEN_ON and tie it to a function that uses 
+    // KeyguardManager to actually determine the lock state: This will prevent the deadlocked state where 
+    // the engine is never resumed.
+    //
+    public void onScreenOn ( )
+    {
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;
+        //Log.d ( Globals.sApplicationName, "Screen on" ) ;
+        //Log.d ( Globals.sApplicationName, "--------------------------------------------" ) ;       
+       
+        KeyguardManager kgMgr = (KeyguardManager)getSystemService ( Context.KEYGUARD_SERVICE ) ;
+        bScreenLocked = kgMgr.inKeyguardRestrictedInputMode ( ) ;
+       
+        if ( ! bScreenLocked && bWantToResume )
+        {
+            onResumeActually ( ) ;
+        }
+    }
+
     //------------------------------------------------------------------
     // OpenURL callback.
     //

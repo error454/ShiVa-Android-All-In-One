@@ -11,7 +11,7 @@
 namespace S3DX
 //-----------------------------------------------------------------------------
 {
-    class Plugin
+    class S3DX_API Plugin
     {
     public :
 
