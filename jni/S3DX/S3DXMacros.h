@@ -90,10 +90,10 @@ typedef const S3DX_VARIABLE_MAP_ENTRY * ( * S3DXNATIVEAIMODELGETVARIABLEMAPPROC 
 #define S3DX_VARIABLE_TYPE_XML          7
 
 #define S3DX_DECLARE_AIMODEL( _name_ ) \
-    extern "C" S3DX_API S3DX::AIModel * _name_##__CreateInstance ( ); \
-    extern "C" S3DX_API const S3DX_STATE_MAP_ENTRY * _name_##__GetStateMap ( ); \
-    extern "C" S3DX_API const S3DX_HANDLER_MAP_ENTRY * _name_##__GetHandlerMap ( ); \
-    extern "C" S3DX_API const S3DX_VARIABLE_MAP_ENTRY * _name_##__GetVariableMap ( ); \
+    extern "C" S3DX::AIModel * _name_##__CreateInstance ( ); \
+    extern "C" const S3DX_STATE_MAP_ENTRY * _name_##__GetStateMap ( ); \
+    extern "C" const S3DX_HANDLER_MAP_ENTRY * _name_##__GetHandlerMap ( ); \
+    extern "C" const S3DX_VARIABLE_MAP_ENTRY * _name_##__GetVariableMap ( ); \
     class _name_ : public S3DX::AIModel
 
 #define S3DX_IMPLEMENT_AIMODEL( _name_ ) \

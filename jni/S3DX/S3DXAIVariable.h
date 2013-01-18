@@ -15,7 +15,7 @@ namespace S3DX
 
     //-------------------------------------------------------------------------
 
-    class AIVariable
+    class S3DX_API AIVariable
     {
     public :
 
@@ -963,8 +963,8 @@ namespace S3DX
     // unless you define S3DX::__lua_and_helper and/or S3DX::__lua_or_helper in your code.
     // Anyways it is better to use C++ '&&' and '||' operators whenever possible for speed.
     //
-	extern  S3DX::AIVariable __lua_and_helper ;
-	extern  S3DX::AIVariable __lua_or_helper  ;
+	extern  S3DX_API S3DX::AIVariable __lua_and_helper ;
+	extern  S3DX_API S3DX::AIVariable __lua_or_helper  ;
     #define S3DX_LUA_AND( __a__, __b__ ) ((S3DX::__lua_and_helper=(__a__)).GetBooleanValue()?S3DX::AIVariable(__b__):S3DX::__lua_and_helper)
 	#define S3DX_LUA_OR(  __a__, __b__ ) ((S3DX::__lua_or_helper =(__a__)).GetBooleanValue()?S3DX::__lua_or_helper:S3DX::AIVariable(__b__))
     #define S3DX_CPP_AND( __a__, __b__ ) ((S3DX::AIVariable(__a__)).GetBooleanValue() && (S3DX::AIVariable(__b__)).GetBooleanValue())

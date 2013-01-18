@@ -47,7 +47,11 @@ inline bool __streq ( const char *_p1, const char *_p2 )
 #if (defined __CWCC__)
 #   define S3DX_API __declspec(force_export)
 #elif (defined _WIN32) || (defined __CYGWIN__) || (defined __WINRT__)
-#   define S3DX_API __declspec(dllexport)
+#   ifdef S3DX_EXPORTS
+#       define S3DX_API __declspec(dllexport)
+#   else
+#       define S3DX_API __declspec(dllimport)
+#   endif    
 #else
 #   if __GNUC__ >= 4
 #       define S3DX_API __attribute__ ((visibility("default")))

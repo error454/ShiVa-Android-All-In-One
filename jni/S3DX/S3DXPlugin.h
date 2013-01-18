@@ -116,12 +116,21 @@ namespace S3DX
 
     //  Statically linked plugins functions
     //
-    extern "C" uint32           GetStaticallyLinkedPluginCount  ( ) ;
-    extern "C" Plugin          *GetStaticallyLinkedPluginAt     ( uint32  _iIndex  ) ;
-    extern "C" const char      *GetStaticallyLinkedPluginNameAt ( uint32  _iIndex  ) ;
-    extern "C" bool             RegisterStaticallyLinkedPlugin  ( Plugin *_pPlugin, const char *_pName ) ;
-    extern "C" bool             RegisterDynamicallyLinkedPlugin ( Plugin *_pPlugin ) ;
-}
+    extern "C" uint32           GetStaticallyLinkedPluginCount              ( ) ;
+    extern "C" Plugin          *GetStaticallyLinkedPluginAt                 ( uint32  _iIndex  ) ;
+    extern "C" const char      *GetStaticallyLinkedPluginNameAt             ( uint32  _iIndex  ) ;
+    extern "C" bool             RegisterStaticallyLinkedPlugin              ( Plugin *_pPlugin, const char *_pName ) ;
+
+    //  Dynamically linked plugins functions
+    //
+    extern "C" bool             RegisterDynamicallyLinkedPlugin             ( Plugin *_pPlugin ) ;
+
+    //  Following function must be called by native code when used, and that 
+    //  both engine and plug-ins are dynamic libraries, eg. on WinRT. In all 
+    //  other cases, calling this function will have no effect.
+    //
+    extern "C" S3DX_API void    SetRegisterDynamicallyLinkedPluginCallback  ( bool ( * ) ( Plugin * ) ) ; 
+}           
 //-----------------------------------------------------------------------------
 // Macros
 //
@@ -156,6 +165,19 @@ namespace S3DX
 #else
     #define S3DX_REGISTER_PLUGIN( _name_ ) S3DX::RegisterStaticallyLinkedPlugin ( this, _name_ )
 #endif
+//-----------------------------------------------------------------------------
+#define S3DX_IMPLEMENT_DYNAMICALLY_LINKED_PLUGIN_REGISTRATION_CALLBACK( )                           \
+    class S3DXDynamicallyLinkedPluginRegistrationCallbackHelper                                     \
+    {                                                                                               \
+        private: S3DXDynamicallyLinkedPluginRegistrationCallbackHelper ( )                          \
+        {                                                                                           \
+            SetRegisterDynamicallyLinkedPluginCallback ( S3DX::RegisterDynamicallyLinkedPlugin ) ;  \
+        }                                                                                           \
+        private: static S3DXDynamicallyLinkedPluginRegistrationCallbackHelper __oInstance ;         \
+    } ;                                                                                             \
+    S3DXDynamicallyLinkedPluginRegistrationCallbackHelper                                           \
+    S3DXDynamicallyLinkedPluginRegistrationCallbackHelper::__oInstance ;
+
 //-----------------------------------------------------------------------------
 #endif
 //-----------------------------------------------------------------------------

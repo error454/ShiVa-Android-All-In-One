@@ -10,7 +10,7 @@
 namespace S3DX
 //-----------------------------------------------------------------------------
 {
-    class AIModel
+    class S3DX_API AIModel
     {
     public :
 
@@ -75,13 +75,13 @@ namespace S3DX
     //-------------------------------------------------------------------------
     //  Statically linked plugins functions
     //
-    extern "C" S3DX::uint32                        GetStaticallyLinkedNativeAIModelCount                ( ) ;
-    extern "C" S3DXNATIVEAIMODELCREATEINSTANCEPROC GetStaticallyLinkedNativeAIModelCreateInstanceProcAt ( uint32 _iIndex ) ;
-    extern "C" S3DXNATIVEAIMODELGETSTATEMAPPROC    GetStaticallyLinkedNativeAIModelGetStateMapProcAt    ( uint32 _iIndex ) ;
-    extern "C" S3DXNATIVEAIMODELGETHANDLERMAPPROC  GetStaticallyLinkedNativeAIModelGetHandlerMapProcAt  ( uint32 _iIndex ) ;
-    extern "C" S3DXNATIVEAIMODELGETVARIABLEMAPPROC GetStaticallyLinkedNativeAIModelGetVariableMapProcAt ( uint32 _iIndex ) ;
-    extern "C" const char                         *GetStaticallyLinkedNativeAIModelNameAt               ( uint32 _iIndex ) ;
-    extern "C" bool                                RegisterStaticallyLinkedNativeAIModel                ( S3DXNATIVEAIMODELCREATEINSTANCEPROC _pCreateInstanceProc, S3DXNATIVEAIMODELGETSTATEMAPPROC _pGetStateMapProc, S3DXNATIVEAIMODELGETHANDLERMAPPROC _pGetHandlerMapProc, S3DXNATIVEAIMODELGETVARIABLEMAPPROC _pGetVariableMapProc, const char *_pName ) ;
+    extern "C"          S3DX::uint32                        GetStaticallyLinkedNativeAIModelCount                ( ) ;
+    extern "C"          S3DXNATIVEAIMODELCREATEINSTANCEPROC GetStaticallyLinkedNativeAIModelCreateInstanceProcAt ( uint32 _iIndex ) ;
+    extern "C"          S3DXNATIVEAIMODELGETSTATEMAPPROC    GetStaticallyLinkedNativeAIModelGetStateMapProcAt    ( uint32 _iIndex ) ;
+    extern "C"          S3DXNATIVEAIMODELGETHANDLERMAPPROC  GetStaticallyLinkedNativeAIModelGetHandlerMapProcAt  ( uint32 _iIndex ) ;
+    extern "C"          S3DXNATIVEAIMODELGETVARIABLEMAPPROC GetStaticallyLinkedNativeAIModelGetVariableMapProcAt ( uint32 _iIndex ) ;
+    extern "C"          const char                         *GetStaticallyLinkedNativeAIModelNameAt               ( uint32 _iIndex ) ;
+    extern "C" S3DX_API bool                                RegisterStaticallyLinkedNativeAIModel                ( S3DXNATIVEAIMODELCREATEINSTANCEPROC _pCreateInstanceProc, S3DXNATIVEAIMODELGETSTATEMAPPROC _pGetStateMapProc, S3DXNATIVEAIMODELGETHANDLERMAPPROC _pGetHandlerMapProc, S3DXNATIVEAIMODELGETVARIABLEMAPPROC _pGetVariableMapProc, const char *_pName ) ;
 
     //-------------------------------------------------------------------------
 }

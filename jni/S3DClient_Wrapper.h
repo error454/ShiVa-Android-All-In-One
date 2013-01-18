@@ -202,6 +202,9 @@ extern "C" void             S3DClient_Android_SetCameraDeviceCapturedImage      
 extern "C" void             S3DClient_Android_SetCameraDeviceCount                  ( int _iDeviceCount ) ;
 extern "C" void             S3DClient_Android_SetCameraDeviceName                   ( int _iDeviceIndex, const char *_pName ) ;
 extern "C" void             S3DClient_Android_AddFileAccessibleFromAPK              ( const char *_pFileName, int _iFileDescriptor, int _iOffset, int _iLength ) ;
+extern "C" void             S3DClient_Android_SetJoypadType                         ( int _iJoypad, int _iType ) ;
+extern "C" void             S3DClient_Android_SetJoypadButtonPressure               ( int _iJoypad, int _iButton, float _fPressure ) ;
+extern "C" void             S3DClient_Android_SetJoypadStickAxis                    ( int _iJoypad, int _iStick,  float _fAxisX, float _fAxisY ) ;
 
 //------- Wii ---------//
 

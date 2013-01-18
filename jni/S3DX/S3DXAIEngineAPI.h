@@ -8,12 +8,12 @@
 //-----------------------------------------------------------------------------
 namespace S3DX
 {
-    class AIEngineAPI ;
+    class S3DX_API AIEngineAPI ;
 }
 //-----------------------------------------------------------------------------
 namespace S3DX_MODULE_GUID
 {
-    extern S3DX::AIEngineAPI *__pS3DXEAPIMI ;
+    extern S3DX_API S3DX::AIEngineAPI *__pS3DXEAPIMI ;
 }
 //-----------------------------------------------------------------------------
 
@@ -6652,41 +6652,41 @@ namespace S3DX
 
     // Top level API declaration
     //
-    extern AIEngineAPI::AnimationPackage    animation       ;
-    extern AIEngineAPI::ApplicationPackage  application     ;
-    extern AIEngineAPI::CachePackage        cache           ;
-    extern AIEngineAPI::CameraPackage       camera          ;
-    extern AIEngineAPI::ColliderPackage     collider        ;
-    extern AIEngineAPI::DebugPackage        debug           ;
-    extern AIEngineAPI::DynamicsPackage     dynamics        ;
-    extern AIEngineAPI::GroupPackage        group           ;
-    extern AIEngineAPI::HashtablePackage    hashtable       ;
-    extern AIEngineAPI::HudPackage          hud             ;
-    extern AIEngineAPI::InputPackage        input           ;
-    extern AIEngineAPI::LightPackage        light           ;
-    extern AIEngineAPI::LogPackage          log             ;
-    extern AIEngineAPI::MathPackage         math            ;
-    extern AIEngineAPI::MeshPackage         mesh            ;
-    extern AIEngineAPI::MicrophonePackage   microphone      ;
-    extern AIEngineAPI::MusicPackage        music           ;
-    extern AIEngineAPI::NavigationPackage   navigation      ;
-    extern AIEngineAPI::NetworkPackage      network         ;
-    extern AIEngineAPI::ObjectPackage       object          ;
-    extern AIEngineAPI::PixelmapPackage     pixelmap        ;
-    extern AIEngineAPI::ProjectorPackage    projector       ;
-    extern AIEngineAPI::ScenePackage        scene           ;
-    extern AIEngineAPI::SensorPackage       sensor          ;
-    extern AIEngineAPI::ServerPackage       server          ;
-    extern AIEngineAPI::SessionPackage      session         ;
-    extern AIEngineAPI::SfxPackage          sfx             ;
-    extern AIEngineAPI::ShapePackage        shape           ;
-    extern AIEngineAPI::SoundPackage        sound           ;
-    extern AIEngineAPI::StringPackage       string          ;
-    extern AIEngineAPI::SystemPackage       system          ;
-    extern AIEngineAPI::TablePackage        table           ;
-    extern AIEngineAPI::UserPackage         user            ;
-    extern AIEngineAPI::VideoPackage        video           ;
-    extern AIEngineAPI::XmlPackage          xml             ;
+    extern S3DX_API AIEngineAPI::AnimationPackage    animation       ;
+    extern S3DX_API AIEngineAPI::ApplicationPackage  application     ;
+    extern S3DX_API AIEngineAPI::CachePackage        cache           ;
+    extern S3DX_API AIEngineAPI::CameraPackage       camera          ;
+    extern S3DX_API AIEngineAPI::ColliderPackage     collider        ;
+    extern S3DX_API AIEngineAPI::DebugPackage        debug           ;
+    extern S3DX_API AIEngineAPI::DynamicsPackage     dynamics        ;
+    extern S3DX_API AIEngineAPI::GroupPackage        group           ;
+    extern S3DX_API AIEngineAPI::HashtablePackage    hashtable       ;
+    extern S3DX_API AIEngineAPI::HudPackage          hud             ;
+    extern S3DX_API AIEngineAPI::InputPackage        input           ;
+    extern S3DX_API AIEngineAPI::LightPackage        light           ;
+    extern S3DX_API AIEngineAPI::LogPackage          log             ;
+    extern S3DX_API AIEngineAPI::MathPackage         math            ;
+    extern S3DX_API AIEngineAPI::MeshPackage         mesh            ;
+    extern S3DX_API AIEngineAPI::MicrophonePackage   microphone      ;
+    extern S3DX_API AIEngineAPI::MusicPackage        music           ;
+    extern S3DX_API AIEngineAPI::NavigationPackage   navigation      ;
+    extern S3DX_API AIEngineAPI::NetworkPackage      network         ;
+    extern S3DX_API AIEngineAPI::ObjectPackage       object          ;
+    extern S3DX_API AIEngineAPI::PixelmapPackage     pixelmap        ;
+    extern S3DX_API AIEngineAPI::ProjectorPackage    projector       ;
+    extern S3DX_API AIEngineAPI::ScenePackage        scene           ;
+    extern S3DX_API AIEngineAPI::SensorPackage       sensor          ;
+    extern S3DX_API AIEngineAPI::ServerPackage       server          ;
+    extern S3DX_API AIEngineAPI::SessionPackage      session         ;
+    extern S3DX_API AIEngineAPI::SfxPackage          sfx             ;
+    extern S3DX_API AIEngineAPI::ShapePackage        shape           ;
+    extern S3DX_API AIEngineAPI::SoundPackage        sound           ;
+    extern S3DX_API AIEngineAPI::StringPackage       string          ;
+    extern S3DX_API AIEngineAPI::SystemPackage       system          ;
+    extern S3DX_API AIEngineAPI::TablePackage        table           ;
+    extern S3DX_API AIEngineAPI::UserPackage         user            ;
+    extern S3DX_API AIEngineAPI::VideoPackage        video           ;
+    extern S3DX_API AIEngineAPI::XmlPackage          xml             ;
 
     //-------------------------------------------------------------------------
     //  Utility functions

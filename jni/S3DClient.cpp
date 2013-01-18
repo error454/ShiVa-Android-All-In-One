@@ -46,8 +46,8 @@ extern "C"
     static bool 	    bSupportHeading                 = false ; 
     static bool         bForceNoViewportRotation        = false ;
 	static bool         bSupportLowLatencyAudioTrack	= false ;
-	static bool         bForceAudioBackendOpenAL        = false  ;
-	static bool         bForceAudioBackendAndroid       = true ;	
+	static bool         bForceAudioBackendOpenAL        = true  ;
+	static bool         bForceAudioBackendAndroid       = false ;	
 	static bool         bWantCameraDeviceCapture        = false ;
 	static bool         bWantSwapBuffers        		= true  ;
 	//static bool     bVibrate					= false ;	
