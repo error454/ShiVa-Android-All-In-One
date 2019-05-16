@@ -13,7 +13,7 @@ The following enhancements and bugfixes are integrated:
 * Better handling of screen off/on events where a lock screen isn't enabled or hasn't hit the timeout threshold
 * S3DClient_RegisterFunction registers all native functions instead of just the 1st
 
-# #How this repository is organized
+## How this repository is organized
 **android** contains the eclipse project along with a handful of libraries (GCM and Dropbox for now)
 
 **shiva** contains a sample ShiVa project that is meant to illustrate how to use each SDK.  This project has AI Models that are specific to each SDK and will be required in your project.  You'll want to grab these AI Models for use in your ShiVa app and poke around the simple sample app for an example of how to wire things.
